@@ -1,0 +1,35 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+.venv*/
+venv/
+env/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Editor settings
+.vscode/
+.idea/
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Local test recording
+microphone_test.wav
+
+# Build and test output
+build/
+dist/
+.pytest_cache/
+.coverage
+
+# Windows/macOS temporary files
+Thumbs.db
+.DS_Store
