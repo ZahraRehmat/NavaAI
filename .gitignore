@@ -33,3 +33,26 @@ dist/
 # Windows/macOS temporary files
 Thumbs.db
 .DS_Store
+
+# Local AI models and runtime artifacts (never publish with the frontend)
+models/
+model/
+weights/
+checkpoints/
+checkpoint_assets/
+*.safetensors
+*.gguf
+*.onnx
+*.bin
+*.pt
+*.pth
+
+# Local sessions, captured input, diagnostics and browser profiles
+logs/
+cache/
+diagnostics/
+browser_profiles/
+voice_test_audio/
+*.jsonl
+workbench_sessions.json
+*.wav
