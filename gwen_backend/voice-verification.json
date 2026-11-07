@@ -1,0 +1,49 @@
+{
+  "speech_tests": [
+    {
+      "spoken": "Gwen listen",
+      "recognized": "Gwen, listen.",
+      "outcome": {
+        "control": "handsfree"
+      }
+    },
+    {
+      "spoken": "Scroll down",
+      "recognized": "Scroll down.",
+      "outcome": {
+        "command": "Scroll down"
+      }
+    },
+    {
+      "spoken": "Scroll up",
+      "recognized": "Scroll up.",
+      "outcome": {
+        "command": "Scroll up"
+      }
+    },
+    {
+      "spoken": "Click here",
+      "recognized": "Click here.",
+      "outcome": {
+        "command": "Click here"
+      }
+    },
+    {
+      "spoken": "What is a computer?",
+      "recognized": "What is a computer?",
+      "outcome": {
+        "command": "What is a computer"
+      }
+    },
+    {
+      "spoken": "Gwen sleep",
+      "recognized": "Gwen, sleep.",
+      "outcome": {
+        "control": "sleep"
+      }
+    }
+  ],
+  "microphone": "Microphone Array (Intel\u00ae Smart ",
+  "microphone_capture_samples": 4800,
+  "scope": "Synthetic spoken commands and device capture; human voice accuracy remains unverified."
+}

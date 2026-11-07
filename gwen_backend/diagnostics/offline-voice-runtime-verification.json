@@ -1,0 +1,12 @@
+{
+  "backend": "vosk small en-us 0.15",
+  "model_bytes": 70899191,
+  "microphone_opened": true,
+  "microphone_capture_samples_in_memory": 3200,
+  "capture_overflow": false,
+  "ui_microphone_off_on_verified": true,
+  "default_mode": "Gwen wake word required; hands-free is opt-in",
+  "automated_tests_passed": 191,
+  "human_voice_accuracy_verified": false,
+  "audio_recordings_saved": false
+}

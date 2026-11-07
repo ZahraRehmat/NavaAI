@@ -1,0 +1,8 @@
+{
+  "model": "models/Qwen3-VL-2B-Instruct-ov-int4",
+  "device": "GPU",
+  "max_steps": 25,
+  "max_prompt_tokens": 1600,
+  "desktop_image_width": 1920,
+  "desktop_image_height": 1200
+}

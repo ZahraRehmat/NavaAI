@@ -1,0 +1,15 @@
+openvino-genai==2026.3.1.0
+playwright==1.64.1
+pyautogui==0.9.54
+pyperclip==1.11.0
+rapidfuzz==3.14.6
+pillow==13.0.0
+numpy==2.5.4
+pywinauto==0.6.9
+rapidocr-onnxruntime==1.4.4
+faster-whisper==1.2.1
+sounddevice==0.5.6
+av==15.1.0
+pywin32==312
+comtypes==1.4.17
+vosk==0.3.45

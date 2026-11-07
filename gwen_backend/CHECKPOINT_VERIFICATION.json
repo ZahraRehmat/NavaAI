@@ -1,0 +1,16 @@
+{
+  "checkpoint": "2026-10-31-browser-tab-switchinng",
+  "repository": "https://github.com/Mahnoor-Farrukh/Nava-V1",
+  "branches": ["main", "Browser-tab-switchinng"],
+  "tag": "checkpoint/browser-tab-switchinng-2026-10-31",
+  "original_files": 12685,
+  "original_bytes": 6627480127,
+  "original_files_stored_in_git_or_lfs": 183,
+  "original_files_in_encrypted_runtime": 12502,
+  "encrypted_runtime_parts": 7,
+  "full_restore_passed": true,
+  "full_restore_verified_files": 12685,
+  "restore_location": "C:\\Users\\mahno\\OneDrive\\Desktop\\Gwen checkpoints\\2026-10-31-browser-tab-switchinng\\restore-verification",
+  "recovery_key_uploaded": false,
+  "application_features_changed_for_checkpoint": false
+}

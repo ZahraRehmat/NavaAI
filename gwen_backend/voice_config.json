@@ -1,0 +1,12 @@
+{
+  "enabled": true,
+  "handsfree": true,
+  "start_hidden": true,
+  "completion_beep": true,
+  "engine": "vosk",
+  "model": "models/vosk-model-small-en-us-0.15",
+  "device": null,
+  "silence_ms": 900,
+  "minimum_confidence": 0.72,
+  "review_confidence": 0.86
+}

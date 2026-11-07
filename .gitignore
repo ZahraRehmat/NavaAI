@@ -56,3 +56,12 @@ voice_test_audio/
 *.jsonl
 workbench_sessions.json
 *.wav
+
+# This branch bundles the Gwen runtime, model weights (Git LFS), and synthetic fixtures.
+!/gwen_backend/models/
+!/gwen_backend/models/**
+!/gwen_backend/diagnostics/
+!/gwen_backend/diagnostics/**
+!/gwen_backend/voice_test_audio/
+!/gwen_backend/voice_test_audio/**
+**/.cache/

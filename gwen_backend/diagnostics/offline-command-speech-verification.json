@@ -1,0 +1,192 @@
+{
+  "passed": true,
+  "backend": "vosk small en-us 0.15",
+  "network_blocked_during_model_load_and_recognition": true,
+  "raw_audio_saved": false,
+  "tests": [
+    {
+      "spoken": "Cell A two",
+      "heard": "cell a two",
+      "expected": "select cell A2",
+      "actual": "select cell A2",
+      "confidence": 1.0,
+      "decode_seconds": 0.453,
+      "passed": true
+    },
+    {
+      "spoken": "Click six M J",
+      "heard": "click six m j",
+      "expected": "click 6MJ",
+      "actual": "click 6MJ",
+      "confidence": 1.0,
+      "decode_seconds": 0.109,
+      "passed": true
+    },
+    {
+      "spoken": "Gwen grid",
+      "heard": "gwen grid",
+      "expected": "gwen grid",
+      "actual": "gwen grid",
+      "confidence": 1.0,
+      "decode_seconds": 0.078,
+      "passed": true
+    },
+    {
+      "spoken": "Scroll down from F G",
+      "heard": "scroll down from f g",
+      "expected": "scroll down from FG",
+      "actual": "scroll down from FG",
+      "confidence": 1.0,
+      "decode_seconds": 0.109,
+      "passed": true
+    },
+    {
+      "spoken": "Double click alpha bravo",
+      "heard": "double click alpha bravo",
+      "expected": "double click AB",
+      "actual": "double click AB",
+      "confidence": 1.0,
+      "decode_seconds": 0.094,
+      "passed": true
+    },
+    {
+      "spoken": "Gwen listen",
+      "heard": "gwen listen",
+      "expected": "handsfree",
+      "actual": "handsfree",
+      "confidence": 1.0,
+      "decode_seconds": 0.093,
+      "passed": true
+    },
+    {
+      "spoken": "Gwen sleep",
+      "heard": "gwen sleep",
+      "expected": "sleep",
+      "actual": "sleep",
+      "confidence": 1.0,
+      "decode_seconds": 0.093,
+      "passed": true
+    },
+    {
+      "spoken": "Gwen cell A two",
+      "heard": "gwen cell a two",
+      "expected": "select cell A2",
+      "actual": "select cell A2",
+      "confidence": 1.0,
+      "decode_seconds": 0.109,
+      "passed": true
+    },
+    {
+      "spoken": "Gwen click F G",
+      "heard": "gwen click f g",
+      "expected": "click FG",
+      "actual": "click FG",
+      "confidence": 1.0,
+      "decode_seconds": 0.094,
+      "passed": true
+    },
+    {
+      "spoken": "Open Notepad",
+      "heard": "open notepad",
+      "expected": "open notepad",
+      "actual": "open notepad",
+      "confidence": 0.881,
+      "decode_seconds": 0.078,
+      "passed": true
+    },
+    {
+      "spoken": "Click WiFi",
+      "heard": "click y fi",
+      "expected": "click wifi",
+      "actual": "click wifi",
+      "confidence": 1.0,
+      "decode_seconds": 0.078,
+      "passed": true
+    },
+    {
+      "spoken": "Open Chrome",
+      "heard": "open chrome",
+      "expected": "open chrome",
+      "actual": "open chrome",
+      "confidence": 1.0,
+      "decode_seconds": 0.078,
+      "passed": true
+    },
+    {
+      "spoken": "Gwen grid on",
+      "heard": "gwen grid on",
+      "expected": "grid on",
+      "actual": "grid on",
+      "confidence": 1.0,
+      "decode_seconds": 0.094,
+      "passed": true
+    },
+    {
+      "spoken": "Gwen listen type hello world",
+      "heard": "gwen listen type hello world",
+      "expected": "type hello world",
+      "actual": "type hello world",
+      "confidence": 0.965,
+      "decode_seconds": 0.937,
+      "passed": true
+    },
+    {
+      "spoken": "Close Copilot",
+      "heard": "close copilot",
+      "expected": "close copilot",
+      "actual": "close copilot",
+      "confidence": 1.0,
+      "decode_seconds": 0.093,
+      "passed": true
+    },
+    {
+      "spoken": "Quit Copilot",
+      "heard": "quit copilot",
+      "expected": "quit copilot",
+      "actual": "quit copilot",
+      "confidence": 1.0,
+      "decode_seconds": 0.094,
+      "passed": true
+    },
+    {
+      "spoken": "Type",
+      "heard": "type",
+      "expected": "dictation_on",
+      "actual": "dictation_on",
+      "confidence": 1.0,
+      "decode_seconds": 0.078,
+      "passed": true
+    },
+    {
+      "spoken": "New mail",
+      "heard": "new mail",
+      "expected": "type new mail",
+      "actual": "type new mail",
+      "confidence": 0.883,
+      "decode_seconds": 0.64,
+      "passed": true
+    },
+    {
+      "spoken": "Stop dictation",
+      "heard": "stop dictation",
+      "expected": "dictation_off",
+      "actual": "dictation_off",
+      "confidence": 1.0,
+      "decode_seconds": 0.781,
+      "passed": true
+    },
+    {
+      "input": "silence",
+      "heard": "",
+      "decision": "ignore",
+      "passed": true
+    },
+    {
+      "input": "synthetic_noise",
+      "heard": "",
+      "decision": "ignore",
+      "passed": true
+    }
+  ],
+  "scope": "Synthetic Windows SAPI speech and artificial silence/noise. Human accent and room-noise accuracy remain unverified."
+}

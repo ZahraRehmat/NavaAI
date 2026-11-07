@@ -1,0 +1,11 @@
+# These exact original bytes are preserved in the encrypted checkpoint archive.
+/.venv/
+/cache/
+/browser_profiles/
+/logs/
+/__pycache__/
+# Never commit recovery keys, credentials or future environment-secret files.
+/.env
+/.env.*
+/*recovery*key*.json
+/*recovery*key*.txt

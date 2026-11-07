@@ -7,7 +7,8 @@ from pathlib import Path
 
 def backend_candidates():
     home = Path.home()
-    return [home / 'OneDrive' / 'Desktop' / 'Gwen doer', home / 'Desktop' / 'Gwen doer']
+    return [Path(__file__).resolve().parent / 'gwen_backend',
+            home / 'OneDrive' / 'Desktop' / 'Gwen doer', home / 'Desktop' / 'Gwen doer']
 
 
 def discover_backend():

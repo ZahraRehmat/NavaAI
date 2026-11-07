@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "whatsapp_target_count": 31,
+  "roles": {
+    "Button": 24,
+    "Document": 1,
+    "Edit": 1,
+    "TabItem": 3,
+    "DataItem": 2
+  },
+  "scan_seconds": 2.94,
+  "warning": "",
+  "live_input": "click AA focused the observed WhatsApp search field; no text or messages sent",
+  "live_result": "Click completed at AA.",
+  "regression_tests": 175
+}

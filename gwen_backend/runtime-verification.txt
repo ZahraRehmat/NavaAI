@@ -1,0 +1,1 @@
+PASS: Real large-page inference within 1,600 text tokens. Injected GPU error discarded the session; a new real CPU pipeline generated the expected action. Hardware allocation failure itself was simulated.

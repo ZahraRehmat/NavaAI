@@ -1,0 +1,265 @@
+{
+  "source_branch": "offline-command-voice",
+  "source_base_commit": "31766aec72fa9c1714434ce1509366e01712bec2",
+  "snapshot_date": "2026-11-08",
+  "included_files": 202,
+  "excluded_tracked_artifacts": [
+    {
+      "path": "checkpoint_assets/runtime.zip.aes.part001",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "checkpoint_assets/runtime.zip.aes.part002",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "checkpoint_assets/runtime.zip.aes.part003",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "checkpoint_assets/runtime.zip.aes.part004",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "checkpoint_assets/runtime.zip.aes.part005",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "checkpoint_assets/runtime.zip.aes.part006",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "checkpoint_assets/runtime.zip.aes.part007",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "diagnostics/app-resolution-verification.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/controls-diagnostic.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/dialog-native-verification.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/full-grid-ui-verification.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/grounding-diagnostic.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/label-match-verification.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/live-vlm-verification.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/native-browser-ui-verification.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/office-native-verification.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/office-planner/office-input.png",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/office-planner/office-plan.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/office-planner/result.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/point-schema-diagnostic.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/prompt-diagnostic.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/smart-grid-native-events.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/smart-grid-shell-verification.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/smart-grid-timeout-recovery.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/smart-grid-ui-verification.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/tab-media-ui-verification.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "diagnostics/target-choice-ui-verification.json",
+      "reason": "Historical observation artifacts omitted from public source snapshot"
+    },
+    {
+      "path": "kernel.errors.txt",
+      "reason": "Local runtime error dump"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/.gitignore",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/CACHEDIR.TAG",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/.gitattributes.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/README.md.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/chat_template.jinja.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/config.json.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/generation_config.json.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/openvino_config.json.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/openvino_detokenizer.bin.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/openvino_detokenizer.xml.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/openvino_language_model.bin.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/openvino_language_model.xml.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/openvino_text_embeddings_model.bin.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/openvino_text_embeddings_model.xml.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/openvino_tokenizer.bin.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/openvino_tokenizer.xml.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/openvino_vision_embeddings_merger_model.bin.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/openvino_vision_embeddings_merger_model.xml.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/openvino_vision_embeddings_model.bin.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/openvino_vision_embeddings_model.xml.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/openvino_vision_embeddings_pos_model.bin.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/openvino_vision_embeddings_pos_model.xml.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/preprocessor_config.json.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/processor_config.json.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/tokenizer.json.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/download/tokenizer_config.json.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/Qwen3-VL-2B-Instruct-ov-int4/.cache/huggingface/trees/f12783b1fc4ff5aed91115287cfeb030e73ed231.json",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/whisper-tiny.en/.cache/huggingface/.gitignore",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/whisper-tiny.en/.cache/huggingface/CACHEDIR.TAG",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/whisper-tiny.en/.cache/huggingface/download/config.json.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/whisper-tiny.en/.cache/huggingface/download/model.bin.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/whisper-tiny.en/.cache/huggingface/download/tokenizer.json.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/whisper-tiny.en/.cache/huggingface/download/vocabulary.txt.metadata",
+      "reason": "Local recovery archive or download cache"
+    },
+    {
+      "path": "models/whisper-tiny.en/.cache/huggingface/trees/0d3d19a32d3338f10357c0889762bd8d64bbdeba.json",
+      "reason": "Local recovery archive or download cache"
+    }
+  ],
+  "always_local": [
+    ".venv",
+    "logs",
+    "browser_profiles",
+    "cache",
+    "recovery keys",
+    "raw microphone recordings"
+  ],
+  "notes": "Working-tree source and current settings, including uncommitted progress; model files published through Git LFS. Frontend main preserved at repository root."
+}
