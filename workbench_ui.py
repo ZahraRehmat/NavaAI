@@ -1,7 +1,11 @@
 """NavaAI workbench for the tested, typing-only Gwen runtime."""
 import json
 import os
+import re
+import webbrowser
+from datetime import datetime
 from pathlib import Path
+from urllib.parse import quote_plus
 
 from PySide6.QtCore import QProcess, QSettings, QTimer, Qt, QUrl
 from PySide6.QtGui import QDesktopServices, QKeySequence, QShortcut
@@ -11,6 +15,7 @@ from PySide6.QtWidgets import (
     QInputDialog, QSplitter, QStackedWidget, QTextEdit, QVBoxLayout, QWidget,
 )
 from project_state import SessionStore, discover_backend, read_backend_info
+from speech_worker import VoiceListener, SpeechOutput
 
 STYLE = """
 * { font-family:"Segoe UI"; font-size:10pt; }
@@ -23,6 +28,11 @@ QLabel#PageTitle { font-family:"Georgia"; font-size:25pt; color:#253A30; }
 QLabel#Muted { color:#647169; }
 QLabel#SectionLabel { color:#798177; font-size:9pt; font-weight:600; }
 QLabel#Welcome { font-family:"Georgia"; font-size:23pt; color:#253A30; }
+QLabel#CompactBrand { font-family:"Georgia"; font-size:22pt; font-weight:600; color:#253A30; }
+QLabel#CompactEyebrow { color:#667268; font-size:8pt; font-weight:700; letter-spacing:1px; }
+QLabel#CompactTitle { font-family:"Georgia"; font-size:18pt; color:#253A30; }
+QPushButton#VoicePreview { background:#E3E9DA; color:#243C2E; border:1px solid #CBD5C1; border-radius:14px; padding:18px; min-height:58px; font-size:14pt; font-weight:650; }
+QPushButton#VoicePreview:disabled { color:#314037; background:#E3E9DA; border-color:#CBD5C1; }
 QFrame#Card, QFrame#ChatSurface { background:#FFFEFA; border:1px solid #DDDCD3; border-radius:9px; }
 QLabel#Status { background:#E8E6DF; color:#596357; border-radius:5px; padding:8px 13px; font-weight:600; }
 QLabel#Status[connected="true"] { background:#E2EADF; color:#32563C; }
@@ -76,9 +86,11 @@ class Card(QFrame):
 class NavaAIWindow(QMainWindow):
     def __init__(self, connect=True, store=None):
         super().__init__()
+        self.compact_mode = not connect
         self.setWindowTitle('Nava · Desktop help')
-        self.resize(1280, 820)
-        self.setMinimumSize(900, 620)
+        self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, True)
+        self.resize(380, 420)
+        self.setMinimumSize(340, 380)
         self.settings = QSettings('NavaAI', 'Workbench')
         self.store = store or SessionStore()
         self.session = self.store.new()
@@ -91,14 +103,17 @@ class NavaAIWindow(QMainWindow):
         self.logfile = ''
         self.last_error = ''
         self.confirm_box = None
+        self.voice_listener = None
+        self.voice_output = None
+        self.voice_enabled = False
         root = QWidget(objectName='Root')
         self.setCentralWidget(root)
         outer = QHBoxLayout(root)
         outer.setContentsMargins(0, 0, 0, 0)
         side = QFrame(objectName='Sidebar')
-        side.setFixedWidth(195)
+        side.setFixedWidth(165)
         sidebar = QVBoxLayout(side)
-        sidebar.setContentsMargins(18, 25, 18, 20)
+        sidebar.setContentsMargins(10, 18, 10, 16)
         sidebar.addWidget(QLabel('nava', objectName='Brand'))
         sidebar.addWidget(QLabel('Desktop help', objectName='RailNote'))
         sidebar.addSpacing(24)
@@ -117,8 +132,10 @@ class NavaAIWindow(QMainWindow):
         sidebar.addSpacing(12)
         sidebar.addWidget(QLabel('Need to stop? Press F8.\nYour history stays on this PC.', objectName='RailNote'))
         outer.addWidget(side)
+        if self.compact_mode:
+            side.hide()
         content = QVBoxLayout()
-        content.setContentsMargins(25, 24, 25, 20)
+        content.setContentsMargins(12, 18, 12, 16)
         header = QHBoxLayout()
         self.title = QLabel('Assistant', objectName='PageTitle')
         header.addWidget(self.title)
@@ -134,18 +151,27 @@ class NavaAIWindow(QMainWindow):
         self.stack.addWidget(self.system_page())
         self.stack.addWidget(self.settings_page())
         self.navigate('Assistant')
-        self.add_message('NavaAI', 'Ready when you are. Enter a request above, or choose an example to get started.', persist=False)
+        if not self.compact_mode:
+            self.add_message('NavaAI', 'Ready when you are. Enter a request above, or choose an example to get started.', persist=False)
         QShortcut(QKeySequence('F8'), self, activated=self.stop_task)
         self.shutdown_timer = QTimer(self)
         self.shutdown_timer.setSingleShot(True)
         self.shutdown_timer.timeout.connect(self.force_shutdown)
+        if self.compact_mode:
+            self.voice_output = SpeechOutput(self)
+            self.voice_output.speaking_changed.connect(self.voice_speaking_changed)
+            self.voice_output.error_occurred.connect(self.voice_error)
+            self.voice_output.start()
+            QTimer.singleShot(700, self.start_voice_listener)
         if connect:
             QTimer.singleShot(0, self.connect_backend)
 
     def assistant_page(self):
+        if self.compact_mode:
+            return self.compact_assistant_page()
         page = QWidget(objectName='Page')
         self.home_page = page
-        page.setMinimumHeight(660)
+        page.setMinimumHeight(420 if self.compact_mode else 660)
         layout = QVBoxLayout(page)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(14)
@@ -170,6 +196,8 @@ class NavaAIWindow(QMainWindow):
         self.recent_button.clicked.connect(self.use_recent_window)
         row.addWidget(self.recent_button)
         layout.addWidget(window_card)
+        if self.compact_mode:
+            window_card.hide()
 
         request = Card('Your request')
         composer = QHBoxLayout()
@@ -190,6 +218,8 @@ class NavaAIWindow(QMainWindow):
             examples.addWidget(button)
         request.box.addLayout(examples)
         layout.addWidget(request)
+        if self.compact_mode:
+            request.hide()
 
         activity = QFrame(objectName='ChatSurface')
         box = QVBoxLayout(activity)
@@ -203,6 +233,8 @@ class NavaAIWindow(QMainWindow):
         self.stop_button = QPushButton('Stop · F8', objectName='Stop')
         self.stop_button.clicked.connect(self.stop_task)
         activity_header.addWidget(self.stop_button)
+        if self.compact_mode:
+            self.stop_button.hide()
         box.addLayout(activity_header)
         self.chat_scroll = QScrollArea()
         self.chat_scroll.setMinimumHeight(130)
@@ -225,11 +257,17 @@ class NavaAIWindow(QMainWindow):
         controls.addStretch()
         self.grid_state = muted_label('Labels hidden')
         controls.addWidget(self.grid_state)
-        layout.addLayout(controls)
+        controls_widget = QWidget()
+        controls_widget.setLayout(controls)
+        layout.addWidget(controls_widget)
+        if self.compact_mode:
+            controls_widget.hide()
         self.details_toggle = QPushButton('Show technical details', objectName='Details')
         self.details_toggle.setCheckable(True)
         self.details_toggle.toggled.connect(self.toggle_details)
         layout.addWidget(self.details_toggle)
+        if self.compact_mode:
+            self.details_toggle.hide()
         self.trace = QTextEdit()
         self.trace.setReadOnly(True)
         self.trace.setMaximumHeight(125)
@@ -240,6 +278,152 @@ class NavaAIWindow(QMainWindow):
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         scroll.setWidget(page)
         return scroll
+
+    def compact_assistant_page(self):
+        page = QWidget(objectName='Page')
+        page.setMinimumHeight(390)
+        layout = QVBoxLayout(page)
+        layout.setContentsMargins(18, 16, 18, 16)
+        layout.setSpacing(14)
+
+        header = QHBoxLayout()
+        header.addWidget(QLabel('nava', objectName='CompactBrand'))
+        header.addStretch()
+        header.addWidget(QLabel('LOCAL VOICE', objectName='CompactEyebrow'))
+        layout.addLayout(header)
+
+        layout.addWidget(QLabel('Hands-free help', objectName='CompactTitle'))
+        intro = muted_label('Say a request naturally. Nava listens and answers aloud.')
+        layout.addWidget(intro)
+
+        voice_card = QFrame(objectName='Card')
+        voice_layout = QVBoxLayout(voice_card)
+        voice_layout.setContentsMargins(14, 14, 14, 14)
+        voice_layout.setSpacing(10)
+        voice_layout.addWidget(QLabel('VOICE ASSISTANT', objectName='SectionLabel'))
+        self.voice_button = QPushButton('◉   Pause listening', objectName='VoicePreview')
+        self.voice_button.setAccessibleName('Pause voice listening')
+        self.voice_button.clicked.connect(self.toggle_voice_listening)
+        voice_layout.addWidget(self.voice_button)
+        self.voice_status = muted_label('Starting microphone…')
+        self.voice_status.setAccessibleName('Voice assistant status')
+        voice_layout.addWidget(self.voice_status)
+        layout.addWidget(voice_card)
+
+        info = QFrame(objectName='ChatSurface')
+        info_layout = QVBoxLayout(info)
+        info_layout.setContentsMargins(14, 12, 14, 12)
+        info_layout.setSpacing(6)
+        info_layout.addWidget(QLabel('TRY SAYING', objectName='SectionLabel'))
+        info_layout.addWidget(muted_label('“Open YouTube” · “Open Notepad” · “Search for the weather”'))
+        self.voice_heard = muted_label('I’ll ask you to repeat if I don’t understand.')
+        info_layout.addWidget(self.voice_heard)
+        layout.addWidget(info)
+        layout.addStretch(1)
+
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        scroll.setWidget(page)
+        return scroll
+
+    def start_voice_listener(self):
+        if self.closing or (self.voice_listener and self.voice_listener.isRunning()):
+            return
+        self.voice_listener = VoiceListener(self)
+        self.voice_listener.status_changed.connect(self.voice_status_changed)
+        self.voice_listener.recognized.connect(self.handle_voice_command)
+        self.voice_listener.error_occurred.connect(self.voice_error)
+        self.voice_listener.finished.connect(self.voice_listener_finished)
+        self.voice_enabled = True
+        self.voice_button.setText('◉   Pause listening')
+        self.voice_button.setAccessibleName('Pause voice listening')
+        self.voice_listener.start()
+
+    def toggle_voice_listening(self):
+        if self.voice_listener and self.voice_listener.isRunning():
+            self.voice_enabled = False
+            self.voice_listener.stop_listening()
+            self.voice_status.setText('Listening paused.')
+            self.voice_button.setText('◉   Start listening')
+            self.voice_button.setAccessibleName('Start voice listening')
+        else:
+            self.voice_enabled = True
+            self.start_voice_listener()
+
+    def voice_listener_finished(self):
+        if not self.voice_enabled or self.closing:
+            self.voice_button.setText('◉   Start listening')
+            self.voice_button.setAccessibleName('Start voice listening')
+
+    def voice_status_changed(self, message):
+        self.voice_status.setText(message)
+
+    def voice_speaking_changed(self, speaking):
+        if self.voice_listener and self.voice_listener.isRunning():
+            self.voice_listener.suspend_recognition(speaking)
+        if speaking:
+            self.voice_status.setText('Speaking…')
+
+    def voice_error(self, message):
+        self.voice_enabled = False
+        self.voice_button.setText('◉   Start listening')
+        self.voice_button.setAccessibleName('Start voice listening')
+        self.voice_status.setText('Voice setup needs attention.')
+        details = message.splitlines()[0] if message else 'Unknown voice setup error.'
+        self.voice_heard.setText(f'Voice setup error: {details[:180]}')
+        if self.voice_output and self.voice_output.isRunning():
+            self.voice_output.speak('I could not start voice listening. Please check your microphone and try again.')
+
+    def reply_aloud(self, message):
+        if self.voice_output and self.voice_output.isRunning():
+            self.voice_output.speak(message)
+
+    def handle_voice_command(self, text):
+        heard = re.sub(r'\s+', ' ', text).strip()
+        self.voice_heard.setText(f'Heard: “{heard}”')
+        command = re.sub(
+            r'^(?:(?:hey|okay|ok|please)\s+)*(?:nava[,.! ]*\s*)?',
+            '', heard, flags=re.IGNORECASE,
+        ).strip()
+        normalized = re.sub(r'\s+', ' ', command.lower()).strip(' .,!')
+        sites = {
+            'youtube': 'https://www.youtube.com', 'google': 'https://www.google.com',
+            'gmail': 'https://mail.google.com', 'maps': 'https://maps.google.com',
+        }
+        match = re.fullmatch(r'(?:please\s+)?(?:open|launch|go to|play)\s+(.+?)(?:\s+and all)?', normalized)
+        if match:
+            target = match.group(1).strip()
+            target = re.sub(r'^(the\s+)', '', target)
+            if target in sites:
+                webbrowser.open(sites[target])
+                response = f'Opening {target.title()}.'
+            elif target in ('notepad', 'calculator'):
+                executable = 'notepad.exe' if target == 'notepad' else 'calc.exe'
+                QProcess.startDetached(executable)
+                response = f'Opening {target.title()}.'
+            else:
+                response = f'I heard “open {target},” but I’m not sure which app or website you mean. Please say the name again, such as “open YouTube.”'
+            self.reply_aloud(response)
+            self.voice_status.setText('Listening · speak naturally')
+            return
+        search = re.fullmatch(r'(?:please\s+)?(?:search for|look up|google)\s+(.+)', normalized)
+        if search:
+            query = search.group(1).strip()
+            webbrowser.open('https://www.google.com/search?q=' + quote_plus(query))
+            self.reply_aloud(f'Searching for {query}.')
+            self.voice_status.setText('Listening · speak naturally')
+            return
+        if normalized in ('help', 'what can you do', 'what do you do'):
+            self.reply_aloud('You can ask me to open YouTube, Google, Gmail, Maps, Notepad, or Calculator, or search the web. If I misunderstand, I will ask you to repeat.')
+            return
+        if not normalized:
+            response = 'Sorry, I didn’t catch that. Please say it again, for example, “open YouTube.”'
+        else:
+            response = f'I heard “{heard},” but I’m not sure what action you want. Please say “open” and then the app or website, or say “search for” and your topic.'
+        self.voice_heard.setText(response)
+        self.reply_aloud(response)
+        self.voice_status.setText('Listening · speak naturally')
 
     def toggle_details(self, checked):
         self.trace.setVisible(checked)
@@ -630,4 +814,10 @@ class NavaAIWindow(QMainWindow):
             self.hide()
             event.ignore()
         else:
+            if self.voice_listener and self.voice_listener.isRunning():
+                self.voice_listener.stop_listening()
+                self.voice_listener.wait(1500)
+            if self.voice_output and self.voice_output.isRunning():
+                self.voice_output.stop_speaking()
+                self.voice_output.wait(1500)
             event.accept()

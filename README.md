@@ -46,10 +46,11 @@ flowchart LR
 
 | Interface | Launch | Voice behavior | Best use |
 |---|---|---|---|
-| **NavaAI workbench** | Root `Start NavaAI.cmd` | Current bridge is **typing-only** | Window selection, sessions and full desktop UI |
+| **NavaAI compact window** | Root `Start NavaAI.cmd` | Local Whisper commands with spoken replies; this mode does not connect to Gwen | Small always-on-top, hands-free app and web commands |
+| **NavaAI workbench** | Root `Start NavaAI Workbench.cmd` or `python main.py --workbench` | Gwen bridge is **typing-only** | Window selection, sessions and full desktop UI |
 | **Gwen resident assistant** | `gwen_backend/Start Gwen.cmd` | Offline speech, wake/session commands and mic settings | Hands-free use and testing the latest voice work |
 
-**Run one controller at a time.** They share a single-instance guard for the selected backend. Quit resident Gwen before connecting the workbench to that backend. The workbench's older grid-launch behavior can differ from the resident panel; [its original guide is preserved here](docs/WORKBENCH.md).
+**Run one root NavaAI controller at a time.** The compact window stays disconnected from Gwen; the full workbench connects to the backend. Do not run the Gwen resident assistant and the full workbench against the backend at the same time. The workbench's older grid-launch behavior can differ from the resident panel; [its original guide is preserved here](docs/WORKBENCH.md).
 
 ## How it works
 

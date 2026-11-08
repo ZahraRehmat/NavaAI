@@ -4,6 +4,8 @@ from PySide6.QtWidgets import QApplication
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 from workbench_ui import STYLE, NavaAIWindow
 
+SERVER_NAME = 'NavaAI.FYP.Workbench.voice'
+
 
 def main():
     app = QApplication(sys.argv)
@@ -13,15 +15,19 @@ def main():
     app.setStyleSheet(STYLE)
 
     socket = QLocalSocket()
-    socket.connectToServer('NavaAI.FYP.Workbench')
+    socket.connectToServer(SERVER_NAME)
     if socket.waitForConnected(300):
         socket.disconnectFromServer()
         return
     server = QLocalServer()
-    if not server.listen('NavaAI.FYP.Workbench'):
-        return
+    if not server.listen(SERVER_NAME):
+        QLocalServer.removeServer(SERVER_NAME)
+        if not server.listen(SERVER_NAME):
+            return
 
-    window = NavaAIWindow()
+    # The regular launcher opens the compact local-voice panel. The full
+    # Gwen-connected workbench remains available with --workbench.
+    window = NavaAIWindow(connect='--workbench' in sys.argv)
     window.show()
 
     def reveal():
