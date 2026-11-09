@@ -1,0 +1,6 @@
+{
+  "execution_mode": "direct",
+  "max_steps": 25,
+  "desktop_image_width": 1920,
+  "desktop_image_height": 1200
+}

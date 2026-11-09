@@ -1,0 +1,14 @@
+{
+  "word": {
+    "indexed_controls": 2570,
+    "executable_button_types": 1665
+  },
+  "excel": {
+    "indexed_controls": 2243,
+    "executable_button_types": 1331
+  },
+  "powerpoint": {
+    "indexed_controls": 1881,
+    "executable_button_types": 1003
+  }
+}

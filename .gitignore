@@ -1,58 +1,22 @@
-# Python cache files
+# Local installation and private runtime state
+.venv/
 __pycache__/
 *.py[cod]
-
-# Virtual environments
-.venv/
-.venv*/
-venv/
-env/
-
-# Environment variables and secrets
-.env
-.env.*
-!.env.example
-
-# Editor settings
-.vscode/
-.idea/
-
-# Logs and temporary files
-*.log
-*.tmp
-
-# Local test recording
-microphone_test.wav
-
-# Build and test output
-build/
-dist/
 .pytest_cache/
-.coverage
-
-# Windows/macOS temporary files
-Thumbs.db
-.DS_Store
-
-# Local AI models and runtime artifacts (never publish with the frontend)
-models/
-model/
-weights/
-checkpoints/
-checkpoint_assets/
-*.safetensors
-*.gguf
-*.onnx
-*.bin
-*.pt
-*.pth
-
-# Local sessions, captured input, diagnostics and browser profiles
 logs/
 cache/
-diagnostics/
 browser_profiles/
+checkpoint_assets/
+diagnostics/
 voice_test_audio/
-*.jsonl
-workbench_sessions.json
-*.wav
+apps.json
+.env
+.env.*
+*recovery*key*
+*.pfx
+*.p12
+models/**/.cache/
+models/Qwen*/
+models/whisper-tiny.en/
+build/
+dist/

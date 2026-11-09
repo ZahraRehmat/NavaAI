@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "handsfree": true,
+  "start_hidden": true,
+  "completion_beep": true,
+  "engine": "hybrid",
+  "model": "models/vosk-model-small-en-us-0.15",
+  "device": null,
+  "silence_ms": 900,
+  "minimum_confidence": 0.72,
+  "review_confidence": 0.86,
+  "assistant_active": true,
+  "dictation_model": "models/whisper-base.en",
+  "dictation_silence_ms": 1200,
+  "cpu_threads": 2,
+  "beam_size": 3
+}

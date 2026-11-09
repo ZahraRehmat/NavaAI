@@ -1,0 +1,16 @@
+{
+  "date sheet": ["datesheet", "date-sheet", "date_sheet"],
+  "sign in": ["signin", "log in", "login"],
+  "sign up": ["signup", "register"],
+  "sign out": ["signout", "log out", "logout"],
+  "settings": ["preferences"],
+  "share": ["sheare", "shere"],
+  "dont save": ["don't save", "do not save", "discard changes"],
+  "bold": ["boldface", "bould"],
+  "italic": ["italics"],
+  "microphone": ["mic"],
+  "sheet": ["worksheet"],
+  "new blank document": ["blank document", "new document"],
+  "blank workbook": ["empty workbook", "new workbook"],
+  "powerpoint": ["power point", "ppt"]
+}
