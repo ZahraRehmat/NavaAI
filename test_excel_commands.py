@@ -25,7 +25,7 @@ class ExcelCommandsTests(unittest.TestCase):
                ('open dropdown in G6','excel_dropdown','G6')]
         for task,action,target in cases:
             command=parse(task);self.assertEqual((command['action'],command['target']),(action,target),task)
-            self.assertTrue(keyboard_command(task),task)
+            self.assertTrue(keyboard_command(task,EXCEL),task)
         self.assertTrue(parse('edit J7 and start dictation')['dictate'])
         self.assertFalse(parse('edit J7')['dictate'])
 

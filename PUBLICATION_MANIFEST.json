@@ -1,5 +1,6 @@
 {
-  "snapshot": "2026-11-09",
+  "snapshot": "2026-11-11",
+  "branch": "excel-redone",
   "mode": "direct",
   "qwen_weights_included": false,
   "files": [
@@ -75,8 +76,8 @@
     },
     {
       "path": "command_voice.py",
-      "bytes": 10382,
-      "sha256": "b4ad6504f7dda80fbd544e5d510c89fa85f90c8e42e38ba523a76a4e8cbc9365"
+      "bytes": 10706,
+      "sha256": "6719ddb7fc4678941512aa2454fac850233212bbc00555f9fddbc3e30fc69e95"
     },
     {
       "path": "config.json",
@@ -139,9 +140,19 @@
       "sha256": "727437e12eeb4887b16e3627cfe4ef718b44854989cd4668ec7293fad2186e8f"
     },
     {
+      "path": "Diagnose Grid.cmd",
+      "bytes": 262,
+      "sha256": "db905d922e47b4948d4d7dd4d93e15371a464c7553af7644fae691a4393f63e0"
+    },
+    {
       "path": "diagnose_controls.py",
       "bytes": 1231,
       "sha256": "20d5c48fa8dfb21b9027b98dce1ff7108a0b0cd08cd54d275753d69441154cf2"
+    },
+    {
+      "path": "diagnose_grid.py",
+      "bytes": 3133,
+      "sha256": "e0a96b5226a1361ba1c9e4344b5fa375caef2417fa793944ddfd28541f7c3f84"
     },
     {
       "path": "diagnose_grounding.py",
@@ -195,8 +206,8 @@
     },
     {
       "path": "excel_commands.py",
-      "bytes": 6717,
-      "sha256": "99baa826d9e9e893773150fb0206c411d84733a3ab6685c8db4ff930e7b10317"
+      "bytes": 6727,
+      "sha256": "032025d6a54a4f7116b73626e67f844224167b93ba0476ede5ae827e2c44e0c6"
     },
     {
       "path": "EXCEL_CONTROLS.md",
@@ -205,8 +216,8 @@
     },
     {
       "path": "file_control.py",
-      "bytes": 5133,
-      "sha256": "bad554b5812336b28f0f5aeeed431fc5c42302683246a7ebcc18e268a30804c5"
+      "bytes": 5232,
+      "sha256": "ceb39eb6bf293e17283c74252e1de6ed6d0187ed7b96d478ea1306c80f257187"
     },
     {
       "path": "folder_control.py",
@@ -220,8 +231,8 @@
     },
     {
       "path": "grid_branch_scan.py",
-      "bytes": 5427,
-      "sha256": "cf220a0d3d13b17949bc41f31bb1d63512ac2ce79072d0fa15ce1f91fd381c4b"
+      "bytes": 6266,
+      "sha256": "905a0f65b63e457b0779638f2e5f6dc4ee05f375eb8edea443577a35a00e8589"
     },
     {
       "path": "grid_commands.py",
@@ -240,8 +251,8 @@
     },
     {
       "path": "grid_input.py",
-      "bytes": 1624,
-      "sha256": "613231957e119d0636a7e578c463a531fc0b671e4ff9baf0e65df784d4c88063"
+      "bytes": 1806,
+      "sha256": "39a7aac26a15367d81191fe106d14377aab3550ecf0865c455100c82db5fb55f"
     },
     {
       "path": "grid_mouse.py",
@@ -264,6 +275,11 @@
       "sha256": "081fd8a9b2452b00d9a9f5cdaa870b30a7bd7cbd7a683c685b7da2d44c254429"
     },
     {
+      "path": "grid_scan_health.py",
+      "bytes": 1083,
+      "sha256": "f0fbbcf798ac585309fc14a8a47cb86f6fa216d65f976eda65e2ab7ad8f8f705"
+    },
+    {
       "path": "grid_test_support.py",
       "bytes": 882,
       "sha256": "948f716d5b8c84d59529afddf95983e3d44ab0a721e6d86b9867cb65d45711e5"
@@ -280,8 +296,8 @@
     },
     {
       "path": "hybrid_speech.py",
-      "bytes": 7352,
-      "sha256": "f07f4293513c7f730afb7ca78e686221dfc3ea5d8882035ad3ccfcf3672d499c"
+      "bytes": 8557,
+      "sha256": "4d303871c9bfe58c0ad4d783b6eca00a548ada18dfa257fa525af8502648b26e"
     },
     {
       "path": "label_aliases.json",
@@ -475,8 +491,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 12503,
-      "sha256": "027e2e8f565cc060eddaeb2a204e6dabbc3e7710407843215f32383f2788eaf9"
+      "bytes": 14981,
+      "sha256": "59595806bdc37fe8b5f1c31bbdb50b3f8511850e3eb9f3072c1570cda02baa43"
     },
     {
       "path": "REMAINING_WORK.md",
@@ -512,6 +528,11 @@
       "path": "routing.py",
       "bytes": 7424,
       "sha256": "6d62ed89bf1effdbe9cfe7b82e02117dfbab624cd395bedd3014fb2b3866c9ce"
+    },
+    {
+      "path": "ROUTING_REPAIRS.md",
+      "bytes": 2390,
+      "sha256": "8026ec776aeed29bc7c31127a981a32b3c6a2714e9d4b3a7d38c7f1955d6b977"
     },
     {
       "path": "selection_commands.py",
@@ -560,8 +581,8 @@
     },
     {
       "path": "smart_grid.py",
-      "bytes": 16374,
-      "sha256": "a6fdffe87535527acfc8ee464d01fd7afc2447db6ea316818f857cc6669602f2"
+      "bytes": 17001,
+      "sha256": "0047a48ca47ddc0124ad15eb779564d6b63aafd0c81735593f65835a104ddb61"
     },
     {
       "path": "smart_grid_config.json",
@@ -575,8 +596,8 @@
     },
     {
       "path": "smart_grid_observer.py",
-      "bytes": 9336,
-      "sha256": "c2a438e3e23cebc8b751a6bfa33b89b811be90659f8aa36184f6b9ff41026fe6"
+      "bytes": 9875,
+      "sha256": "47c4907cfd219586b8673f35f3188971900a761e510251e0b3c3241ccba44c8d"
     },
     {
       "path": "smart_labels.py",
@@ -595,8 +616,8 @@
     },
     {
       "path": "speech_context.py",
-      "bytes": 7430,
-      "sha256": "8f887f8ab4aac7dfb3b4ca2d6d8a6e65cbd8e6a6d9e988461544f545bef4a9bf"
+      "bytes": 8958,
+      "sha256": "ff09044fc40f84b889f3d8a0c4f27137e64972cd2eaf6ce0046bb46448aa62a1"
     },
     {
       "path": "Start Gwen.cmd",
@@ -664,6 +685,11 @@
       "sha256": "cb6d7aea2f57b5ab30ecf25e6b39811c3543b27d6c99945aad3012aaeac574ad"
     },
     {
+      "path": "test_command_routing_boundaries.py",
+      "bytes": 6186,
+      "sha256": "2452c520a8aa4870af0d9884f26b93197f7590260dcb07269589d46972711f4f"
+    },
+    {
       "path": "test_dialog_focus.py",
       "bytes": 3746,
       "sha256": "e478e00f9e569748a619fa4b9e27316372c02a439057b9d9aa7306041dbb9d3d"
@@ -695,8 +721,8 @@
     },
     {
       "path": "test_excel_commands.py",
-      "bytes": 5500,
-      "sha256": "ca17f6e66e7a07993f3887479d249acdbca865ca98e463ae4cbc65023d3955e2"
+      "bytes": 5506,
+      "sha256": "5cdee2d451de493ed684c32905def44ec0d129bba9b61441ba7099bb8ec194dc"
     },
     {
       "path": "test_existing_browser.py",
@@ -735,13 +761,18 @@
     },
     {
       "path": "test_grid_branches.py",
-      "bytes": 3765,
-      "sha256": "ec9bf5159a72c5b88787cbb577b817898cf3d2aee07c4a88c74f1479807a6c2b"
+      "bytes": 4297,
+      "sha256": "0d14d8cdf9919b8648cd9cff5421075ab1cd95078cf3095a733cf5eb7408229f"
     },
     {
       "path": "test_grid_integration.py",
       "bytes": 4002,
       "sha256": "9a122b04abea5ab3271cd101d0d325f6b64a16d3ebf9a4be37511894f2284ec1"
+    },
+    {
+      "path": "test_grid_scan_health.py",
+      "bytes": 1153,
+      "sha256": "19c95ba4fd87a8ebcd76b3c670c89cce573804caa555ab6f664305240811bd3e"
     },
     {
       "path": "test_label_matching.py",
@@ -895,8 +926,8 @@
     },
     {
       "path": "typed_ui.py",
-      "bytes": 33977,
-      "sha256": "d8726ae07072ee4a7e8bdcb7addbe2cb6180ed3879aa3c7c6e4fc30131049a12"
+      "bytes": 34134,
+      "sha256": "230564238234327233c638fc57020537b49e199dd12a4c888efe174918b5c084"
     },
     {
       "path": "uiaccess/build.ps1",
@@ -1050,8 +1081,8 @@
     },
     {
       "path": "vosk_speech.py",
-      "bytes": 13099,
-      "sha256": "14db587c834460d37f2ccf4a2d49b9732d0bf43732ec90e27570d26657a8daef"
+      "bytes": 13175,
+      "sha256": "2ca9a05be34d3bc08feb1814dda9c221a9bd6876476c0329642196fa15ceedc9"
     },
     {
       "path": "website_aliases.json",
@@ -1070,13 +1101,18 @@
     },
     {
       "path": "window_commands.py",
-      "bytes": 15664,
-      "sha256": "2297507c3e6777216aba6645f4c1d6dea49fbbd83524ddf4af3cd920e8167cbd"
+      "bytes": 16613,
+      "sha256": "681b98665a0cf5947de8be42bf0358ed66f6c7c375df95b74f424afb4a9ab892"
     },
     {
       "path": "windows_api.py",
       "bytes": 11844,
       "sha256": "e8b080fbde93957fb3e30db02511b2f68803da1fb5be77074d33aad2fe549c7a"
+    },
+    {
+      "path": "WINDOWS_GRID_TROUBLESHOOTING.md",
+      "bytes": 3013,
+      "sha256": "b9d04d1b014705f4ceac74f3b2829f8893c9f6adc22e10f1f88258f773dbb6a5"
     }
   ]
 }

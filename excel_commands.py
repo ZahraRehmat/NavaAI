@@ -26,7 +26,7 @@ def parse(task):
     dictate=False
     suffix=re.search(r'\s+(?:and\s+)?(?:start|enable|turn on)\s+dictation$',raw,re.I)
     if suffix:dictate=True;raw=raw[:suffix.start()]
-    m=re.fullmatch(r'(?:select|choose|go to|goto|click)\s+(?:from\s+)?(.+)',raw,re.I)
+    m=re.fullmatch(r'(?:select|choose|go to|goto|click(?:\s+on)?)\s+(?:from\s+)?(.+)',raw,re.I)
     if m:
         target=address(m[1])
         if target:return {'action':'excel_select','target':target,'value':''}

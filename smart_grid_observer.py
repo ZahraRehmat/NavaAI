@@ -13,6 +13,7 @@ ROLES={'Button','Edit','ComboBox','Hyperlink','CheckBox','RadioButton','TabItem'
        'SplitButton','Document','Thumb','HeaderItem'}
 
 CACHE={}
+TRAVERSALS={}
 CHANGES=None
 
 
@@ -106,7 +107,9 @@ def scan_root(owner,hwnd,pid,scope,budget):
         kind=ctypes.create_unicode_buffer(256)
         win.user.GetClassNameW.argtypes=[w.HWND,w.LPWSTR,ctypes.c_int]
         win.user.GetClassNameW(hwnd,kind,len(kind))
-        rows=scan_visible_branches(root,hwnd,pid,scope,bounds,uia,request,1.0,file_rows=kind.value=='CabinetWClass',excel_sheet=kind.value=='XLMAIN')
+        stats={}
+        rows=scan_visible_branches(root,hwnd,pid,scope,bounds,uia,request,1.0,file_rows=kind.value=='CabinetWClass',excel_sheet=kind.value=='XLMAIN',diagnostics=stats)
+        TRAVERSALS[hwnd]=stats
         from grid_roots import popup_surface
         if popup_surface(kind.value):
             from grid_popup_scan import scan_popup
@@ -141,25 +144,30 @@ def observe(context,force=False,skip=(),progress=None):
     roots=screen_roots(context);dirty=CHANGES.consume() if CHANGES else set()
     now=time.monotonic();live={root['hwnd'] for root in roots}
     for hwnd in list(CACHE):
-        if hwnd not in live:del CACHE[hwnd]
-    rows=[];scanned=0;start=time.monotonic()
+        if hwnd not in live:del CACHE[hwnd];TRAVERSALS.pop(hwnd,None)
+    rows=[];scanned=0;start=time.monotonic();errors=[]
     for root in roots:
         hwnd=root['hwnd'];cached=CACHE.get(hwnd);scope=root['scope']
         if hwnd in skip:
             CACHE.pop(hwnd,None);continue
-        signature=(root['pid'],win.rect(hwnd),root['title'])
+        try:signature=(root['pid'],win.rect(hwnd),root['title'])
+        except Exception as exc:
+            errors.append({'hwnd':hwnd,'class':root['kind'],'error':str(exc)[:160]});continue
         stale=not cached or cached['signature']!=signature or hwnd in dirty or now-cached['time']>2
         if force is True or (force and hwnd in force) or stale:
             if progress:progress({'scanning':hwnd})
             try:
                 items=scan_root(None,hwnd,root['pid'],scope,1.4)
                 CACHE[hwnd]={'rows':items,'signature':signature,'time':time.monotonic()};scanned+=1
-            except Exception:
+            except Exception as exc:
+                errors.append({'hwnd':hwnd,'class':root['kind'],'error':(str(exc).strip() or type(exc).__name__)[:160]})
                 CACHE.pop(hwnd,None)
         rows.extend(CACHE.get(hwnd,{}).get('rows',[]))
         if progress:progress({'partial':True,'rows':visible_rows(rows)})
     result=visible_rows(rows)
-    return {'rows':result,'skipped':[r['hwnd'] for r in roots if r['hwnd'] in skip],'timing':{'scan_ms':round((time.monotonic()-start)*1000,1),'roots':len(roots),'rescanned':scanned,'visible_targets':len(result)}}
+    from grid_scan_health import summarize,warning
+    health=summarize(roots,rows,result,errors,TRAVERSALS)
+    return {'rows':result,'diagnostics':health,'warning':warning(health),'skipped':[r['hwnd'] for r in roots if r['hwnd'] in skip],'timing':{'scan_ms':round((time.monotonic()-start)*1000,1),'roots':len(roots),'rescanned':scanned,'visible_targets':len(result)}}
 
 
 if __name__=='__main__':

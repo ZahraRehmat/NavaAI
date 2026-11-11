@@ -26,7 +26,7 @@ def application_names():
 @lru_cache(maxsize=1)
 def website_names():
     from website_directory import directory
-    return directory().voice_names(10000)
+    return directory().voice_names(300)
 
 def vocabulary(context,model):
     if (context or {}).get('assistant_active') is False:
@@ -80,7 +80,7 @@ def vocabulary(context,model):
         spelled=' '.join(NUMBER_WORDS[int(c)] if c.isdigit() else c.lower() for c in label)
         nato=' '.join(NUMBER_WORDS[int(c)] if c.isdigit() else NATO[ord(c.lower())-97] for c in label)
         for code in (spelled,nato):
-            for prefix in ('','click ','double click ','close ','close tab ','open dropdown ','expand ','scroll down from ','scroll up from ','move to '):
+            for prefix in ('','click ','click on ','double click ','double click on ','press ','press on ','select ','open ','hold ','close ','close tab ','open dropdown ','expand ','scroll down from ','scroll up from ','move to '):
                 phrases.append(prefix+code);phrases.append('gwen '+prefix+code)
     if (context or {}).get('office')=='excel':
         for column in 'abcdefghijklmnopqrstuvwxyz':

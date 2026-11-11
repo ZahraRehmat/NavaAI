@@ -41,7 +41,8 @@ def resolve_file(label,scopes,chooser=None):
                     if exact:matches[key]=child.resolve()
                     elif explicit and norm(child.stem)==norm(requested.stem):suggestions[key]=child
                     elif len(words & set(norm(child.stem).split()))>=2:suggestions[key]=child
-                    if not explicit or child.suffix.lower()==requested.suffix.lower():fuzzy[key]={'name':child.name,'path':child.resolve()}
+                    short=not explicit and len(query.split())==1 and len(query)<=3
+                    if not short and (not explicit or child.suffix.lower()==requested.suffix.lower()):fuzzy[key]={'name':child.name,'path':child.resolve()}
             except OSError:continue
         if len(matches)>1:
             if chooser:

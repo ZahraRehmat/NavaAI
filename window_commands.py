@@ -99,14 +99,26 @@ def running_windows():
 
 def match_window(rows,query,catalog,current=None,chooser=None,prefer_current=True):
     names=catalog.identities(query)
-    names={core_name(n) for n in names if n}
+    entries=getattr(catalog,'entries',())
+    if not isinstance(entries,(list,tuple)):entries=()
+    package_ids={norm(e.get('target','')):e['target'].casefold() for e in entries if e.get('kind')=='app' and '!' in e.get('target','')}
+    expected_ids={package_ids[norm(n)] for n in names if norm(n) in package_ids}
+    names={core_name(n) for n in names if n and norm(n) not in package_ids}
+    try:installed=isinstance(catalog.resolve(query),dict)
+    except ValueError:installed=False
     ranked=[]
     for row in rows:
+        app_id=row.get('app_id','').strip().casefold()
+        # Package IDs are opaque identities. A shared Microsoft publisher suffix
+        # never makes Windows Store and Windows Notepad the same application.
+        if expected_ids and '!' in app_id and app_id not in expected_ids:continue
         ide_request=any(n.startswith('visual studio') and 'code' not in n.split() for n in names)
         if ide_request and ('visual studio code' in norm(row.get('title','')) or norm(row.get('process','')) in ('code','code insiders')):continue
-        labels=[norm(row.get(k,'')) for k in ('title','app','process','app_id')]
+        labels=[norm(row.get(k,'')) for k in ('app','process')]
+        title_label=norm(row.get('title',''))
+        if not installed or any(title_label==name or title_label.endswith(' '+name) for name in names):labels.append(title_label)
         labels+=[norm(alias_value(label,catalog.aliases)) for label in list(labels)]
-        score=0
+        score=100 if expected_ids and app_id in expected_ids else 0
         for name in names:
             for label in labels:
                 label=core_name(label)

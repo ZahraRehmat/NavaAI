@@ -48,26 +48,36 @@ def item_text_point(element,row,uia,request):
     return None
 
 
-def scan_visible_branches(root,hwnd,pid,scope,bounds,uia,request,budget,file_rows=False,excel_sheet=False):
+def scan_visible_branches(root,hwnd,pid,scope,bounds,uia,request,budget,file_rows=False,excel_sheet=False,diagnostics=None):
     from collections import deque
     containers={'Pane','Group','Custom','Document','Window','List','Tree','Tab',
                 'ToolBar','AppBar','SemanticZoom','TabItem','ComboBox','Menu','MenuBar','DataGrid','Table','SplitButton','Header','TitleBar','StatusBar'}
     pending=deque([(root,0)]);rows=[];seen=set();count=0;start=time.monotonic()
+    stats=diagnostics if diagnostics is not None else {}
+    stats.update(visited=0,property_errors=0,branch_errors=0)
     while pending and count<2500 and len(rows)<600 and time.monotonic()-start<budget:
         parent,depth=pending.popleft()
         if depth>=18:continue
         try:children=parent.FindAllBuildCache(2,uia.true_condition,request)
-        except Exception:continue
+        except Exception as exc:
+            stats['branch_errors']+=1;stats['last_error']=(str(exc).strip() or type(exc).__name__)[:160];continue
         for index in range(min(children.Length,2500-count)):
             count+=1
             try:
                 el=children.GetElement(index)
+                try:role=uia.known_control_type_ids.get(el.CachedControlType,'Custom')
+                except Exception:role='Custom'
                 if excel_sheet:
                     try:sheet_class=el.CachedClassName
                     except Exception:sheet_class=''
                     if sheet_class in ('XLSpreadsheetGrid','XLSpreadsheetCell','XLGridRowHeader','XLGridColumnHeader','XLSelectAllHeader'):
                         continue  # Excel addresses are the worksheet's own grid.
-                row,role=decode_target(el,hwnd,pid,scope,bounds,uia)
+                try:row,role=decode_target(el,hwnd,pid,scope,bounds,uia)
+                except Exception as exc:
+                    # UIA providers differ across Windows/app versions. A failed
+                    # cached property must not hide a container's valid children.
+                    row=None;stats['property_errors']+=1
+                    stats['last_error']=(str(exc).strip() or type(exc).__name__)[:160]
                 if row and row['key'] not in seen:
                     try:
                         from dropdown_control import arrow_name
@@ -85,4 +95,5 @@ def scan_visible_branches(root,hwnd,pid,scope,bounds,uia,request,budget,file_row
                 # disabled/offscreen state for enabled visible descendants.
                 if role in containers:pending.append((el,depth+1))
             except Exception:continue
+    stats['visited']=count;stats['targets']=len(rows);stats['pending_branches']=len(pending)
     return rows

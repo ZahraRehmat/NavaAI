@@ -328,8 +328,10 @@ def gui(smoke=False,instance=None):
             if running and running['kind'] in ('type','keys','select_text','punctuate') and dictation_queue.push(decision['text'],captured,epoch):
                 voice_status.set('Dictation queued; continuing in the same app.');return
         if kind=='review':
-            pending_voice={**decision,'context':captured};command.set(decision['text']);presenter.review()
-            voice_status.set('Not executed: '+decision['reason']+(' Say “Gwen confirm command” to accept.' if decision['confirmable'] else ''))
+            # A speech hypothesis is not typed input. Inserting it into the
+            # entry can replace a user's command between typing and Enter.
+            pending_voice={**decision,'context':captured};presenter.review()
+            voice_status.set('Heard “'+decision['text']+'”. Not executed: '+decision['reason']+(' Say “Gwen confirm command” to accept.' if decision['confirmable'] else ''))
         elif busy or not ready:
             speech_trace('not_executed',reason='busy_or_starting')
             voice_status.set('Voice: task is busy or starting; repeat when ready');presenter.review()

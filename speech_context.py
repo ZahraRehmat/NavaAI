@@ -77,7 +77,7 @@ def correct(text,context=None):
         if formatting:
             options=[code for code in codes(formatting[2]) if excel_ref(code)]
             if len(options)==1:return Correction(formatting[1].lower()+' '+options[0]+' '+formatting[3].lower(),code=options[0])
-            return Correction(clean,True,'Cell reference is unclear. Repeat its column and row separately.')
+            if re.search(r'\bcell\b',clean,re.I):return Correction(clean,True,'Cell reference is unclear. Repeat its column and row separately.')
     if re.match(r'^cell\s+',clean,re.I) or re.match(r'^(?:select|go to|click)\s+(?:the\s+)?cell\s+',clean,re.I):
         m=re.fullmatch(r'(?:(?:select|go to|click)\s+(?:the\s+)?)?cell\s+(.+)',clean,re.I)
         if m:
@@ -89,22 +89,44 @@ def correct(text,context=None):
         wifi=re.fullmatch(r'((?:click|press|select|open)(?:\s+on)?)\s+(?:wi|why|y)[ -]+fi',clean,re.I)
         if wifi:return Correction(wifi[1].lower()+' wifi')
         return Correction(clean)
+    from direct_commands import parse_direct
+    direct=parse_direct(clean)
+    if direct and direct['kind']=='keys':
+        keys=direct['keys'];special={'enter','tab','esc','backspace','delete','space','up','down','left','right','home','end','pageup','pagedown','insert'}
+        if set(keys)&{'ctrl','alt','shift'} or (len(keys)==1 and (keys[0] in special or re.fullmatch(r'f(?:[1-9]|1\d|2[0-4])',keys[0]))):return Correction(clean)
     from browser_commands import intent as browser_intent
-    if browser_intent(clean,False):return Correction(clean)
     visible={str(label).upper() for label in context.get('labels',())}
+    parts=re.split(r'\s*;\s*|\s+then\s+',clean,flags=re.I)
+    if len(parts)>1:
+        corrected=[correct(part,context) for part in parts]
+        failed=next((item for item in corrected if item.review),None)
+        if failed:return failed
+        return Correction(' then '.join(item.text for item in corrected),code=next((item.code for item in reversed(corrected) if item.code),''))
+    drag=re.fullmatch(r'drag\s+(.+?)\s+(?:to|onto)\s+(.+)',clean,re.I)
+    if drag:
+        resolved=[]
+        for target in drag.groups():
+            found={value for value in codes(target) if value in visible}
+            if len(found)!=1:return Correction(clean,True,'Use currently visible labels for both drag endpoints.')
+            resolved.append(next(iter(found)))
+        return Correction('drag '+resolved[0]+' to '+resolved[1],code=resolved[1])
     # Only normalize the target slot of a known mouse command, or a bare code.
-    m=re.fullmatch(r'((?:(?:double|right|left|middle)\s+)?(?:click|press|select|open|hold)|close(?:\s+tab)?|move\s+to|scroll\s+(?:up|down|left|right)(?:\s+\d+)?(?:\s+(?:from|on|at|in|over))?)\s+(.+)',clean,re.I)
+    m=re.fullmatch(r'((?:(?:double|right|left|middle)\s+)?(?:click|press|select|open)|hold(?:\s+(?:right|left))?|close(?:\s+tab)?|move\s+to|scroll\s+(?:up|down|left|right)(?:\s+\d+)?(?:\s+(?:from|on|at|in|over))?)\s+(.+)',clean,re.I)
     prefix=m[1].lower()+' ' if m else '';target=m[2] if m else clean
+    if m:target=re.sub(r'^(?:on|at|the)\s+','',target,flags=re.I)
     from dropdown_control import dropdown_intent
     dropdown=dropdown_intent(clean)
     if dropdown:prefix='open dropdown ';target=dropdown
     literal=target.replace(' ','').upper()
     if literal in visible:return Correction(prefix+literal,code=literal)
+    from smart_grid_names import ALIASES
+    if target.lower() in ALIASES:return Correction(clean)
     options=codes(target)
     if not options:return Correction(clean)
     exact=[option for option in options if option in visible]
     if len(exact)==1:return Correction(prefix+exact[0],code=exact[0])
     if len(exact)>1:return Correction(clean,True,'Those sounds match multiple visible labels. Use NATO spelling, for example alpha bravo.')
+    if browser_intent(clean,False):return Correction(clean)
     # Plain names such as "click store" continue to existing name matching.
     # Spelled letters/digits and compact codes must never snap to another label.
     compact=re.fullmatch(r'[A-Za-z]{1,3}\d{0,3}|\d+[A-Za-z]{1,3}',target.replace(' ',''))

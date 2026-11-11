@@ -77,10 +77,26 @@ class HybridRecognizer:
         if not isinstance(compact,dict) or compact.get('text') not in compact_phrases():return primary
         words=compact.get('words',[])
         if compact.get('confidence',0)<.9 or not words or min(w.get('probability',0) for w in words)<.65:return primary
-        filler={'gwen','guen','glen','glenn','hey','please','on','off','the','a','to','it','this','that','here','me','my'}
+        def payload(text):return re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:gwen|guen|glen|glenn)[,:]?\s*','',text.strip(),flags=re.I).lower().rstrip('.!?')
+        original=payload(primary.get('text',''));candidate=payload(compact['text'])
+        from browser_commands import intent as browser_intent
+        from grid_commands import toggle_intent
+        from direct_commands import parse_direct
+        from command_voice import power_intent
+        from voice_controls import DICTATION_ON,DICTATION_OFF
+        from selection_commands import ON,OFF
+        for parser in (browser_intent,toggle_intent,parse_direct,power_intent):
+            a,b=parser(original),parser(candidate)
+            if a and b and a!=b:return primary
+        for enabled,disabled in ((DICTATION_ON,DICTATION_OFF),(ON,OFF)):
+            if (original in enabled and candidate in disabled) or (original in disabled and candidate in enabled):return primary
+        if original==candidate:return compact
+        filler={'gwen','guen','glen','glenn','hey','please','on','off','the','a','to','it','this','that','here','me','my',
+                'open','show','hide','close','turn','switch','start','stop','enable','disable','make','create','new','click','press','select'}
         before=set(re.findall(r'[a-z]+',primary.get('text','').lower()))-filler
         after=set(re.findall(r'[a-z]+',compact['text'].lower()))-filler
-        if not before.intersection(after):return primary
+        rescue=original=='start nation' and candidate=='start dictation'
+        if not rescue and not before.intersection(after):return primary
         return {**compact,'primary_text':primary['text'],'primary_confidence':primary.get('confidence',0)}
 
     @staticmethod

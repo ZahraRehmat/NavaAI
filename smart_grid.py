@@ -109,6 +109,8 @@ class AccessibleTargets:
                 break
             if 'error' in result:raise ValueError(result['error'])
             self.last_timing=result.get('timing',{})
+            self.last_diagnostics=result.get('diagnostics',{})
+            if result.get('warning'):self.warning=result['warning']
             skipped=result.get('skipped',[])
             if skipped:self.warning='An unresponsive window is temporarily skipped; available targets are active.'
             return result['rows']
@@ -187,6 +189,14 @@ class AdaptiveGrid(SmartMouseActions):
 
     def run(self,task):
         self.last_targets=[]
+        context=self.observer.target() if isinstance(self.observer,AccessibleTargets) else None
+        if self.active:
+            from speech_context import correct
+            with self.lock:labels=list(self.grid.targets)
+            from office_control import office_kind
+            corrected=correct(task,{'grid_active':True,'labels':labels,'office':office_kind(context)})
+            if corrected.review:raise ValueError(corrected.reason)
+            task=corrected.text
         # A tab's grid label identifies that exact native TabItem. Do this
         # before generic "close app" parsing, which cannot resolve grid codes.
         close=re.fullmatch(r'close\s+(?:tab\s+)?([A-Za-z]{1,6})',task.strip(),re.I)
@@ -198,7 +208,7 @@ class AdaptiveGrid(SmartMouseActions):
                 if self.target_check:self.target_check(cell)
                 return self.mouse.tab_action(cell,self.stop,close=True)
         from grid_input import keyboard_command
-        if self.active and keyboard_command(task):return None
+        if self.active and keyboard_command(task,context):return None
         from smart_grid_names import parse_named,resolve_name
         try:actions=parse(task,self.active)
         except ValueError:

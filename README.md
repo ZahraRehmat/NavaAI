@@ -2,11 +2,50 @@
 
 > **Speak. Select. Type. Navigate.** A local accessibility assistant combining direct commands, an adaptive smart grid and offline dictation.
 
-**Current snapshot · 9 November 2026**
+**Updated branch snapshot · 11 November 2026**
 
 **Windows desktop · CPU-based speech · No Qwen runtime or Qwen weights**
 
 The product is called NavaAI. The current executable, UI and wake phrases still use **Gwen**. Renaming them to **Nava / Nava AI** is planned, not implemented. See [Remaining work](REMAINING_WORK.md).
+
+## This branch · excel-redone
+
+**Updated 11 November 2026.** This branch contains the repaired direct command
+system based on the published snapshot. The later dictionary experiment remains
+removed; Qwen weights and OpenVINO dependencies remain excluded.
+
+- Excel cell/range editing, clipboard and tables remain available. Excel cell
+  addresses replace worksheet labels; other apps keep normal smart-grid targets.
+- Excel-specific grid bypass now requires the actual Excel target.
+- Spaced/NATO grid labels normalize before dispatch and confidence checks:
+  **click on F H**, **press F H**, **scroll down from F H** and **move to F H**.
+- Packaged-app identifiers match exactly, preventing Store from matching Notepad.
+- Compact speech decoding cannot replace YouTube with new tab because of a shared
+  generic verb. Website lookup keeps 10,000 domains, while acoustic boosting is bounded.
+- Voice-review text no longer overwrites the typed-command field.
+- Application UIA traversal continues through containers whose cached properties
+  fail. Scanner diagnostics distinguish provider failures from visibility filtering.
+
+**185 focused tests passed** on the development PC. Nine offline synthetic speech
+cases passed. Live checks opened the actual Microsoft Store, activated the grid,
+and moved to the spaced label F H. A new read-only scan found application and
+taskbar controls here. This does not certify the affected Windows 10 PC.
+
+### If Windows 10 shows labels only on the taskbar
+
+See [Windows grid troubleshooting](WINDOWS_GRID_TROUBLESHOOTING.md). Keep Notepad or
+Explorer visible and run **Diagnose Grid.cmd**; it saves **logs/grid-diagnostics.json**.
+It reports OS/dependency versions, provider errors and per-window raw/visible counts,
+without control labels, screenshots, clicking, typing or network uploads.
+
+The previous scanner could silently lose app branches after a cached-property
+failure. That weakness is repaired, but the exact cause on another PC requires its
+diagnostic report. Do not copy `.venv` or `apps.json` between computers. Install the
+requirements in a fresh Python 3.12 environment; allow the app catalog to regenerate.
+Voice settings are included as saved; use **F9** or the Offline voice checkbox if
+the microphone is disabled. No particular headset/input-device index is required.
+
+[Routing repair details](ROUTING_REPAIRS.md) · [Remaining work](REMAINING_WORK.md)
 
 ## What this system is
 
@@ -55,7 +94,7 @@ Use Windows with Python **3.12**, a working microphone and the applications you 
 
 ```powershell
 git lfs install
-git clone https://github.com/ZahraRehmat/NavaAI.git
+git clone --branch excel-redone https://github.com/ZahraRehmat/NavaAI.git
 cd NavaAI
 git lfs pull
 py -3.12 -m venv .venv

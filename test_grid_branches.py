@@ -58,4 +58,14 @@ class BranchTests(unittest.TestCase):
         rows=self.scan(Element(1,children=[nested,Element(2,'Disabled',enabled=False)]))
         self.assertEqual(rows,[])
 
+    def test_unreadable_container_property_does_not_hide_its_children(self):
+        class BrokenPane(Element):
+            def GetCachedPropertyValue(self,prop):raise RuntimeError('Provider cannot cache this property')
+        parent=BrokenPane(1,children=[Element(2,'Save')])
+        stats={}
+        rows=self.scan(Element(1,children=[parent]),diagnostics=stats)
+        self.assertEqual([r['name'] for r in rows],['Save'])
+        self.assertEqual(stats['property_errors'],1)
+        self.assertEqual(parent.calls,1)
+
 if __name__=='__main__':unittest.main()

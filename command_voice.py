@@ -87,6 +87,8 @@ class CommandVoice:
             self.recent_dictation=(self.recent_dictation+' '+payload)[-1000:]
             return {'kind':'command','text':'type '+payload,'raw':raw,'code':'','dictation_input':True}
         # Wake/listen and the command can be spoken in one breath.
+        if re.match(r'^(?:open|visit|go to|navigate to)\b',low) and re.search(r'\bdot\s+(?:gwen|guen|glen|glenn)\b',low):
+            return {'kind':'review','text':text,'raw':raw,'reason':'The website ending was unclear. Say the site name alone or repeat its dot com ending.','confirmable':False}
         if wake:
             joined=re.fullmatch(r'(?:listen|start listening)(?:\s+gwen)?\s+(.+)',text,re.I)
             if re.fullmatch(r'listen\s+gwen',text,re.I):text='listen';low='listen'
@@ -110,8 +112,10 @@ class CommandVoice:
         from grid_commands import toggle_intent
         toggle=toggle_intent(text)
         if toggle:text='gwen grid' if toggle=='smart_unavailable' else 'grid off'
+        correction=correct(text,context)
+        if correction.review:return {'kind':'review','text':correction.text,'raw':raw,'reason':correction.reason,'confirmable':False}
         # A high-confidence wake word must not hide a weakly heard app name.
-        if re.match(r'^(?:open|launch|start|click)\s+',text,re.I):
+        if not correction.code and re.match(r'^(?:open|launch|start|click)\s+',text,re.I):
             words=result.get('words',[])
             ignored={'gwen','guen','glen','glenn','hey','okay','listen','open','launch','start','click','on','the'}
             from dropdown_control import dropdown_intent
@@ -122,8 +126,6 @@ class CommandVoice:
             content=[w for w in words if w.get('word','').lower().strip('.,!?') not in ignored]
             if any(float(w.get('probability',0))<.65 for w in content):
                 return {'kind':'review','text':text,'raw':raw,'reason':'The target name was unclear. Repeat it or confirm the heard command.','confirmable':True}
-        correction=correct(text,context)
-        if correction.review:return {'kind':'review','text':correction.text,'raw':raw,'reason':correction.reason,'confirmable':False}
         text=correction.text
         from grid_commands import parse
         try:grid_command=parse(text,True) if context.get('grid_active') else parse(text,False)
