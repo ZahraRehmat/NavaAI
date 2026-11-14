@@ -4,7 +4,7 @@ Current coverage and verification: see [OFFICE_CAPABILITIES.md](OFFICE_CAPABILIT
 
 Label matching uses RapidFuzz and a dynamic dictionary of actual observed UIA/DOM/OCR labels and filenames. The editable built-in aliases are in `label_aliases.json`. It handles punctuation, apostrophes, word order, optional file extensions, partial long titles and small word typos. Typed document content stays literal.
 
-`click 2024 datesheet mahnoor` can match the unique visible title `Datesheet+2023-Mahnoor_Karachi.Pdf`; Gwen reports the selected full title and the conflicting year. An exact 2024 candidate takes priority when available. Close competing candidates ask for clarification. Explicit file-extension conflicts and non-year number conflicts are not silently ignored.
+`click 2024 datesheet mahnoor` can match the unique visible title `Datesheet+2023-Mahnoor_Karachi.Pdf`; NAVA AI reports the selected full title and the conflicting year. An exact 2024 candidate takes priority when available. Close competing candidates ask for clarification. Explicit file-extension conflicts and non-year number conflicts are not silently ignored.
 
 ## What the Word/Excel runs showed
 
@@ -12,7 +12,7 @@ In `session-20261028-220757-019586.jsonl`, `bold Mahnoor` reached a command guar
 
 ## Office connector
 
-All three installed desktop applications expose native COM object models. No connected Codex Office add-in session was found. Gwen now uses local pywin32 for Word/Excel and typed comtypes for PowerPoint. PowerPoint's restricted HWND property requires typed access. The adapter checks both process identity and document-window ancestry before editing. It executes fixed operations rather than generated VBA or arbitrary code, and does not automatically save documents.
+All three installed desktop applications expose native COM object models. No connected Codex Office add-in session was found. NAVA AI now uses local pywin32 for Word/Excel and typed comtypes for PowerPoint. PowerPoint's restricted HWND property requires typed access. The adapter checks both process identity and document-window ancestry before editing. It executes fixed operations rather than generated VBA or arbitrary code, and does not automatically save documents.
 
 With the intended Office document selected, examples include:
 
@@ -22,7 +22,7 @@ With the intended Office document selected, examples include:
 - `write hello in A1` — Excel cell/range entry.
 - `insert a table with three rows and four columns`, `insert 3 by 4 table` — native tables.
 
-Excel may generate an additional header row; Gwen reports the actual resulting dimensions. Formatting named text can apply to multiple matches and reports the count. These are common supported operations, not a complete natural-language interface to every Office feature. Unsupported complex tasks retain the general planner path.
+Excel may generate an additional header row; NAVA AI reports the actual resulting dimensions. Formatting named text can apply to multiple matches and reports the count. These are common supported operations, not a complete natural-language interface to every Office feature. Unsupported complex tasks retain the general planner path.
 
 ## Verification
 

@@ -21,7 +21,7 @@ def main():
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self):
             self.send_response(200); self.send_header('Content-Type','text/html'); self.end_headers()
-            self.wfile.write(b'''<html><head><title>Gwen test</title></head><body><label>Name <input aria-label="Name"></label><button onclick="document.querySelector('#result').innerText=document.querySelector('input').value">Apply</button><p id="result"></p><select><option value="a">A</option><option value="b">B</option></select></body></html>''')
+            self.wfile.write(b'''<html><head><title>NAVA AI test</title></head><body><label>Name <input aria-label="Name"></label><button onclick="document.querySelector('#result').innerText=document.querySelector('input').value">Apply</button><p id="result"></p><select><option value="a">A</option><option value="b">B</option></select></body></html>''')
         def log_message(self,*args): pass
     server=ThreadingHTTPServer(('127.0.0.1',0),Handler)
     threading.Thread(target=server.serve_forever,daemon=True).start()
@@ -30,11 +30,11 @@ def main():
         b.open('chrome',True)
         b.act({'action':'navigate','url':f'http://127.0.0.1:{server.server_port}'})
         obs=b.observe(); inp=next(e['id'] for e in obs['elements'] if e['tag']=='INPUT'); button=next(e['id'] for e in obs['elements'] if e['tag']=='BUTTON')
-        b.act({'action':'browser_fill','id':inp,'text':'Gwen verified'})
+        b.act({'action':'browser_fill','id':inp,'text':'NAVA AI verified'})
         b.act({'action':'browser_click','id':button})
-        assert b.page.locator('#result').inner_text()=='Gwen verified'
+        assert b.page.locator('#result').inner_text()=='NAVA AI verified'
         b.act({'action':'browser_new_tab'}); assert len(b.context.pages)>=2
-        b.act({'action':'browser_tab','index':0}); assert b.page.title()=='Gwen test'
+        b.act({'action':'browser_tab','index':0}); assert b.page.title()=='NAVA AI test'
         print('PASS real background Chrome navigation, DOM observation, typing, clicking and tabs',flush=True)
         if args.model:
             config=json.loads(Path('config.json').read_text()); stop=threading.Event()
@@ -42,13 +42,13 @@ def main():
             obs=b.observe()
             history=[]
             for _ in range(5):
-                a=planner.next('Replace the Name input with Gwen model test. Do not click Apply yet.',b.observe(),None,history,[])
+                a=planner.next('Replace the Name input with NAVA AI model test. Do not click Apply yet.',b.observe(),None,history,[])
                 print('MODEL browser action:',a,flush=True)
                 assert a['action'] in ('browser_click','browser_fill','browser_press'),a
                 if a['action']=='browser_click': assert int(a['id'])==inp,a
                 b.act(a); history.append({'action':a,'result':'Completed'})
-                if b.page.locator('input').input_value()=='Gwen model test': break
-            assert b.page.locator('input').input_value()=='Gwen model test'
+                if b.page.locator('input').input_value()=='NAVA AI model test': break
+            assert b.page.locator('input').input_value()=='NAVA AI model test'
             # Exercise real vision encoder using a neutral synthetic screen.
             from PIL import Image, ImageDraw
             image=Image.new('RGB',(800,500),'white'); draw=ImageDraw.Draw(image)
@@ -65,10 +65,10 @@ def main():
             from agent import Agent
             agent=Agent(log=print,stop=stop)
             agent.browser=b; agent.mode='browser'; agent.planner=planner
-            agent.run('Replace the Name input with Gwen complete test.',background=True,step_limit=6)
-            assert b.page.locator('input').input_value()=='Gwen complete test'
+            agent.run('Replace the Name input with NAVA AI complete test.',background=True,step_limit=6)
+            assert b.page.locator('input').input_value()=='NAVA AI complete test'
             agent.run('Click the Apply button.',background=True,step_limit=6)
-            assert b.page.locator('#result').inner_text()=='Gwen complete test'
+            assert b.page.locator('#result').inner_text()=='NAVA AI complete test'
             assert agent.context[-2]['task'].startswith('Replace the Name')
             assert agent.context[-1]['task']=='Click the Apply button.'
             print('PASS sequential user instructions, agent observe-plan-act loop and task memory',flush=True)

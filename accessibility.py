@@ -24,8 +24,8 @@ class NativeControls:
         self.hwnd=action_window(hwnd or stable_foreground())
         self.bounds=rect(self.hwnd)
         window=Desktop(backend='uia').window(handle=self.hwnd).wrapper_object()
-        if window.window_text().startswith('Gwen Doer'):
-            raise ValueError('Gwen is still in the foreground. Select the target app first. Nothing was clicked.')
+        if window.window_text().startswith('NAVA AI'):
+            raise ValueError('NAVA AI is still in the foreground. Select the target app first. Nothing was clicked.')
         self.target=window; self.controls={}; result=[]
         for el in window.iter_descendants(depth=depth):
             if len(result)>=limit: break

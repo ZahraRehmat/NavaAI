@@ -9,7 +9,7 @@ DEST=ROOT/'models'/'vosk-model-small-en-us-0.15'
 def main():
     if (DEST/'am'/'final.mdl').is_file():print('Offline command model is already installed.');return
     models=ROOT/'models';models.mkdir(exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix='gwen-voice-download-') as folder:
+    with tempfile.TemporaryDirectory(prefix='nava-voice-download-') as folder:
         archive=Path(folder)/'model.zip';print('Downloading official Vosk small English model...',flush=True)
         urllib.request.urlretrieve(URL,archive)
         digest=hashlib.sha256(archive.read_bytes()).hexdigest()

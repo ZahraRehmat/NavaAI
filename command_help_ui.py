@@ -14,9 +14,11 @@ class CommandHelp:
         self.root=root;self.path=Path(config_path)
         try:self.config=json.loads(self.path.read_text(encoding='utf-8'))
         except (OSError,ValueError):self.config={}
-        self.enabled=bool(self.config.get('visible',True));self.alpha=float(self.config.get('opacity',.83))
-        self.alpha=max(.45,min(.95,self.alpha));self.page=0;self.state={};self.last=None;self.updated=0;self.master=None
-        self.window=tk.Toplevel(root);self.window.withdraw();self.window.title('Gwen Doer - Command overlay')
+        self.enabled=bool(self.config.get('visible',True));self.alpha=float(self.config.get('opacity',.65))
+        self.alpha=max(.30,min(.95,self.alpha));self.side=self.config.get('side','left')
+        if self.side not in ('left','right'):self.side='left'
+        self.rect=None;self.shown=False;self.page=0;self.state={};self.last=None;self.updated=0;self.master=None
+        self.window=tk.Toplevel(root);self.window.withdraw();self.window.title('NAVA AI - Command overlay')
         self.window.overrideredirect(True);self.window.attributes('-topmost',True);self.window.attributes('-alpha',self.alpha)
         self.canvas=tk.Canvas(self.window,bg=BG,highlightthickness=1,highlightbackground='#6d4ca0');self.canvas.pack(fill='both',expand=True)
         self.window.update_idletasks();self.user=ctypes.WinDLL('user32',use_last_error=True)
@@ -31,7 +33,7 @@ class CommandHelp:
         self.user.SetWindowDisplayAffinity.argtypes=[w.HWND,w.DWORD];self.user.SetWindowDisplayAffinity(self.hwnd,0)
 
     def save(self):
-        self.path.write_text(json.dumps({'visible':self.enabled,'opacity':round(self.alpha,2)},indent=2)+'\n',encoding='utf-8')
+        self.path.write_text(json.dumps({'visible':self.enabled,'opacity':round(self.alpha,2),'side':self.side},indent=2)+'\n',encoding='utf-8')
 
     def apply(self,request):
         action=request['action']
@@ -43,8 +45,10 @@ class CommandHelp:
         elif action=='next':self.page+=1
         elif action=='previous':self.page=max(0,self.page-1)
         elif action in ('lighter','darker'):
-            self.alpha=max(.45,min(.95,self.alpha+(-.1 if action=='lighter' else .1)))
+            self.alpha=max(.30,min(.95,self.alpha+(-.1 if action=='lighter' else .1)))
             self.window.attributes('-alpha',self.alpha);self.save()
+        elif action in ('move_left','move_right'):
+            self.side='left' if action=='move_left' else 'right';self.save()
         elif action in ('down','up') and self.master is not None:
             self.tree.yview_scroll(8 if action=='down' else -8,'units')
         self.last=None;self.update(self.state,force=True)
@@ -53,8 +57,9 @@ class CommandHelp:
         now=time.monotonic()
         if not force and now-self.updated<.35:return
         self.updated=now;self.state=state
-        if not self.enabled or self.master is not None:
-            self.user.ShowWindow(self.hwnd,0);return
+        if not self.enabled or self.master is not None or state.get('dialog'):
+            if self.shown:self.user.ShowWindow(self.hwnd,0)
+            self.shown=False;self.last=None;return
         target=state.get('target') or {};scopes=app_scopes(target)
         signature=(state.get('active'),target.get('hwnd'),target.get('title'),state.get('dictating'),state.get('selecting'),state.get('grid'),state.get('dialog'),self.page)
         if signature==self.last:return
@@ -62,11 +67,11 @@ class CommandHelp:
         if self.last and signature[:-1]!=self.last[:-1]:self.page=0
         self.last=signature
         screen_h=self.root.winfo_screenheight();width=min(490,max(300,self.root.winfo_screenwidth()-32))
-        limit=max(3,min(12,(screen_h-380)//50));rows=[row for row in contextual(state) if row.command not in {'dictation on','dictation stop','selection mode','stop selection','open grid','grid off'}]
+        limit=max(3,min(8,(screen_h-600)//60));rows=[row for row in contextual(state) if row.command not in {'dictation on','dictation stop','selection mode','stop selection','open grid','grid off'}]
         pages=max(1,math.ceil(len(rows)/limit));self.page%=pages
         self.canvas.delete('all');y=14
         active=state.get('active',True)
-        title='GWEN · COMMANDS' if active else 'GWEN · STANDBY'
+        title='NAVA AI · COMMANDS' if active else 'NAVA AI · STANDBY'
         self.canvas.create_text(15,y,text=title,anchor='nw',fill=PURPLE,font=('Segoe UI',10,'bold'));y+=25
         if active:
             label=' + '.join(scope.title() for scope in scopes) or 'General controls'
@@ -82,19 +87,32 @@ class CommandHelp:
             footer=[('dictation stop' if state.get('dictating') else 'dictation on','Stop voice typing' if state.get('dictating') else 'Start voice typing'),
                     ('stop selection' if state.get('selecting') else 'selection mode','Stop selecting' if state.get('selecting') else 'Select text by endpoint words'),
                     ('grid off' if state.get('grid') else 'open grid','Hide mouse labels' if state.get('grid') else 'Show mouse labels'),
-                    ('gwen turn off','Return to standby'),('hide commands','Hide this overlay'),('open full dictionary','Search every command family')]
-            if pages>1:footer.append(('next commands page','More commands for this app'))
+                    ('nava turn off','Return to standby'),
+                    ('dictionary more transparent','Make this panel lighter'),
+                    ('dictionary more visible','Make this panel clearer'),
+                    ('move dictionary left','Move this panel to the left'),
+                    ('move dictionary right','Move this panel to the right'),
+                    ('hide dictionary','Hide this panel'),('open full dictionary','Search every command family')]
+            if pages>1:footer.extend([('next commands page','More commands for this app'),('previous commands page','Return to the previous page')])
         else:
-            footer=[('gwen turn on','Activate Gwen and start the microphone'),('hide commands','Hide this small reminder'),('open full dictionary','Browse the complete command manual')]
+            footer=[('nava turn on','Activate NAVA AI and start the microphone'),('hide commands','Hide this small reminder'),('open full dictionary','Browse the complete command manual')]
         for command,description in footer:y=self.draw_row(command,description,y,width)
         y+=10
         # Use the work area so taskbars remain visible; no foreground activation.
         area=w.RECT();self.user.SystemParametersInfoW(0x30,0,ctypes.byref(area),0)
-        x=area.left+14;top=area.top+14
+        x=max(area.left+14,area.right-width-14) if self.side=='right' else area.left+14
+        top=area.top+(60 if self.side=='right' else 14) # Leave the status badge clear.
         self.canvas.configure(width=width,height=y)
         self.window.geometry(f'{width}x{y}+{x}+{top}');self.window.update_idletasks()
-        self.user.SetWindowPos(self.hwnd,w.HWND(-1),x,top,width,y,0x10|0x40)
-        self.user.ShowWindow(self.hwnd,4)
+        self.user.SetWindowPos(self.hwnd,w.HWND(-1),x,top,width,y,0x10|0x200)
+        self.rect=(x,top,x+width,top+y)
+        if not self.shown:self.user.ShowWindow(self.hwnd,4);self.shown=True
+
+    def overlay_bounds(self):
+        return [self.rect] if self.enabled and self.shown and self.rect and self.master is None and not self.state.get('dialog') else []
+
+    def restack(self):
+        if self.shown:self.user.SetWindowPos(self.hwnd,w.HWND(-1),0,0,0,0,0x1|0x2|0x10|0x200)
 
     def draw_row(self,command,description,y,width):
         col=int(width*.46)
@@ -105,7 +123,7 @@ class CommandHelp:
     def show_master(self,query=''):
         if self.master is not None:
             self.query.set(query);self.master.deiconify();self.master.lift();self.search_entry.focus_set();return
-        window=tk.Toplevel(self.root);self.master=window;window.title('Gwen Doer - Full dictionary');window.configure(bg=BG)
+        window=tk.Toplevel(self.root);self.master=window;window.title('NAVA AI - Full dictionary');window.configure(bg=BG)
         width=min(1100,self.root.winfo_screenwidth()-60);height=min(760,self.root.winfo_screenheight()-100)
         window.geometry(f'{width}x{height}+30+30');window.minsize(650,400);window.protocol('WM_DELETE_WINDOW',self.close_master)
         tk.Label(window,text='COMMAND DICTIONARY',fg=PURPLE,bg=BG,font=('Segoe UI',18,'bold')).pack(anchor='w',padx=20,pady=(18,3))
@@ -116,9 +134,9 @@ class CommandHelp:
         box=ttk.Combobox(bar,textvariable=self.scope,state='readonly',values=['All']+sorted({row.scope for row in ENTRIES}),width=16);box.pack(side='left',padx=(10,0))
         self.count=tk.StringVar();tk.Label(window,textvariable=self.count,fg=PURPLE,bg=BG).pack(anchor='w',padx=20)
         frame=tk.Frame(window,bg=BG);frame.pack(fill='both',expand=True,padx=20,pady=8)
-        style=ttk.Style(window);style.configure('GwenHelp.Treeview',background='#1d162c',fieldbackground='#1d162c',foreground=TEXT,rowheight=30,font=('Segoe UI',10))
-        style.map('GwenHelp.Treeview',background=[('selected','#603c91')],foreground=[('selected','white')])
-        self.tree=ttk.Treeview(frame,columns=('description',),show='tree headings',style='GwenHelp.Treeview')
+        style=ttk.Style(window);style.configure('NavaHelp.Treeview',background='#1d162c',fieldbackground='#1d162c',foreground=TEXT,rowheight=30,font=('Segoe UI',10))
+        style.map('NavaHelp.Treeview',background=[('selected','#603c91')],foreground=[('selected','white')])
+        self.tree=ttk.Treeview(frame,columns=('description',),show='tree headings',style='NavaHelp.Treeview')
         self.tree.heading('#0',text='Command / category');self.tree.heading('description',text='Short description')
         self.tree.column('#0',width=400,minwidth=250);self.tree.column('description',width=540,minwidth=220)
         scroll=ttk.Scrollbar(frame,orient='vertical',command=self.tree.yview);self.tree.configure(yscrollcommand=scroll.set)

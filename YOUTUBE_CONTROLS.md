@@ -24,7 +24,7 @@ The minimal WinRT packages are pinned in both requirements files. Missing or uns
 
 The earlier local YouTube-origin fixture passed but failed to reproduce the real site's disappearing/replaced player buttons. It was insufficient evidence for live compatibility. Actual user logs showed correctly recognized commands failing with player-changed / no exposed Play-Pause control errors.
 
-The repair was tested through the real Gwen command panel on the actual youtube.com video W9_0OsajRN8, in ordinary Chrome and Edge windows. Independent read-only Windows media-session queries checked outcomes.
+The repair was tested through the real NAVA AI command panel on the actual youtube.com video W9_0OsajRN8, in ordinary Chrome and Edge windows. Independent read-only Windows media-session queries checked outcomes.
 
 - Chrome resume: 0.34 seconds; pause with smart grid enabled: 0.48 seconds.
 - Chrome paused timeline: 739.480662 -> 744.480662 (+5) -> 739.480662 (-5) -> 749.480662 (+10) -> 739.480662 (-10).
@@ -40,7 +40,7 @@ References: [Windows media sessions](https://learn.microsoft.com/en-us/uwp/api/w
 
 `skip ad`, `skip this ad`, `skip the ad` and `skip ads` work through the media router, including grid mode and active browser dictation/selection. Native controls use a visible, enabled, exactly named Skip / Skip ad / Skip ads accessibility button with a hit test before clicking. The managed browser uses its accessible button role. No timer is bypassed: unavailable or unskippable ads return an explanation. Ambiguous buttons are refused. After one click, the button must disappear; a persistent button returns an unconfirmed result without retrying.
 
-Live Skip-ad verification: on 12 November 2026, the actual Edge YouTube page exposed a skippable ad. `skip this ad` executed through Gwen in 1.20 seconds; its Skip button disappeared and a subsequent accessibility snapshot exposed only Skip navigation, not an ad Skip button. This was the actual website, not a local fixture.
+Live Skip-ad verification: on 12 November 2026, the actual Edge YouTube page exposed a skippable ad. `skip this ad` executed through NAVA AI in 1.20 seconds; its Skip button disappeared and a subsequent accessibility snapshot exposed only Skip navigation, not an ad Skip button. This was the actual website, not a local fixture.
 
 ## 14 November repair: unread notifications and opening a new tab
 
@@ -52,4 +52,4 @@ Media matching now considers both the full video title and a version with only Y
 
 Actual-site resume and pause on the previously failing video, with smart grid enabled, completed in 0.28 and 0.19 seconds respectively. Windows independently confirmed the playback state. 144 regression tests passed.
 
-The exact failed phrase `open you tube on new tab` was also run through the real Gwen panel with grid on: it opened youtube.com in a new Chrome tab in 1.98 seconds. The test tab was closed afterwards. Live +5/-5 seeking returned the paused video from 348.584038 to 353.584038 and back to 348.584038 seconds.
+The exact failed phrase `open you tube on new tab` was also run through the real NAVA AI panel with grid on: it opened youtube.com in a new Chrome tab in 1.98 seconds. The test tab was closed afterwards. Live +5/-5 seeking returned the paused video from 348.584038 to 353.584038 and back to 348.584038 seconds.

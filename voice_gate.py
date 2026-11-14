@@ -10,8 +10,9 @@ class VoiceGate:
     def accept(self,text):
         text=text.strip().rstrip('.!?').strip()
         if not text: return None
-        wake=re.match(r'^(?:(?:hey|okay|ok)\s+)?(gwen|guen|glen|when|queen)\b[,:]?\s*(.*)$',text,re.I)
-        if wake and wake[1].lower() in ('when','queen','glen') and not re.match(r'^(?:listen|scroll|click|open|type|press|stop|sleep|show|hide|mute|question|explain)\b',wake[2],re.I): wake=None
+        from branding import invalid_wake
+        if invalid_wake(text):return None
+        wake=re.match(r'^(?:(?:hey|okay|ok)\s+)?(nava)\b[,:]?\s*(.*)$',text,re.I)
         if wake: text=wake[2].strip()
         accepted=bool(wake) or self.handsfree or time.monotonic()<self.armed_until
         if text.lower().removeprefix('please ') in ('stop','cancel','stop now','stop scrolling','stop the task','cancel task','cancel the task'): return {'control':'stop'}

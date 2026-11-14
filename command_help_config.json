@@ -1,4 +1,5 @@
 {
-  "visible": true,
-  "opacity": 0.83
+  "visible": false,
+  "opacity": 0.85,
+  "side": "left"
 }

@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "handsfree": true,
+  "handsfree": false,
   "start_hidden": true,
   "completion_beep": true,
   "engine": "hybrid",

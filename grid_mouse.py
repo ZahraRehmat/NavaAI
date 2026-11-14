@@ -28,7 +28,7 @@ class GridMouse:
         hwnd=self.user.WindowFromPoint(w.POINT(*point));hwnd=self.user.GetAncestor(hwnd,2) if hwnd else None
         def usable(handle):
             if not win.user.IsWindowVisible(handle) or win.cloaked(handle):return False
-            if win.title(handle).startswith('Gwen Doer'):return False
+            if win.title(handle).startswith('NAVA AI'):return False
             if self.user.GetWindowLongW(handle,-20)&0x20:
                 # Shell CoreWindow surfaces can use transparent parent windows
                 # with interactive children; cursor/annotation layers cannot.

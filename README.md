@@ -1,12 +1,12 @@
-# NavaAI · Hands-free Windows control
+# NAVA AI · Hands-free Windows control
 
 > **Speak. Select. Type. Navigate.** A local accessibility assistant combining direct commands, an adaptive smart grid and offline dictation.
 
-**Current snapshot · 14 November 2026**
+**Current snapshot · 15 November 2026**
 
 **Windows desktop · CPU-based speech · No Qwen runtime or Qwen weights**
 
-The product is called NavaAI. The current executable, UI and wake phrases still use **Gwen**. Renaming them to **Nava / Nava AI** is planned, not implemented. See [Remaining work](REMAINING_WORK.md).
+The product and windows are branded **NAVA AI**. The spoken and typed wake name is **Nava**: say `Nava turn on`, not `NavaAI turn on`. See [Rename details and commands](NAVA_RENAME.md).
 
 ## What this system is
 
@@ -35,7 +35,7 @@ flowchart TD
 
 | Area | Implemented behavior | Examples / practical limits |
 |---|---|---|
-| Power and voice | Resident badge, continuous listening, wake-only standby, stop and completion beep | `Gwen turn on`, `Gwen turn off`, `Gwen listen`; off keeps a wake listener, while microphone off/quit stops capture |
+| Power and voice | Resident badge, continuous listening, wake-only standby, stop and completion beep | `Nava turn on`, `Nava turn off`, `Nava listen`; off keeps a wake listener, while microphone off/quit stops capture |
 | Apps and windows | Installed-app directory, common aliases, launch, switch, minimize, maximize, restore and confirmed close | `open Chrome`, `switch to Word`, `maximize this app`; multiple matching windows use choices |
 | Files and folders | Current/known locations, normalized names, optional extensions in supported matching and ambiguous-target choices | `open FYP`, `open Date Sheet`; not a complete computer-wide semantic file index |
 | Smart grid | UIA-based visible targets, stable speech-friendly labels, change refresh, click/move/drag/scroll | `open grid`, `A`, `open A`, `scroll down from A`; unsupported custom controls may remain unmarked |
@@ -55,17 +55,17 @@ Use Windows with Python **3.12**, a working microphone and the applications you 
 
 ```powershell
 git lfs install
-git clone --branch dicitonary-pending https://github.com/ZahraRehmat/NavaAI.git
+git clone --branch Chnaged-to-Nava https://github.com/ZahraRehmat/NavaAI.git
 cd NavaAI
 git lfs pull
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe -m playwright install chromium
 .\.venv\Scripts\python.exe -c "from catalog import Catalog; Catalog.refresh()"
-.\.venv\Scripts\python.exe gwen.py
+.\.venv\Scripts\python.exe nava.py
 ```
 
-Then use **Start Gwen.cmd**. F10 opens the panel, F9 toggles voice, F8 stops work/releases the mouse. Keep the intended app/input field active before typing commands. `device: null` in `voice_config.json` uses the system's default microphone; select the correct Windows input device.
+Then use **Start NAVA AI.cmd**. F10 opens the panel, F9 toggles voice, F8 stops work/releases the mouse. Keep the intended app/input field active before typing commands. `device: null` in `voice_config.json` uses the system's default microphone; select the correct Windows input device.
 
 The clone contains the three active offline model directories through **Git LFS**. A ZIP download may contain pointers instead of weights; use the commands above. If models need to be downloaded separately:
 
@@ -79,12 +79,12 @@ Model/dependency installation needs internet. Once installed, speech and punctua
 
 ## Everyday workflow
 
-1. Start the assistant and say **Gwen turn on**.
+1. Start the assistant and say **Nava turn on**.
 2. Say **open Excel** or switch to an already open application.
 3. Use direct commands when available: **select B2 to N6**, then **make a table**.
 4. Say **open grid** when you want to choose a visible control directly. Speak its label; use **open LABEL** for a double-click.
 5. Focus a text field, say **dictation on**, speak, then **stop dictation**. **Press enter** sends the real key; the target application decides its behavior.
-6. Say **Gwen turn off** for standby, **microphone off** to stop capture, or quit the process completely.
+6. Say **Nava turn off** for standby, **microphone off** to stop capture, or quit the process completely.
 
 Closing an app asks for confirmation and preserves normal save prompts. Explicit force-close is separate and can lose unsaved changes. Startup support runs **after Windows sign-in**; this assistant does not bypass secure desktop or Windows Hello restrictions.
 
@@ -92,7 +92,7 @@ Closing an app asks for confirmation and preserves normal save prompts. Explicit
 
 | Modules / data | Responsibility |
 |---|---|
-| `gwen.py`, `typed_ui.py`, `status_indicator.py`, `task_feedback.py` | Resident UI, lifecycle, queues, badge and completion feedback |
+| `nava.py`, `typed_ui.py`, `status_indicator.py`, `task_feedback.py` | Resident UI, lifecycle, queues, badge and completion feedback |
 | `speech.py`, `vosk_speech.py`, `hybrid_speech.py`, `command_voice.py` | Audio capture, command recognition, dictation/selection recognition and mode routing |
 | `speech_context.py`, `voice_controls.py`, `dialog_voice.py` | Context vocabulary, explicit controls and voice answers to choices |
 | `agent.py`, `routing.py`, `direct_commands.py` | Deterministic dispatch and supported direct operations |
@@ -151,11 +151,4 @@ Older guides/development notes may describe earlier milestones; this README and 
 
 ## Adaptive command help
 
-Say **show commands** (or **show dictionary**) for transparent app/mode guidance, **hide commands** to hide it, or **open full dictionary** for a searchable master manual. **Search dictionary for font** searches by keyword. The standby reminder shows how to wake Gwen. See [COMMAND_DICTIONARY.md](COMMAND_DICTIONARY.md) for controls, pagination, opacity and implementation details.
-
-
-## Dictionary pending checkpoint
-
-This branch captures the adaptive command overlay and searchable master dictionary, the later dictation/Unicode typing and selection repairs, YouTube media-session controls and Skip ad, and status-badge recovery. The dictionary remains a work in progress; this is a reversible checkpoint of the current implementation. See [COMMAND_DICTIONARY.md](COMMAND_DICTIONARY.md), [OFFLINE_VOICE.md](OFFLINE_VOICE.md), [YOUTUBE_CONTROLS.md](YOUTUBE_CONTROLS.md), and [REMAINING_WORK.md](REMAINING_WORK.md).
-
-Publication verification: 167 targeted regression tests passed from this checkout. The active offline speech/punctuation models are included through Git LFS. Private logs, local app inventories, browser profiles, virtual environments and Qwen weights are excluded.
+Say **show commands** (or **show dictionary**) for transparent app/mode guidance, **hide commands** to hide it, or **open full dictionary** for a searchable master manual. **Search dictionary for font** searches by keyword. The standby reminder shows how to wake NAVA AI. See [COMMAND_DICTIONARY.md](COMMAND_DICTIONARY.md) for controls, pagination, opacity and implementation details.

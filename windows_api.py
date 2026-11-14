@@ -137,7 +137,7 @@ def snapshot():
 def usable_target(context):
     if not context:return False
     name=context.get('title','').strip();kind=context.get('class_name','')
-    if name.startswith('Gwen Doer'):return False
+    if name.startswith('NAVA AI'):return False
     if name.lower().rstrip('.')=='system tray overflow window':return False
     if kind in ('Shell_TrayWnd','Shell_SecondaryTrayWnd','NotifyIconOverflowWindow','TopLevelWindowForOverflowXamlIsland','tooltips_class32'):return False
     return bool(name) or kind in ('Progman','WorkerW','NUIDialog','#32770')
@@ -219,5 +219,5 @@ def ensure_input_allowed(hwnd):
         raise PermissionError(f'Cannot inspect target process permissions (Windows error {error}, PID {pid.value}, window {hwnd}). No input was attempted.')
     try:
         if level(process)>level(kernel.GetCurrentProcess()):
-            raise PermissionError('The target app runs at a higher Windows integrity level than Gwen. Windows blocks this input; no action was attempted. Handle this step manually in that app.')
+            raise PermissionError('The target app runs at a higher Windows integrity level than NAVA AI. Windows blocks this input; no action was attempted. Handle this step manually in that app.')
     finally: kernel.CloseHandle(process)

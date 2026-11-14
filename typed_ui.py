@@ -10,7 +10,7 @@ def gui(smoke=False,instance=None):
     import windows_api as win
     from cursor_marker import CursorMarker
     startup_target=win.choose_target(win.snapshot(),[])
-    root=tk.Tk();root.withdraw(); root.title('Gwen Doer - Type commands'); root.configure(bg='#172033')
+    root=tk.Tk();root.withdraw(); root.title('NAVA AI - Type commands'); root.configure(bg='#172033')
     width,height=480,480
     root.geometry(f'{width}x{height}+{max(0,root.winfo_screenwidth()-width-18)}+{max(0,root.winfo_screenheight()-height-70)}')
     root.minsize(480,460); root.attributes('-topmost',False)
@@ -21,7 +21,7 @@ def gui(smoke=False,instance=None):
     from speech_context import codes
     config_path=Path(__file__).with_name('voice_config.json')
     voice_config=json.loads(config_path.read_text(encoding='utf-8'))
-    voice_session=CommandVoice(voice_config);voice_engine=None;pending_voice=None;voice_dialog=None;dialog_version=0
+    voice_session=CommandVoice(voice_config);voice_engine=None;pending_voice=None;voice_dialog=None;dialog_version=0;voice_notice_until=0;voice_notice=None
     from dictation_queue import DictationQueue
     dictation_queue=DictationQueue()
     from selection_hints import VisibleWordHints
@@ -44,7 +44,7 @@ def gui(smoke=False,instance=None):
     grid_overlay=GridOverlay(root)
     smart_grid=AdaptiveGrid(GridMouse(),monitors,render=lambda picture:events.put(('grid',picture)),stop=stop,
                            observer=AccessibleTargets(lambda:last_target),target_check=check_target,chooser=lambda query,options:choose(query,options))
-    tk.Label(root,text='GWEN  •  type or say a command',bg='#172033',fg='#a5b4fc',font=('Segoe UI',12,'bold')).pack(anchor='w',padx=10,pady=(7,2))
+    tk.Label(root,text='NAVA AI  •  type or say a command',bg='#172033',fg='#a5b4fc',font=('Segoe UI',12,'bold')).pack(anchor='w',padx=10,pady=(7,2))
     status=tk.StringVar(value='Starting…')
     tk.Label(root,textvariable=status,bg='#172033',fg='white',anchor='w',wraplength=415).pack(fill='x',padx=10)
     target=tk.StringVar(value='Select the app to control, then type here.')
@@ -130,14 +130,18 @@ def gui(smoke=False,instance=None):
         smart_grid.emergency_stop();agent.close(); events.put(('closed',None))
     def send_task(task,ctx):
         nonlocal busy,pending_voice,current_task,task_started
+        from branding import invalid_wake,strip_wake
+        if invalid_wake(task):
+            status.set('Use Nava as the command name, for example Nava turn on.');return 'break'
         help_request=help_intent(task)
         if help_request:
             command_help.apply(help_request);command.set('');return 'break'
         power=power_intent(task)
         if power:
             set_power(power=='power_on');return 'break'
+        task=strip_wake(task)
         if not voice_session.active:
-            status.set('Gwen is off. Say or type “Gwen turn on”, or press F9.');return 'break'
+            status.set('NAVA AI is off. Say or type “Nava turn on”, or press F9.');return 'break'
         from selection_commands import ON,OFF,range_command,canonical
         selection_text=task.lower().strip().rstrip('.! ')
         if selection_text in ON|OFF:
@@ -150,7 +154,7 @@ def gui(smoke=False,instance=None):
             if selection_range:task=canonical(selection_range)
         from grid_commands import toggle_intent
         if toggle_intent(task)=='disable':
-            halt();command.set('');status.set('Smart grid off. Mouse released.');log('Gwen: Smart grid off.');return 'break'
+            halt();command.set('');status.set('Smart grid off. Mouse released.');log('NAVA AI: Smart grid off.');return 'break'
         if not task or busy or not ready or closing:return 'break'
         pending_voice=None;command.set(''); busy=True; run.configure(state='disabled')
         current_task=task;task_started=time.monotonic()
@@ -204,13 +208,13 @@ def gui(smoke=False,instance=None):
             voice_engine.device=voice_config.get('device');voice_engine.start()
         elif voice_engine:voice_engine.set_enabled(voice_enabled.get());voice_engine.cancel_pending()
         if not voice_enabled.get():voice_session.handsfree=False;voice_session.armed_until=0;voice_session.dictating=False;voice_session.selecting=False;handsfree.set(False)
-        voice_status.set('Voice: say “Gwen listen” or “Gwen <command>”.' if voice_enabled.get() else 'Voice off')
+        voice_status.set('Voice: say “Nava listen” or “Nava <command>”.' if voice_enabled.get() else 'Voice off')
         save_voice()
     def toggle_handsfree():
         voice_session.handsfree=handsfree.get();voice_session.armed_until=0
         save_voice()
         if voice_session.handsfree:root.withdraw();cues.notify()
-        voice_status.set('Voice: hands-free commands enabled' if handsfree.get() else 'Voice: say Gwen before a command')
+        voice_status.set('Voice: hands-free commands enabled' if handsfree.get() else 'Voice: say Nava before a command')
     def set_power(value):
         nonlocal pending_voice
         value=bool(value)
@@ -229,12 +233,12 @@ def gui(smoke=False,instance=None):
         if voice_engine is None or not voice_engine.enabled.is_set():toggle_voice()
         elif voice_engine:voice_engine.cancel_pending(restart=False)
         save_voice()
-        voice_status.set('Gwen on: continuous commands enabled.' if value else 'Gwen off: wake listener only. Say “Gwen turn on” or press F9.')
-        status.set('Ready.' if value else 'Gwen off. Wake listener only.')
+        voice_status.set('NAVA AI on: continuous commands enabled.' if value else 'NAVA AI off: wake listener only. Say “Nava turn on” or press F9.')
+        status.set('Ready.' if value else 'NAVA AI off. Wake listener only.')
         cues.notify()
     def mic_settings():
         import sounddevice as sd
-        window=tk.Toplevel(root);window.title('Gwen Doer - Microphone');window.attributes('-topmost',True)
+        window=tk.Toplevel(root);window.title('NAVA AI - Microphone');window.attributes('-topmost',True)
         devices=[(None,'Windows default microphone')]+[(i,d['name']) for i,d in enumerate(sd.query_devices()) if d['max_input_channels']>0]
         ttk.Label(window,text='Offline speech input device').pack(padx=12,pady=8)
         box=ttk.Combobox(window,state='readonly',width=58,values=[name for _,name in devices]);box.pack(padx=12,pady=8);box.current(0)
@@ -259,8 +263,9 @@ def gui(smoke=False,instance=None):
     ttk.Checkbutton(voice_row,text='Hands-free',variable=handsfree,command=toggle_handsfree).pack(side='left')
     ttk.Button(voice_row,text='Mic…',command=mic_settings).pack(side='right')
     def voice_input(packet,captured):
-        nonlocal pending_voice,last_voice_decision
+        nonlocal pending_voice,last_voice_decision,voice_notice_until,voice_notice
         if not voice_enabled.get() or closing:return
+        voice_notice_until=0
         def speech_trace(stage,**details):
             try:
                 path=Path(__file__).with_name('logs')/'voice-decisions.jsonl';path.parent.mkdir(exist_ok=True)
@@ -274,7 +279,7 @@ def gui(smoke=False,instance=None):
             word_target_unclear=packet.get('word_target_unclear',False),rejected_word_text=packet.get('rejected_word_text'),rejected_word_confidence=packet.get('rejected_word_confidence'),rejected_word_words=packet.get('rejected_word_words'),
             dictation=captured.get('dictation',False),selection=captured.get('selection',False),decode_seconds=packet.get('seconds'),
             queue_seconds=packet.get('queue_seconds'),after_audio_seconds=packet.get('after_audio_seconds'),audio_seconds=packet.get('audio_seconds'))
-        raw=packet.get('text','').strip();plain=re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:gwen|guen|glen|glenn)[,:]?\s*','',raw,flags=re.I).strip().rstrip('.!?').lower()
+        raw=packet.get('text','').strip();plain=re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:nava)\b[,:]?\s*','',raw,flags=re.I).strip().rstrip('.!?').lower()
         help_request=help_intent(raw)
         if help_request:
             if packet.get('confidence',0)>=voice_config.get('review_confidence',.86):
@@ -340,7 +345,7 @@ def gui(smoke=False,instance=None):
                         send_task(candidate['text'],candidate['context'].get('interaction'))
                     else:pending_voice=None;voice_status.set('Voice: screen changed; repeat the command')
             else:
-                voice_status.set('Voice: hands-free commands enabled' if voice_session.handsfree else 'Voice: say Gwen before a command')
+                voice_status.set('Voice: hands-free commands enabled' if voice_session.handsfree else 'Voice: say Nava before a command')
                 if control in ('handsfree','sleep'):
                     save_voice();root.withdraw();cues.notify()
             return
@@ -356,8 +361,13 @@ def gui(smoke=False,instance=None):
         if kind=='review':
             # A speech hypothesis is not typed input. Inserting it into the
             # entry can replace a user's command between typing and Enter.
-            pending_voice={**decision,'context':captured};presenter.review()
-            voice_status.set('Heard “'+decision['text']+'”. Not executed: '+decision['reason']+(' Say “Gwen confirm command” to accept.' if decision['confirmable'] else ''))
+            # Rejected speech is not an unanswered question. Only actionable
+            # confirmations stay pending, with a short explicit expiry.
+            pending_voice={**decision,'context':captured,'expires_at':time.monotonic()+12} if decision['confirmable'] else None
+            voice_notice_until=time.monotonic()+4
+            voice_notice=('Confirm: '+decision['text'][:18],'#fbbf24') if decision['confirmable'] else ('Not understood · repeat','#fbbf24')
+            if decision['confirmable'] or captured.get('dictation') or captured.get('selection'):presenter.review()
+            voice_status.set('Heard “'+decision['text']+'”. Not executed: '+decision['reason']+(' Say “Nava confirm command” to accept.' if decision['confirmable'] else ''))
         elif busy or not ready:
             speech_trace('not_executed',reason='busy_or_starting')
             voice_status.set('Voice: task is busy or starting; repeat when ready');presenter.review()
@@ -369,8 +379,9 @@ def gui(smoke=False,instance=None):
         nonlocal voice_dialog,dialog_version
         from choice_ui import TargetChooser
         dialog_version+=1
-        suppress_grid=any(option.get('dropdown_choice') for option in options)
+        suppress_grid=True
         if suppress_grid:grid_overlay.close()
+        command_help.update({**command_help.state,'dialog':True},force=True)
         def chosen(index):
             respond(index)
             if suppress_grid and smart_grid.active:smart_grid.picture()
@@ -379,6 +390,8 @@ def gui(smoke=False,instance=None):
         if voice_engine:voice_engine.cancel_pending(restart=False)
         voice_status.set('Voice: say yes or no' if kind=='confirm' else 'Voice: say a displayed choice letter or its NATO spelling')
     def poll():
+        nonlocal pending_voice
+        if pending_voice and time.monotonic()>pending_voice.get('expires_at',float('inf')):pending_voice=None
         nonlocal busy,ready,last_target,mic_listening,mic_error,recognizing,last_voice_diagnostic
         if not closing:
             current=win.snapshot() if voice_session.active else None
@@ -407,7 +420,8 @@ def gui(smoke=False,instance=None):
                 if kind=='grid':
                     try:
                         if voice_dialog and not voice_dialog['chooser'].done and voice_dialog.get('suppress_grid'):grid_overlay.close()
-                        elif voice_session.active:grid_overlay.draw(value)
+                        elif voice_session.active:
+                            grid_overlay.draw(value);command_help.restack()
                         else:grid_overlay.close()
                         if value.get('active') and value.get('mode')=='smart' and not busy:
                             status.set('SMART GRID • '+str(value['count'])+' targets • '+(value.get('error') or 'auto refresh on'))
@@ -435,10 +449,10 @@ def gui(smoke=False,instance=None):
                         mic_listening=False;recognizing=False
                     elif message.startswith('recognizing speech'):recognizing=True
                     if not pending_voice and not (voice_dialog and not voice_dialog['chooser'].done):
-                        voice_status.set(('Voice (hands-free): ' if voice_session.handsfree else 'Voice (say Gwen): ')+value)
+                        voice_status.set(('Voice (hands-free): ' if voice_session.handsfree else 'Voice (say NAVA AI): ')+value)
                 elif kind=='ready':ready=True; run.configure(state='normal'); status.set('Ready.')
                 elif kind=='finished':
-                    busy=False; marker.working(False); run.configure(state='normal'); log('Gwen: '+value)
+                    busy=False; marker.working(False); run.configure(state='normal'); log('NAVA AI: '+value)
                     try:
                         path=Path(__file__).with_name('logs')/'task-results.jsonl'
                         with path.open('a',encoding='utf-8') as stream:
@@ -459,12 +473,20 @@ def gui(smoke=False,instance=None):
                     message,answer=value
                     if not voice_session.active:answer.put(False)
                     elif voice_enabled.get():open_voice_dialog(message,[{'label':'Yes'},{'label':'No'}],lambda index:answer.put(index==0),'confirm')
-                    else:show();answer.put(messagebox.askyesno('Confirm action',message,parent=root));root.withdraw()
+                    else:
+                        grid_overlay.close()
+                        command_help.update({**command_help.state,'dialog':True},force=True)
+                        try:
+                            show();answer.put(messagebox.askyesno('Confirm action',message,parent=root))
+                        finally:
+                            root.withdraw()
+                            command_help.update({**command_help.state,'dialog':False},force=True)
+                            if smart_grid.active:smart_grid.picture()
                 elif kind=='choose':
                     query,options,preview,answer=value
                     if voice_session.active:open_voice_dialog(query,options,answer.put,preview=preview)
                     else:answer.put(None)
-                elif kind=='fatal':messagebox.showerror('Gwen startup failed',value,parent=root);indicator.close();marker.close();root.destroy();return
+                elif kind=='fatal':messagebox.showerror('Nava startup failed',value,parent=root);indicator.close();marker.close();root.destroy();return
                 elif kind=='closed':root.destroy();return
         except queue.Empty:pass
         if not closing:
@@ -479,9 +501,14 @@ def gui(smoke=False,instance=None):
                 if voice_dialog and not voice_dialog['chooser'].done:badge_state=('Choose / say cancel','#fbbf24')
             elif voice_session.dictating and mic_open and not mic_error:badge_state=dictation_state(recognizing=recognizing,review=bool(pending_voice))
             elif voice_session.selecting and mic_open and not mic_error:badge_state=('Selection · say from / to','#93c5fd')
-            indicator.update(badge_state,level)
+            if not busy and not (voice_dialog and not voice_dialog['chooser'].done):
+                if pending_voice:badge_state=('Confirm or repeat · '+str(max(1,int(pending_voice['expires_at']-time.monotonic())))+'s','#fbbf24')
+                elif time.monotonic()<voice_notice_until and voice_notice:badge_state=voice_notice
+            indicator.update(badge_state,level,help_hidden=not command_help.enabled,
+                prompt=('Heard: '+pending_voice['text'][:100]+'\nSay Nava confirm command, or cancel.') if pending_voice else '')
             command_help.update({'active':voice_session.active,'target':last_target,'dictating':voice_session.dictating,
                 'selecting':voice_session.selecting,'grid':smart_grid.active,'dialog':bool(voice_dialog and not voice_dialog['chooser'].done)})
+            if grid_overlay.set_occlusions(command_help.overlay_bounds()):command_help.restack()
             if time.monotonic()-last_voice_diagnostic>1:
                 last_voice_diagnostic=time.monotonic()
                 try:

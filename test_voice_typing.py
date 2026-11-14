@@ -83,7 +83,7 @@ class VoiceTypingTests(unittest.TestCase):
         from hybrid_speech import HybridRecognizer
         recognizer=HybridRecognizer.__new__(HybridRecognizer);recognizer.commands=Mock();recognizer.english=Mock()
         recognizer.english.transcribe_result.side_effect=AssertionError('Whisper must not replace a recognized command')
-        for text,context in [('gwen turn off',{}),('gwen turn on',{'assistant_active':False}),('gwen listen open word',{}),('grid off',{}),('press enter',{'dictation':True}),('stop dictation',{'dictation':True}),('open word',{})]:
+        for text,context in [('nava turn off',{}),('nava turn on',{'assistant_active':False}),('nava listen open word',{}),('grid off',{}),('press enter',{'dictation':True}),('stop dictation',{'dictation':True}),('open word',{})]:
             recognizer.commands.transcribe_result.return_value={'text':text,'confidence':1}
             self.assertEqual(recognizer.transcribe_result([],context)['text'],text)
         recognizer.english.transcribe_result.assert_not_called()

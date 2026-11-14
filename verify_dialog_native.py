@@ -10,7 +10,7 @@ import windows_api as win
 from agent import Agent
 from accessibility import NativeControls
 
-root=tk.Tk();root.title('Gwen Dialog Test');root.geometry('640x330+160+160');root.attributes('-topmost',True)
+root=tk.Tk();root.title('NAVA AI Dialog Test');root.geometry('640x330+160+160');root.attributes('-topmost',True)
 status=tk.StringVar(value='Start the isolated scratch dialog test. No workbook is used.')
 ttk.Label(root,text='Save-dialog focus test',font=('Segoe UI',19,'bold')).pack(pady=15)
 ttk.Label(root,textvariable=status,wraplength=580).pack(padx=15,pady=12)
@@ -22,7 +22,7 @@ user.MessageBoxW.argtypes=[w.HWND,w.LPCWSTR,w.LPCWSTR,w.UINT];user.MessageBoxW.r
 root.update_idletasks();owner=user.GetParent(root.winfo_id()) or root.winfo_id()
 events=queue.Queue();rows=[];actions={};stage=0;active_popup=None;started=False;executing=False;agent=None
 def open_box():
-    result=user.MessageBoxW(owner,'This dialog belongs only to the Gwen test. No document or user data is saved/discarded.','Gwen Scratch Save Dialog',3)
+    result=user.MessageBoxW(owner,'This dialog belongs only to the NAVA AI test. No document or user data is saved/discarded.','NAVA AI Scratch Save Dialog',3)
     events.put(('response',result))
 def start():
     global started

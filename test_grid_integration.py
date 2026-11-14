@@ -14,7 +14,7 @@ class GridIntegrationTests(unittest.TestCase):
         for mode in ('smart','full'):
             grid=AdaptiveGrid(FakeMouse(),lambda:[(0,0,800,600)],observer=lambda:[row()])
             try:
-                grid.run('gwen grid' if mode=='smart' else 'gwen full grid')
+                grid.run('nava grid' if mode=='smart' else 'nava full grid')
                 for text in ('type hello','write hello','select all','copy','paste','press enter','press ctrl a','go back','go forward','go home','go up'):
                     before=list(grid.mouse.events)
                     self.assertIsNone(grid.run(text),text)
@@ -29,7 +29,7 @@ class GridIntegrationTests(unittest.TestCase):
         self.assertEqual([r['hwnd'] for r in merge_roots(native,accessible)],[30,10,20])
         for kind in ('NotifyIconOverflowWindow','TopLevelWindowForOverflowXamlIsland','Microsoft.UI.Content.PopupWindowSiteBridge'):
             self.assertTrue(interactive_shell(kind))
-        self.assertFalse(interactive_shell('GwenOverlay'))
+        self.assertFalse(interactive_shell('NavaOverlay'))
 
     def test_appbar_and_tab_controls_traversed(self):
         uia=SimpleNamespace(known_control_type_ids={1:'Pane',2:'Button',5:'AppBar',6:'TabItem'},true_condition=True)

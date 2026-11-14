@@ -4,7 +4,7 @@ from pathlib import Path
 ctypes.windll.user32.SetProcessDPIAware()
 from choice_ui import TargetChooser
 
-root=tk.Tk();root.title('Gwen Doer - Choice fixture');root.geometry('500x230+1100+250')
+root=tk.Tk();root.title('NAVA AI - Choice fixture');root.geometry('500x230+1100+250')
 widgets=[]
 for name in ('Report - draft.pdf','Report - final.pdf'):
     item=tk.Label(root,text=name,font=('Segoe UI',18),bg='white',pady=14);item.pack(fill='x',padx=20,pady=15);widgets.append(item)

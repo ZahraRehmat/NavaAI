@@ -23,7 +23,7 @@ Examples: `open Lists dropdown`, `open Headings dropdown`, `open dropdown` to ch
 
 If a Button/MenuItem Expand provider silently does nothing, one click on its observed control is attempted and expansion is checked again. There is no fallback on a SplitButton/ComboBox main action or a leaf button. An unchanged state produces an explicit failure.
 
-Local verification: 104 automated checks passed. The live grid command `open dropdown HI` addressed Notepad Edit by its observed runtime identity and reported Expanded. Persistence of the displayed popup could not be confirmed: the same menu failed to remain open in the computer-use check with Gwen stopped. This part requires confirmation in the user session; it is not claimed fully verified. No test document was saved.
+Local verification: 104 automated checks passed. The live grid command `open dropdown HI` addressed Notepad Edit by its observed runtime identity and reported Expanded. Persistence of the displayed popup could not be confirmed: the same menu failed to remain open in the computer-use check with Nava stopped. This part requires confirmation in the user session; it is not claimed fully verified. No test document was saved.
 
 ## Named words
 

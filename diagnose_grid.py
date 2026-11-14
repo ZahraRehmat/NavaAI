@@ -41,7 +41,7 @@ def main():
         from tkinter import messagebox
         root=tk.Tk();root.withdraw()
         counts=report.get('health',{}).get('visible_by_scope',{})
-        messagebox.showinfo('Gwen grid diagnostic',
+        messagebox.showinfo('Nava grid diagnostic',
             'Read-only check complete. No input was performed.\n\nVisible targets: '+str(counts)+
             '\n\nReport saved to:\n'+str(output)+'\n\n'+report.get('worker_error',report.get('warning','')),parent=root)
         root.destroy()

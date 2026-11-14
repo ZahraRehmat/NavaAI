@@ -25,7 +25,7 @@ class IndicatorTests(unittest.TestCase):
         return indicator_state(**values)[0]
 
     def test_listening_requires_open_microphone(self):
-        self.assertEqual(self.state(),'Say Gwen listen')
+        self.assertEqual(self.state(),'Say Nava listen')
         self.assertEqual(self.state(handsfree=True),'Listening')
         self.assertEqual(self.state(armed=True),'Listening')
         self.assertEqual(self.state(handsfree=True,microphone=False),'Mic starting')
@@ -35,7 +35,7 @@ class IndicatorTests(unittest.TestCase):
         self.assertEqual(self.state(busy=True),'Working')
         self.assertEqual(self.state(recognizing=True),'Hearing you')
         self.assertEqual(self.state(error=True),'Mic error · F10')
-        self.assertEqual(self.state(review=True),'Needs reply')
+        self.assertEqual(self.state(review=True),'Confirm or repeat')
         self.assertEqual(self.state(ready=False),'Starting')
 
     def test_native_badge_visible_passive_and_focus_unchanged(self):

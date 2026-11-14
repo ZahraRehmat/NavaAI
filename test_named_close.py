@@ -57,12 +57,12 @@ class NamedCloseTests(unittest.TestCase):
         self.assertEqual(session.route({'text':'type close copilot close copilot','confidence':1})['text'],'type close copilot close copilot')
         model=Mock();model.vosk_model_find_word.return_value=1
         phrases=vocabulary({'target_names':['Copilot']},model)
-        for command in ('close copilot','quit copilot','force close copilot','gwen close copilot'):self.assertIn(command,phrases)
+        for command in ('close copilot','quit copilot','force close copilot','nava close copilot'):self.assertIn(command,phrases)
 
     def test_both_grids_pass_app_close_through(self):
         g=AdaptiveGrid(FakeMouse(),lambda:[(0,0,800,600)],observer=lambda:[])
         try:
-            for enable in ('gwen grid','gwen full grid'):
+            for enable in ('nava grid','nava full grid'):
                 g.run(enable)
                 for text in ('close word','quit chrome','stop notepas','force close word'):
                     self.assertIsNone(g.run(text));self.assertTrue(g.active)

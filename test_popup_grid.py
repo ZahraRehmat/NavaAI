@@ -54,10 +54,10 @@ class PopupGridTests(unittest.TestCase):
         import hashlib
         from uiaccess_overlay import UiAccessOverlay
         with tempfile.TemporaryDirectory() as folder:
-            path=Path(folder);(path/'GwenOverlay.exe').write_bytes(b'test fixture')
+            path=Path(folder);(path/'NavaOverlay.exe').write_bytes(b'test fixture')
             (path/'install.json').write_text(json.dumps({'exe_sha256':hashlib.sha256(b'test fixture').hexdigest()}))
             renderer=UiAccessOverlay(folder);self.assertTrue(renderer.installed())
-            (path/'GwenOverlay.exe').write_bytes(b'changed');self.assertFalse(renderer.installed())
+            (path/'NavaOverlay.exe').write_bytes(b'changed');self.assertFalse(renderer.installed())
 
     def test_canvas_serialization_carries_drawing_only(self):
         from uiaccess_overlay import canvas_frame
@@ -75,7 +75,7 @@ class PopupGridTests(unittest.TestCase):
             renderer=UiAccessOverlay();handle=Mock()
             with patch.object(renderer,'installed',return_value=True),patch('win32api.ShellExecute',return_value=42),patch('win32file.CreateFile',return_value=handle) as create,patch('win32pipe.SetNamedPipeHandleState'),patch('win32pipe.PeekNamedPipe',return_value=(b'',len(greeting),0)),patch('win32file.ReadFile',return_value=(0,greeting)),patch('win32file.WriteFile',side_effect=lambda h,p:(0,len(p))):
                 self.assertEqual(renderer.draw({'areas':[],'config':{'font_size':9}},[]),expected)
-                self.assertTrue(create.call_args.args[0].startswith('\\\\.\\pipe\\GwenOverlay-'))
+                self.assertTrue(create.call_args.args[0].startswith('\\\\.\\pipe\\NavaOverlay-'))
                 self.assertEqual(renderer.verified,expected)
             renderer.close()
 

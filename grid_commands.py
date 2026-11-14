@@ -6,7 +6,7 @@ LABEL=r'(?:M\d+-)?[A-Z]{1,6}\s*\d{0,3}'
 
 def toggle_intent(task):
     text=normalize_command(task).lower().strip().rstrip('.!?')
-    text=re.sub(r'^(?:gwen|guen|glen|glenn)\s+','',text)
+    text=re.sub(r'^(?:nava)\s+','',text)
     text=re.sub(r'^please\s+|\s+(?:please|now)$','',text)
     text=re.sub(r'\b(?:griud|gruid|grdi|gird)\b','grid',text)
     text=re.sub(r'\b(?:turhn|trun|turm)\b','turn',text)

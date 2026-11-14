@@ -22,7 +22,7 @@ def parse_word(text):
 
 
 def word_intent(text):
-    text=re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:gwen|guen|glen|glenn)[,:]?\s*','',text.strip(),flags=re.I)
+    text=re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:nava)\b[,:]?\s*','',text.strip(),flags=re.I)
     for action,pattern in (('move_end',r'move\s+(?:the\s+)?(?:text\s+cursor|cursor|caret)\s+(?:to\s+(?:the\s+)?end\s+of\s+(?:the\s+)?word|after\s+(?:the\s+)?word)\b'),
                            ('move',r'move\s+(?:the\s+)?(?:text\s+cursor|cursor|caret)\s+(?:to|tool|too)\b'),
                            ('select',r'select\s+(?:the\s+)?word\b'),
@@ -35,10 +35,10 @@ def recover_word_packet(primary,general,hints=""):
     """A free-vocabulary decode must retain the same explicit word action."""
     expected=word_intent(primary.get('text',''))
     from selection_recognition import tokens,aligned_words,known
-    anchors=[w for w in primary.get('words',[]) if tokens(w.get('word','')) and w['word'].casefold() not in ('gwen','guen','glen','glenn','hey','okay','ok')]
+    anchors=[w for w in primary.get('words',[]) if tokens(w.get('word','')) and w['word'].casefold() not in ('nava','hey','okay','ok')]
     required=2 if expected in ('move','move_end') else 1
     anchored=len(anchors)>=required and all(w.get('probability',0)>=.8 for w in anchors[:required])
-    text=re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:gwen|guen|glen|glenn)[,:]?\s*','',general.get('text',''),flags=re.I)
+    text=re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:nava)\b[,:]?\s*','',general.get('text',''),flags=re.I)
     if expected=='move' and anchored and re.match(r'^move closer to ',text,re.I):
         text=re.sub(r'^move closer to ','move cursor to ',text,flags=re.I)
         updated=[dict(w,word='cursor') if w.get('word','').casefold()=='closer' else dict(w) for w in general.get('words',[])]

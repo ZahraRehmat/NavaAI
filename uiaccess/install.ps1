@@ -4,9 +4,9 @@ $overlayIdentity = [Security.Principal.WindowsIdentity]::GetCurrent()
 $overlayPrincipal = [Security.Principal.WindowsPrincipal]::new($overlayIdentity)
 if (-not $overlayPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { throw 'Run this installer in an administrator PowerShell after approving the UIAccess setup.' }
 & (Join-Path $PSScriptRoot 'build.ps1')
-$overlayInstallRoot = Join-Path $env:ProgramFiles 'Gwen Accessibility'
-$overlayInstallExe = Join-Path $overlayInstallRoot 'GwenOverlay.exe'
-$overlaySubject = 'CN=Gwen Local Accessibility Overlay'
+$overlayInstallRoot = Join-Path $env:ProgramFiles 'NAVA AI Accessibility'
+$overlayInstallExe = Join-Path $overlayInstallRoot 'NavaOverlay.exe'
+$overlaySubject = 'CN=NAVA AI Local Accessibility Overlay'
 $overlayMetaPath = Join-Path $overlayInstallRoot 'install.json'
 New-Item -ItemType Directory -Path $overlayInstallRoot -Force | Out-Null
 $overlayCertificate = $null
@@ -24,10 +24,10 @@ $overlayPublicPath = Join-Path $overlayInstallRoot 'overlay-public.cer'
 Export-Certificate -Cert $overlayCertificate -FilePath $overlayPublicPath -Force | Out-Null
 Import-Certificate -FilePath $overlayPublicPath -CertStoreLocation 'Cert:\LocalMachine\Root' | Out-Null
 Import-Certificate -FilePath $overlayPublicPath -CertStoreLocation 'Cert:\LocalMachine\TrustedPublisher' | Out-Null
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'GwenOverlay.exe') -Destination $overlayInstallExe -Force
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'NavaOverlay.exe') -Destination $overlayInstallExe -Force
 $overlaySignature = Set-AuthenticodeSignature -LiteralPath $overlayInstallExe -Certificate $overlayCertificate -HashAlgorithm SHA256
 if ($overlaySignature.Status -ne 'Valid') { throw ('Overlay signature did not validate: ' + $overlaySignature.StatusMessage) }
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'uninstall.ps1') -Destination (Join-Path $overlayInstallRoot 'uninstall.ps1') -Force
 @{thumbprint=$overlayCertificate.Thumbprint;subject=$overlaySubject;exe_sha256=(Get-FileHash -LiteralPath $overlayInstallExe -Algorithm SHA256).Hash;installed_at=(Get-Date).ToString('o')} | ConvertTo-Json | Set-Content -LiteralPath $overlayMetaPath -Encoding UTF8
 Write-Output ('Installed signed drawing helper: ' + $overlayInstallExe)
-Write-Output 'Restart Gwen and enable the grid. UIAccess is granted only to this helper; UAC policies are unchanged.'
+Write-Output 'Restart NAVA AI and enable the grid. UIAccess is granted only to this helper; UAC policies are unchanged.'

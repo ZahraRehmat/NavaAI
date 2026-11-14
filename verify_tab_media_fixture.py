@@ -7,8 +7,8 @@ root=Path(__file__).resolve().parent;events=[];b=Browser(profile_name='tab-media
 try:
     b.open('chrome',False);media=b.page
     media.expose_function('record',lambda value:events.append(value))
-    media.set_content('''<title>Gwen media fixture - YouTube</title><h1>Isolated media control test</h1><canvas id="c" width="100" height="100"></canvas><video id="v" muted width="320" height="200"></video><button id="toggle" aria-label="Pause (k)">Pause (k)</button><script>const v=document.querySelector('video'),b=document.querySelector('button');document.querySelector('canvas').getContext('2d').fillRect(0,0,80,80);v.srcObject=document.querySelector('canvas').captureStream(10);v.play();b.onclick=()=>{if(v.paused){v.play();record('media_play');b.textContent='Pause (k)'}else{v.pause();record('media_pause');b.textContent='Play (k)'}b.setAttribute('aria-label',b.textContent)}</script>''')
-    reference=b.context.new_page();reference.set_content('<title>Gwen reference fixture</title><h1>Reference tab</h1>')
+    media.set_content('''<title>NAVA AI media fixture - YouTube</title><h1>Isolated media control test</h1><canvas id="c" width="100" height="100"></canvas><video id="v" muted width="320" height="200"></video><button id="toggle" aria-label="Pause (k)">Pause (k)</button><script>const v=document.querySelector('video'),b=document.querySelector('button');document.querySelector('canvas').getContext('2d').fillRect(0,0,80,80);v.srcObject=document.querySelector('canvas').captureStream(10);v.play();b.onclick=()=>{if(v.paused){v.play();record('media_play');b.textContent='Pause (k)'}else{v.pause();record('media_pause');b.textContent='Play (k)'}b.setAttribute('aria-label',b.textContent)}</script>''')
+    reference=b.context.new_page();reference.set_content('<title>NAVA AI reference fixture</title><h1>Reference tab</h1>')
     reference.on('close',lambda *_:events.append('reference_closed'))
     b.context.on('page',lambda *_:events.append('tab_new'))
     media.bring_to_front()

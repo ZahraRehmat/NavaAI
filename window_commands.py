@@ -86,7 +86,7 @@ def running_windows():
         if not win.user.IsWindowVisible(hwnd) or win.user.GetWindow(hwnd,4):return True
         if win.user.GetWindowLongW(hwnd,-20)&0x80:return True
         name=win.title(hwnd)
-        if not name or name.startswith('Gwen Doer'):return True
+        if not name or name.startswith('NAVA AI'):return True
         buf=ctypes.create_unicode_buffer(256);win.user.GetClassNameW(hwnd,buf,len(buf))
         if buf.value in ('Progman','WorkerW','Shell_TrayWnd','Shell_SecondaryTrayWnd'):return True
         pid=w.DWORD();win.user.GetWindowThreadProcessId(hwnd,ctypes.byref(pid))

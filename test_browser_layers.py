@@ -58,18 +58,18 @@ class BrowserLayerTests(unittest.TestCase):
         self.b.page.set_content('''<button onclick="document.body.dataset.chosen='A'">Funny cats playing</button><button onclick="document.body.dataset.chosen='B'">Funny cats sleeping</button>''')
         def choose(query,options,preview=None):
             self.assertEqual(len(options),2);self.assertTrue(preview.startswith(b'\x89PNG'))
-            self.assertEqual(self.b.page.locator('#gwen-target-choices b').all_text_contents(),['A','B'])
+            self.assertEqual(self.b.page.locator('#nava-target-choices b').all_text_contents(),['A','B'])
             return 1
         self.b.click_named('funny cats',chooser=choose)
         self.assertEqual(self.b.page.locator('body').get_attribute('data-chosen'),'B')
-        self.assertEqual(self.b.page.locator('#gwen-target-choices').count(),0)
+        self.assertEqual(self.b.page.locator('#nava-target-choices').count(),0)
 
     def test_cancel_browser_choice_cleans_marks_and_clicks_nothing(self):
         from target_choices import SelectionCancelled
         self.b.page.set_content('<button onclick="document.body.dataset.clicked=1">Cats playing</button><button>Cats sleeping</button>')
         with self.assertRaises(SelectionCancelled):self.b.click_named('cats',chooser=lambda *_,**kw:None)
         self.assertIsNone(self.b.page.locator('body').get_attribute('data-clicked'))
-        self.assertEqual(self.b.page.locator('#gwen-target-choices').count(),0)
+        self.assertEqual(self.b.page.locator('#nava-target-choices').count(),0)
 
     def test_chosen_browser_label_is_revalidated(self):
         self.b.page.set_content('<button onclick="document.body.dataset.clicked=1">Instagram</button>')
@@ -97,7 +97,7 @@ class BrowserLayerTests(unittest.TestCase):
         self.b.observe(); self.b.page.locator('#a').evaluate("e=>e.style.display='none'")
         obs=self.b.observe()
         self.assertEqual([e['text'] for e in obs['elements']],['B'])
-        self.assertEqual(self.b.page.locator('[data-gwen-id="0"]').count(),1)
+        self.assertEqual(self.b.page.locator('[data-nava-id="0"]').count(),1)
 
     def test_stale_observation_cannot_click_replacement_control(self):
         self.b.page.set_content('<button>Old</button>'); self.b.observe()
@@ -109,8 +109,8 @@ class BrowserLayerTests(unittest.TestCase):
         self.b.page.set_content('<input aria-label="Name">'); self.b.page.locator('input').focus()
         a=Agent(log=lambda _:None); a.browser=self.b; a.mode='browser'; a.active_target='chrome'
         with patch('desktop_control.act',side_effect=AssertionError('Must not use physical keyboard')):
-            a.run('type "Gwen voice text"',background=True,interaction={'hwnd':42,'title':'Other app'})
-        self.assertEqual(self.b.page.locator('input').input_value(),'Gwen voice text')
+            a.run('type "NAVA AI voice text"',background=True,interaction={'hwnd':42,'title':'Other app'})
+        self.assertEqual(self.b.page.locator('input').input_value(),'NAVA AI voice text')
 
 class NativeSearchTests(unittest.TestCase):
     def test_task_manager_search_uses_the_field_not_model_clicks(self):

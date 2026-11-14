@@ -18,7 +18,7 @@ class SoundCues:
     def __init__(self,enabled=True,play=None):
         self.enabled=enabled;self.play=play or self._play;self.speaking=threading.Event()
         self.shutdown=threading.Event();self.queue=queue.Queue(maxsize=4)
-        self.thread=threading.Thread(target=self._run,daemon=True,name='Gwen completion sound');self.thread.start()
+        self.thread=threading.Thread(target=self._run,daemon=True,name='NAVA AI completion sound');self.thread.start()
     @staticmethod
     def _play(data):
         import winsound

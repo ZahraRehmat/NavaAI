@@ -25,7 +25,7 @@ class ScreenChanges:
             nonlocal last_notice
             if not hwnd or obj==-9:return # Cursor movement is not a changed control.
             pid=w.DWORD();u.GetWindowThreadProcessId(hwnd,ctypes.byref(pid))
-            if pid.value in (os.getpid(),os.getppid()):return # Scanner and Gwen overlays/chat.
+            if pid.value in (os.getpid(),os.getppid()):return # Scanner and NAVA AI overlays/chat.
             root=u.GetAncestor(hwnd,2) or hwnd
             with self.lock:self.dirty.add(int(root))
             now=time.monotonic()

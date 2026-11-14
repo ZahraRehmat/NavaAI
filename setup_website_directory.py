@@ -20,7 +20,7 @@ def main():
           'reference_url':'https://tranco-list.eu/list/'+args.list_id,'domains':rows}
     path=Path(__file__).with_name('data')/'popular_websites.json';path.parent.mkdir(exist_ok=True)
     temporary=path.with_suffix('.tmp');temporary.write_text(json.dumps(data,separators=(',',':')),encoding='utf-8');temporary.replace(path)
-    print(f'Installed {len(rows):,} domains from Tranco {args.list_id}. Restart Gwen to reload.')
+    print(f'Installed {len(rows):,} domains from Tranco {args.list_id}. Restart NAVA AI to reload.')
 
 
 if __name__=='__main__':main()

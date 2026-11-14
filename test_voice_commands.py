@@ -44,7 +44,7 @@ class DirectCommandTests(unittest.TestCase):
     def test_fragments_never_reach_model_or_mouse(self):
         a=Agent(log=lambda _:None)
         with patch('planner.Planner',side_effect=AssertionError('Must not load')),patch('desktop_control.act') as click:
-            for fragment in ('And','Amen','reset','You know Gwen'):
+            for fragment in ('And','Amen','reset','You know NAVA AI'):
                 self.assertIn('complete',a.run(fragment))
         click.assert_not_called()
 
@@ -52,11 +52,11 @@ class VoiceGateTests(unittest.TestCase):
     def test_wake_command_and_persistent_session(self):
         g=VoiceGate(); self.assertIsNone(g.accept('scroll down'))
         self.assertIsNone(g.accept('When we were there'))
-        self.assertEqual(g.accept('Gwen, scroll down')['command'],'scroll down')
-        self.assertEqual(g.accept('Gwen listen')['control'],'handsfree')
+        self.assertEqual(g.accept('Nava, scroll down')['command'],'scroll down')
+        self.assertEqual(g.accept('Nava listen')['control'],'handsfree')
         self.assertEqual(g.accept('scroll up')['command'],'scroll up')
         self.assertEqual(g.accept('click here')['command'],'click here')
-        self.assertEqual(g.accept('Gwen sleep')['control'],'sleep')
+        self.assertEqual(g.accept('Nava sleep')['control'],'sleep')
         self.assertIsNone(g.accept('click here'))
 
     def test_hotkey_arming_is_one_command(self):
@@ -65,8 +65,8 @@ class VoiceGateTests(unittest.TestCase):
         self.assertIsNone(g.accept('open chrome'))
 
     def test_handsfree_ignores_conversational_fragments(self):
-        g=VoiceGate(); g.accept('Gwen listen')
-        for text in ('And','Amen','You know Gwen'):
+        g=VoiceGate(); g.accept('Nava listen')
+        for text in ('And','Amen','You know NAVA AI'):
             self.assertIsNone(g.accept(text))
         self.assertEqual(g.accept('reset')['command'],'/reset')
 

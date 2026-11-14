@@ -20,13 +20,14 @@ This is a roadmap, not a claim that these items are complete.
 
 **Current position:** there are aliases and normalization rules already, but this does not amount to complete everyday-language understanding.
 
-## 3 · Rename Gwen to Nava / Nava AI
+## 3 · NAVA AI branding — completed
 
-- [ ] **The activation keyword shall be Nava or Nava AI instead of Gwen.**
-- [ ] Update recognition vocabulary, wake phrases, UI text, launchers, startup entries, documentation and tests together.
-- [ ] Decide how long old Gwen phrases remain as compatibility aliases.
+- [x] Product, windows, overlays, launchers and current manuals show **NAVA AI**.
+- [x] The command wake name is **Nava only**. `NavaAI` and the old wake name are not command aliases.
+- [x] Recognition grammar, standby activation, power, grid, selection and help use Nava.
+- [x] Existing installation settings are preserved; old entry-point filenames remain compatibility shims.
 
-**Current position:** repository/product branding says NavaAI; the running application still uses Gwen.
+See [NAVA_RENAME.md](NAVA_RENAME.md) for the exact changed commands and verification.
 
 ## 4 · Installer and model cleanup
 

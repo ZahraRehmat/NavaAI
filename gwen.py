@@ -1,5 +1,5 @@
-"""Launch Gwen's resident desktop/voice interface."""
-from typed_ui import main
+"""Compatibility entry point for existing installation shortcuts."""
+from nava import main
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

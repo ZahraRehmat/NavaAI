@@ -1,4 +1,4 @@
-"""Live navigation checks using a test-only profile, preserving Gwen's browser."""
+"""Live navigation checks using a test-only profile, preserving NAVA AI's browser."""
 from agent import Agent
 from browser_control import Browser
 from urllib.parse import urlsplit, parse_qs

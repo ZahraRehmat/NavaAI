@@ -16,7 +16,7 @@ def aligned_words(packet):
 
 def fast_range(packet,context):
     hints=context.get('selection_hints','')
-    text=re.sub(r'^(?:gwen|guen|glen|glenn)[,:]?\s+','',packet.get('text',''),flags=re.I)
+    text=re.sub(r'^(?:nava)\b[,:]?\s+','',packet.get('text',''),flags=re.I)
     parsed=range_command(text,mode=True)
     if not hints or not parsed or '[unk]' in text or packet.get('confidence',0)<.86:return False
     if not all(known(parsed[side],hints) for side in ('start','end')):return False

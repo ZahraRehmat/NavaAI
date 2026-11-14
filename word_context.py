@@ -21,7 +21,7 @@ def expected_action(packet,context):
     text=packet.get('text','')
     expected=word_intent(text)
     if expected:return expected
-    if not context.get('grid_active') and context.get('word_hints') and re.fullmatch(r'(?:gwen\s+)?select\s+(?!(?:all|from|cell|tab|text|and)\b).+',text,re.I):return 'select'
+    if not context.get('grid_active') and context.get('word_hints') and re.fullmatch(r'(?:nava\s+)?select\s+(?!(?:all|from|cell|tab|text|and)\b).+',text,re.I):return 'select'
     return None
 
 
@@ -30,7 +30,7 @@ def phrases(context,action,model):
     words=[w for w in words if model.vosk_model_find_word(w)>=0]
     prefixes={'move_end':('move cursor to end of word ','move cursor to the end of word ','move cursor after word '),'move':('move cursor to ','move cursor to word '),
               'select':('select word ','select '),'erase':('erase word ','delete word ','remove word ')}
-    return [wake+prefix+word for word in words for prefix in prefixes.get(action,()) for wake in ('','gwen ')]
+    return [wake+prefix+word for word in words for prefix in prefixes.get(action,()) for wake in ('','nava ')]
 
 
 def contextual_candidate(primary,candidate,context):
@@ -41,12 +41,12 @@ def contextual_candidate(primary,candidate,context):
     text=candidate.get('text','').strip()
     # Short select TARGET is a word command only inside an observed editor;
     # grid labels and application controls keep their normal interpretation.
-    short=re.fullmatch(r'((?:gwen\s+)?select)\s+(?!word\b)(.+)',text,re.I)
+    short=re.fullmatch(r'((?:nava\s+)?select)\s+(?!word\b)(.+)',text,re.I)
     if action=='select' and short and known(short[2],context.get('word_hints','')):
-        words=list(candidate.get('words',[]));at=1 if not text.lower().startswith('gwen ') else 2
+        words=list(candidate.get('words',[]));at=1 if not text.lower().startswith('nava ') else 2
         words.insert(at,{'word':'word','probability':1})
         candidate={**candidate,'text':short[1]+' word '+short[2],'words':words}
-    parsed=parse_word(re.sub(r'^gwen\s+','',candidate.get('text',''),flags=re.I))
+    parsed=parse_word(re.sub(r'^nava\s+','',candidate.get('text',''),flags=re.I))
     if not parsed or not known(parsed['word'],context.get('word_hints','')):return primary
     # Give the existing recovery guard a canonical primary action when the
     # short select syntax was observed in an editable field.

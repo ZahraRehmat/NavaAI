@@ -89,7 +89,7 @@ class CommandRoutingBoundaryTests(unittest.TestCase):
 
     def test_misheard_website_suffix_does_not_navigate(self):
         voice=CommandVoice({'handsfree':True})
-        self.assertEqual(voice.route(heard('open you tube dot gwen'))['kind'],'review')
+        self.assertEqual(voice.route(heard('open you tube dot nava'))['kind'],'review')
         self.assertEqual(voice.route(heard('open youtube dot com'))['kind'],'command')
 
 if __name__=='__main__':unittest.main()

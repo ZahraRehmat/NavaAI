@@ -13,23 +13,23 @@ def main():
     config=json.loads((ROOT/'voice_config.json').read_text(encoding='utf-8'))
     grid={'grid_active':True,'labels':['FG','6MJ','AB']}
     cases=[('Cell A two',{'office':'excel'},'select cell A2'),('Click six M J',grid,'click 6MJ'),
-           ('Gwen grid',{},'gwen grid'),('Scroll down from F G',grid,'scroll down from FG'),
-           ('Double click alpha bravo',grid,'double click AB'),('Gwen listen',{},'handsfree'),
-           ('Gwen sleep',{},'sleep'),('Gwen cell A two',{'office':'excel'},'select cell A2'),
-           ('Gwen click F G',grid,'click FG'),('Open Notepad',{},'open notepad'),
+           ('Nava grid',{},'grid'),('Scroll down from F G',grid,'scroll down from FG'),
+           ('Double click alpha bravo',grid,'double click AB'),('Nava listen',{},'handsfree'),
+           ('Nava sleep',{},'sleep'),('Nava cell A two',{'office':'excel'},'select cell A2'),
+           ('Nava click F G',grid,'click FG'),('Open Notepad',{},'open notepad'),
            ('Click WiFi',{},'click wifi'),('Open Chrome',{},'open chrome'),
-           ('Gwen grid on',{},'gwen grid'),('Gwen listen type hello world',{},'type hello world'),
+           ('Nava grid on',{},'grid'),('Nava listen type hello world',{},'type hello world'),
            ('Close Copilot',grid,'close copilot'),('Quit Copilot',grid,'quit copilot'),
            ('Type',{},'dictation_on'),('New mail',{'dictation':True},'type new mail'),
            ('Stop dictation',{'dictation':True},'dictation_off'),
-           ('Gwen turn off',{},'power_off'),('Gwen turn on',{'assistant_active':False},'power_on'),
+           ('Nava turn off',{},'power_off'),('Nava turn on',{'assistant_active':False},'power_on'),
            ('Minimize this screen',grid,'minimize this screen'),('Maximize this app',grid,'maximize this app'),
            ('Close this screen',{},'close this screen'),('Minimize Chat G P T',{},'minimize chat g p t'),
-           ('Open grid',{},'gwen grid'),('Turn on grid',{},'gwen grid'),
+           ('Open grid',{},'grid'),('Turn on grid',{},'grid'),
            ('Close grid',grid,'grid off'),('Turn off grid',grid,'grid off')]
     reports=[];pythoncom.CoInitialize()
     try:
-        with tempfile.TemporaryDirectory(prefix='gwen-offline-voice-') as folder:
+        with tempfile.TemporaryDirectory(prefix='nava-offline-voice-') as folder:
             with patch('socket.socket.connect',side_effect=AssertionError('Runtime network access forbidden')),patch('socket.socket.connect_ex',side_effect=AssertionError('Runtime network access forbidden')):
                 recognizer=LocalRecognizer(config=config)
                 for index,(spoken,context,expected) in enumerate(cases):

@@ -12,7 +12,7 @@ import windows_api as win
 from agent import Agent
 from desktop_control import map_point
 
-root=tk.Tk();root.title('Gwen Vision Test');root.geometry('900x700+100+100');root.configure(bg='white');root.attributes('-topmost',True)
+root=tk.Tk();root.title('NAVA AI Vision Test');root.geometry('900x700+100+100');root.configure(bg='white');root.attributes('-topmost',True)
 title=tk.StringVar(value='Qwen visual input test')
 tk.Label(root,textvariable=title,font=('Segoe UI',23,'bold'),bg='white').pack(pady=12)
 status=tk.StringVar(value='Press Start. Qwen will select BETA, then double-click SAMPLE.')

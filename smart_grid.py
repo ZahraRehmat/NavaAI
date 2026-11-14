@@ -130,7 +130,7 @@ class AdaptiveGrid(SmartMouseActions):
         self.observer=observer;self.target_check=target_check;self.chooser=chooser;self.mode='smart';self.error=''
         self.generation=0;self.shutdown=threading.Event();self.scan_lock=threading.Lock()
         self.last_targets=[]
-        self.thread=threading.Thread(target=self._watch,daemon=True,name='Gwen smart grid refresh');self.thread.start()
+        self.thread=threading.Thread(target=self._watch,daemon=True,name='Nava smart grid refresh');self.thread.start()
 
     def picture(self):
         self.render({'active':self.active,'mode':self.mode,'error':self.error,

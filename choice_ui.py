@@ -11,7 +11,7 @@ class TargetChooser:
         self.numbers=[o.get('choice_number') for o in options]
         self.labels=[smart_label(i) if selection or any(self.numbers) else chr(65+i) for i in range(len(options))]
         self.key_buffer='';self.key_after=None
-        self.window=tk.Toplevel(root);self.window.title('Gwen Doer - Choose a target');self.window.attributes('-topmost',True)
+        self.window=tk.Toplevel(root);self.window.title('NAVA AI - Choose a target');self.window.attributes('-topmost',True)
         if not activate:self.window.withdraw()
         self.window.withdraw()
         available_width=max(360,self.window.winfo_screenwidth()-60)
@@ -115,7 +115,7 @@ class TargetChooser:
     def mark(self,root,letter,box,word=False):
         left,top,right,bottom=map(round,box)
         if right<=left or bottom<=top:return
-        window=tk.Toplevel(root);window.withdraw();window.title('Gwen Doer - Target '+letter);window.overrideredirect(True)
+        window=tk.Toplevel(root);window.withdraw();window.title('NAVA AI - Target '+letter);window.overrideredirect(True)
         window.attributes('-topmost',True);window.configure(bg='#ff00ff');window.wm_attributes('-transparentcolor','#ff00ff')
         lift=32 if word and top>=32 else 0
         width=max(36,right-left+8);height=max(36,bottom-top+8+lift)

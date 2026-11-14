@@ -2,7 +2,8 @@
 import re
 
 def normalize_command(text):
-    text=text.strip()
+    from branding import strip_wake
+    text=strip_wake(text.strip())
     text=re.sub(r'^(?:please\s+|can you\s+|could you\s+)','',text,flags=re.I)
     fixes={'sroll':'scroll','scrol':'scroll','scrll':'scroll','clikc':'click','clik':'click','cick':'click','clk':'click','tpye':'type','typclick':'click','boild':'bold','bould':'bold','insertt':'insert'}
     m=re.match(r'(\S+)(.*)',text,re.S)

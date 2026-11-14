@@ -23,7 +23,7 @@ class HybridRecognizer:
         from word_context import expected_action,contextual_candidate
         word_action=expected_action(command,context)
         from selection_recognition import known
-        primary_word=parse_direct(re.sub(r'^gwen\s+','',command.get('text',''),flags=re.I))
+        primary_word=parse_direct(re.sub(r'^nava\s+','',command.get('text',''),flags=re.I))
         grounded=bool(primary_word and primary_word.get('kind')=='word_action' and not command.get('word_target_unclear') and known(primary_word['word'],context.get('word_hints','')))
         if word_action and not grounded and context.get('word_hints') and context.get('assistant_active') is not False:
             targeted=self.commands.transcribe_word_targets(audio,context,word_action)
@@ -46,7 +46,7 @@ class HybridRecognizer:
             if command['text'] not in compact_phrases() or command.get('confidence',0)<.86:
                 compact=self.commands.transcribe_controls(audio)
                 command=self.prefer_control(command,compact)
-        text=re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:gwen|guen|glen|glenn)[,:]?\s*','',command['text'],flags=re.I)
+        text=re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:nava)\b[,:]?\s*','',command['text'],flags=re.I)
         low=text.strip().lower().rstrip('.! ')
         from selection_commands import ON,OFF
         from voice_controls import DICTATION_ON,DICTATION_OFF
@@ -99,8 +99,8 @@ class HybridRecognizer:
             if not payload:return command
             result=self.english.transcribe_result(audio,context)
             # Correct only a wake-name spelling independently heard by Vosk.
-            if re.match(r'^(?:gwen|guen|glen|glenn)\b',command['text'],re.I):
-                result['text']=re.sub(r'^(?:when|glen|glenn|guen)\b','Gwen',result['text'],flags=re.I)
+            if re.match(r'^(?:nava)\b',command['text'],re.I):
+                result['text']=re.sub(r'^(?:nava)\b','Nava',result['text'],flags=re.I)
             self.consensus(command,result)
             if result.get('confidence',0)<.72 and command.get('confidence',0)>=.86 and '[unk]' not in command['text']:
                 candidate=parse_direct(re.sub(r'^(?:listen|start listening)\s+','',text,flags=re.I))
@@ -114,7 +114,7 @@ class HybridRecognizer:
         if not isinstance(compact,dict) or compact.get('text') not in compact_phrases():return primary
         words=compact.get('words',[])
         if compact.get('confidence',0)<.9 or not words or min(w.get('probability',0) for w in words)<.65:return primary
-        def payload(text):return re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:gwen|guen|glen|glenn)[,:]?\s*','',text.strip(),flags=re.I).lower().rstrip('.!?')
+        def payload(text):return re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:nava)\b[,:]?\s*','',text.strip(),flags=re.I).lower().rstrip('.!?')
         original=payload(primary.get('text',''));candidate=payload(compact['text'])
         from command_dictionary import intent as help_intent
         if help_intent(candidate) and not help_intent(original):return primary
@@ -130,7 +130,7 @@ class HybridRecognizer:
         for enabled,disabled in ((DICTATION_ON,DICTATION_OFF),(ON,OFF)):
             if (original in enabled and candidate in disabled) or (original in disabled and candidate in enabled):return primary
         if original==candidate:return compact
-        filler={'gwen','guen','glen','glenn','hey','please','on','off','the','a','to','it','this','that','here','me','my',
+        filler={'nava','hey','please','on','off','the','a','to','it','this','that','here','me','my',
                 'open','show','hide','close','turn','switch','start','stop','enable','disable','make','create','new','click','press','select'}
         before=set(re.findall(r'[a-z]+',primary.get('text','').lower()))-filler
         after=set(re.findall(r'[a-z]+',compact['text'].lower()))-filler
@@ -156,7 +156,7 @@ class HybridRecognizer:
     @staticmethod
     def consensus(command,result):
         from direct_commands import parse_direct
-        def payload(value):return re.sub(r'^(?:gwen|guen|glen|glenn)[,:]?\s*','',value.strip(),flags=re.I)
+        def payload(value):return re.sub(r'^(?:nava)\b[,:]?\s*','',value.strip(),flags=re.I)
         a=parse_direct(payload(command['text']));b=parse_direct(payload(result['text']))
         # No confidence transfer across different actions or dictated content.
         if a and a==b and a['kind'] in ('keys','font_delta','select_text','punctuate'):

@@ -6,7 +6,7 @@ from tkinter import ttk,scrolledtext,messagebox
 from voice_gate import VoiceGate
 
 def gui(smoke=False,instance=None):
-    root=tk.Tk(); root.title('Gwen Doer 2.0 - Voice Assistant'); root.geometry('1000x900'); root.configure(bg='#111827')
+    root=tk.Tk(); root.title('NAVA AI 2.0 - Voice Assistant'); root.geometry('1000x900'); root.configure(bg='#111827')
     events=queue.Queue(); work=queue.Queue(maxsize=4); stop=threading.Event(); state_lock=threading.Lock()
     busy=False; closing=False; last_target=None; last_keys={}; cancel_epoch=0
     gate=VoiceGate()
@@ -16,8 +16,8 @@ def gui(smoke=False,instance=None):
     mic_on=tk.BooleanVar(value=False); spoken=tk.BooleanVar(value=True); handsfree=tk.BooleanVar(value=False)
     status=tk.StringVar(value='Starting...'); voice_status=tk.StringVar(value='Starting speech recognition...')
     target_status=tk.StringVar(value='Target: select an app to control')
-    ttk.Label(root,text='Gwen Doer',font=('Segoe UI',23,'bold')).pack(anchor='w',padx=18,pady=(12,3))
-    ttk.Label(root,text='Enable Hands-free once for continuous commands, or press F9 to speak. Say “Gwen sleep” to pause.').pack(anchor='w',padx=18)
+    ttk.Label(root,text='NAVA AI',font=('Segoe UI',23,'bold')).pack(anchor='w',padx=18,pady=(12,3))
+    ttk.Label(root,text='Enable Hands-free once for continuous commands, or press F9 to speak. Say “Nava sleep” to pause.').pack(anchor='w',padx=18)
     output=scrolledtext.ScrolledText(root,height=8,wrap='word',font=('Consolas',10),bg='#172033',fg='#e5e7eb',state='disabled')
     output.pack(fill='both',expand=True,padx=18,pady=10)
     entry=tk.Text(root,height=3,font=('Segoe UI',12)); entry.pack(fill='x',padx=18)
@@ -28,10 +28,10 @@ def gui(smoke=False,instance=None):
     ttk.Label(root,textvariable=status).pack(anchor='w',padx=18)
     ttk.Label(root,textvariable=target_status).pack(anchor='w',padx=18)
     ttk.Label(root,textvariable=voice_status).pack(anchor='w',padx=18,pady=(3,0))
-    ttk.Label(root,text='F9: speak once   F10: show/hide chat   F8: stop   Closing this window keeps Gwen running.').pack(anchor='w',padx=18,pady=(5,10))
-    dock=tk.Toplevel(root); dock.title('Gwen Doer Dock'); dock.withdraw(); dock.overrideredirect(True); dock.configure(bg='#172033'); dock.attributes('-topmost',True)
+    ttk.Label(root,text='F9: speak once   F10: show/hide chat   F8: stop   Closing this window keeps NAVA AI running.').pack(anchor='w',padx=18,pady=(5,10))
+    dock=tk.Toplevel(root); dock.title('NAVA AI Dock'); dock.withdraw(); dock.overrideredirect(True); dock.configure(bg='#172033'); dock.attributes('-topmost',True)
     dock.geometry(f'420x145+{max(0,root.winfo_screenwidth()-440)}+{max(0,root.winfo_screenheight()-200)}')
-    tk.Label(dock,text='GWEN  •  voice assistant',bg='#172033',fg='#a5b4fc',font=('Segoe UI',11,'bold')).pack(anchor='w',padx=10,pady=(7,2))
+    tk.Label(dock,text='NAVA AI  •  voice assistant',bg='#172033',fg='#a5b4fc',font=('Segoe UI',11,'bold')).pack(anchor='w',padx=10,pady=(7,2))
     dock_status=tk.StringVar(value='Press F9 or Speak to enable voice')
     tk.Label(dock,textvariable=dock_status,bg='#172033',fg='white',wraplength=395,justify='left',font=('Segoe UI',9)).pack(anchor='w',padx=10)
     dock_row=ttk.Frame(dock); dock_row.pack(fill='x',padx=8,pady=7)
@@ -40,7 +40,7 @@ def gui(smoke=False,instance=None):
     def context():
         import windows_api
         current=windows_api.snapshot()
-        if current and not current['title'].startswith('Gwen Doer'): return current
+        if current and not current['title'].startswith('NAVA AI'): return current
         return dict(last_target) if last_target else None
     voice=VoiceEngine(lambda text,ctx:events.put(('voice',(text,ctx,voice.epoch))),lambda s:events.put(('voice_status',s)),context,speaker)
     def show_dock():
@@ -64,7 +64,7 @@ def gui(smoke=False,instance=None):
         if not mic_on.get(): voice_status.set('Microphone off'); dock_status.set('Microphone off • F9 to enable and speak')
     def hands_changed():
         if handsfree.get(): mic_on.set(True); voice.set_enabled(True)
-        gate.handsfree=handsfree.get(); dock_status.set('Hands-free: say a command' if gate.handsfree else 'Say “Gwen listen” or press F9')
+        gate.handsfree=handsfree.get(); dock_status.set('Hands-free: say a command' if gate.handsfree else 'Say “Nava listen” or press F9')
         log('Hands-free session '+('enabled.' if gate.handsfree else 'paused.'))
     def spoken_changed():
         speaker.enabled=spoken.get()
@@ -181,7 +181,7 @@ def gui(smoke=False,instance=None):
                 kind,value=events.get_nowait()
                 if kind=='log':
                     output.configure(state='normal'); output.insert('end',value+'\n\n'); output.see('end'); output.configure(state='disabled')
-                elif kind=='ready': busy=False; run.configure(state='normal'); status.set('Ready. Closing this chat keeps Gwen available.'); show_dock()
+                elif kind=='ready': busy=False; run.configure(state='normal'); status.set('Ready. Closing this chat keeps NAVA AI available.'); show_dock()
                 elif kind=='started': busy=True; dock.withdraw(); status.set('Working: '+value[0][:70])
                 elif kind=='finished':
                     result,origin=value; busy=not work.empty(); run.configure(state='disabled' if busy else 'normal'); status.set('Ready. F9 speaks once; F10 opens chat.')

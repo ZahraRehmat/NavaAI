@@ -20,7 +20,7 @@ class ActiveWindowTests(unittest.TestCase):
     def test_both_grids_pass_current_window_actions_to_agent(self):
         grid=AdaptiveGrid(FakeMouse(),lambda:[(0,0,800,600)],observer=lambda:[])
         try:
-            for enable in ('gwen grid','gwen full grid'):
+            for enable in ('nava grid','nava full grid'):
                 grid.run(enable)
                 for task in ('minimize this app','maximize this screen','close this screen','restore this window','minimize chat g p t','maximize Word'):
                     before=list(grid.mouse.events)
@@ -76,7 +76,7 @@ class ActiveWindowTests(unittest.TestCase):
             self.assertFalse(win.restore_launch_focus(previous,own_pid=99))
         focus.assert_not_called()
         with patch('windows_api.target_alive',return_value=True):
-            self.assertEqual(win.choose_target({'hwnd':2,'title':'Gwen Doer - Type commands'},[previous]),previous)
+            self.assertEqual(win.choose_target({'hwnd':2,'title':'NAVA AI - Type commands'},[previous]),previous)
 
 
 if __name__=='__main__':unittest.main()

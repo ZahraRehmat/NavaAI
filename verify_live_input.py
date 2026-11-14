@@ -7,12 +7,12 @@ from tkinter import ttk
 from agent import Agent
 import windows_api
 
-root=tk.Tk(); root.title('Gwen Input Test'); root.geometry('900x760')
+root=tk.Tk(); root.title('NAVA AI Input Test'); root.geometry('900x760')
 ttk.Label(root,text='Direct input integration test',font=('Segoe UI',18,'bold')).pack(pady=10)
 status=tk.StringVar(value='Press Start test. No other application is used.')
 ttk.Label(root,textvariable=status).pack()
 text=tk.Text(root,height=18,width=70); text.pack(fill='both',expand=True,padx=20,pady=10)
-text.insert('1.0','\n'.join(f'Line {i}: Gwen scroll test' for i in range(150)))
+text.insert('1.0','\n'.join(f'Line {i}: Nava scroll test' for i in range(150)))
 entry=ttk.Entry(root); entry.pack(fill='x',padx=20,pady=8)
 clicks=0
 def clicked():
@@ -39,10 +39,10 @@ def after_up():
 def after_click():
     result['target_clicks']=clicks
     if clicks!=1: fail('Click here did not click the target'); return
-    entry.focus_set(); root.after(100,lambda:issue('type "Gwen typed this."',point(entry),'type'))
+    entry.focus_set(); root.after(100,lambda:issue('type "Nava typed this."',point(entry),'type'))
 def after_type():
     result['typed_text']=entry.get(); result['model_loaded']=a.planner is not None
-    if entry.get()!='Gwen typed this.' or a.planner is not None: fail('Typing or model bypass check failed'); return
+    if entry.get()!='Nava typed this.' or a.planner is not None: fail('Typing or model bypass check failed'); return
     result['passed']=True
     Path('live-input-verification.json').write_text(json.dumps(result,indent=2),encoding='utf8')
     status.set('PASS: scroll down/up, click at point, and typing; Qwen was not loaded.')

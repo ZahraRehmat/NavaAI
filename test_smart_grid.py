@@ -15,7 +15,7 @@ class SmartTests(unittest.TestCase):
     def controller(self):
         self.rows=[row(),row('two',(100,10,180,45))];self.pictures=[]
         grid=AdaptiveGrid(FakeMouse(),lambda:[(0,0,1920,1200)],observer=lambda:list(self.rows),render=self.pictures.append)
-        self.addCleanup(grid.close);grid.run('gwen grid');return grid
+        self.addCleanup(grid.close);grid.run('nava grid');return grid
 
     def test_stable_identity_moves_and_no_label_recycling(self):
         m=SmartMap([(0,0,800,600)]);m.update([row(),row('two')]);self.assertEqual(m.cell('A')['name'],'one')
@@ -69,7 +69,7 @@ class SmartTests(unittest.TestCase):
 
     def test_mode_switch_and_emergency_release(self):
         g=self.controller();g.run('hold A');self.assertTrue(g.mouse.held)
-        g.run('gwen full grid');self.assertFalse(g.mouse.held);self.assertEqual(g.mode,'smart')
+        g.run('nava full grid');self.assertFalse(g.mouse.held);self.assertEqual(g.mode,'smart')
         g.run('click A');g.run('open grid');g.run('hold A');g.emergency_stop()
         self.assertFalse(g.active);self.assertFalse(g.mouse.held);self.assertIsNone(g.run('open chrome'))
 
@@ -120,7 +120,7 @@ class SmartTests(unittest.TestCase):
         g=self.controller()
         def empty():raise queue.Empty()
         g.observer=empty
-        result=g.run('gwen grid')
+        result=g.run('nava grid')
         self.assertIn('Smart grid on',result);self.assertIn('Empty',result)
         self.assertTrue(g.active);self.assertFalse(g.grid.targets)
         g.observer=lambda:[row()];g.refresh();self.assertTrue(g.grid.targets)
@@ -165,7 +165,7 @@ class SmartTests(unittest.TestCase):
 
     def test_mode_switch_in_chain_does_not_execute_input(self):
         g=self.controller();before=list(g.mouse.events)
-        with self.assertRaises(ValueError):g.run('click A then gwen grid')
+        with self.assertRaises(ValueError):g.run('click A then nava grid')
         self.assertEqual(g.mouse.events,before);self.assertEqual(g.mode,'smart')
 
 if __name__=='__main__':unittest.main()

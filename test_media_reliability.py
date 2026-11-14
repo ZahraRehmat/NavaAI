@@ -39,7 +39,7 @@ class MediaReliabilityTests(unittest.TestCase):
         self.assertEqual(requested_open_target('open red.png'),'red.png')
         self.assertIsNone(requested_open_target('open one then open two'))
     def test_closed_player_is_skipped_for_living_explorer(self):
-        current={'hwnd':1,'title':'Gwen Doer - Type commands'}
+        current={'hwnd':1,'title':'NAVA AI - Type commands'}
         player={'hwnd':2,'title':'Media Player'};explorer={'hwnd':3,'title':'Folder - File Explorer'}
         with patch('windows_api.target_alive',side_effect=lambda c:c['hwnd']==3):self.assertEqual(win.choose_target(current,[player,explorer]),explorer)
     def test_closed_handle_reports_stale_target_not_permission(self):

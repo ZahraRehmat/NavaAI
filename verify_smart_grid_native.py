@@ -31,9 +31,9 @@ def proc(hwnd,msg,wp,lp):
         return 0
     if msg==2:u.PostQuitMessage(0);return 0
     return u.DefWindowProcW(hwnd,msg,wp,lp)
-instance=k.GetModuleHandleW(None);wc=WC(0,proc,0,0,instance,None,None,w.HBRUSH(6),None,'GwenSmartTest')
+instance=k.GetModuleHandleW(None);wc=WC(0,proc,0,0,instance,None,None,w.HBRUSH(6),None,'NAVA AISmartTest')
 u.RegisterClassW(ctypes.byref(wc))
-root=u.CreateWindowExW(0,wc.name,'Gwen Smart Grid Test Surface',0x10cf0000,100,100,820,560,None,None,instance,None)
+root=u.CreateWindowExW(0,wc.name,'NAVA AI Smart Grid Test Surface',0x10cf0000,100,100,820,560,None,None,instance,None)
 child('BUTTON','Move target',30,80,160,60,101)
 child('BUTTON','Destination',300,150,160,60,102)
 child('EDIT','Test input',230,80,240,30,103)

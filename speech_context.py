@@ -140,7 +140,7 @@ def correct(text,context=None):
 
 def hint(context=None):
     # A short vocabulary prompt assists recognition without forcing any label.
-    base='Gwen. Computer commands: click, double click, scroll up, scroll down, open, stop, release.'
+    base='Nava. Computer commands: click, double click, scroll up, scroll down, open, stop, release.'
     if (context or {}).get('grid_active'):return base+' Grid labels are spelled as letters and digits, for example F G, six M J. NATO letters alpha bravo charlie.'
     if (context or {}).get('office')=='excel':return base+' Excel commands: select cell A2, cell E5, bold, font size.'
     return base

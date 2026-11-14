@@ -4,18 +4,34 @@ from tkinter import font as tkfont
 from ctypes import wintypes as w
 from grid_badge_layout import taskbar_layout
 
+def clipped_occlusions(area,rectangles):
+    left,top,right,bottom=area;result=[]
+    for x1,y1,x2,y2 in rectangles:
+        x1=max(left,x1);y1=max(top,y1);x2=min(right,x2);y2=min(bottom,y2)
+        if x2>x1 and y2>y1:result.append((x1-left,y1-top,x2-left,y2-top))
+    return result
+
+
 class GridOverlay:
     def __init__(self,root):
         self.root=root;self.windows=[];self.canvases=[];self.layout=None;self.font=None
+        self.occlusions=[];self.last_snapshot=None
         from uiaccess_overlay import UiAccessOverlay
         self.shell_layer=UiAccessOverlay()
+
+    def set_occlusions(self,rectangles):
+        rectangles=[tuple(r) for r in rectangles]
+        if rectangles==self.occlusions:return False
+        self.occlusions=rectangles
+        if self.last_snapshot is not None:self.draw(self.last_snapshot)
+        return True
 
     def close(self):
         self.shell_layer.close()
         for window in self.windows:
             try:window.destroy()
             except tk.TclError:pass
-        self.windows=[];self.canvases=[];self.layout=None;self.font=None
+        self.windows=[];self.canvases=[];self.layout=None;self.font=None;self.last_snapshot=None
 
     def draw(self,snapshot):
         if not snapshot['active']:self.close();return
@@ -36,7 +52,7 @@ class GridOverlay:
             if reuse:
                 window=self.windows[index];canvas=self.canvases[index];canvas.delete('all')
             else:
-                window=tk.Toplevel(self.root);window.withdraw();window.title('Gwen Doer - '+snapshot.get('mode','smart').title()+' Grid '+str(area['monitor']))
+                window=tk.Toplevel(self.root);window.withdraw();window.title('NAVA AI - '+snapshot.get('mode','smart').title()+' Grid '+str(area['monitor']))
                 window.overrideredirect(True);window.configure(bg=transparent)
                 window.attributes('-transparentcolor',transparent,'-topmost',True)
                 window.geometry(f'{width}x{height}+0+0')
@@ -84,6 +100,8 @@ class GridOverlay:
                 x1,y1,x2,y2=item['box']
                 canvas.create_rectangle(x1,y1,x2,y2,fill=cfg['label_background'],outline='#5a8796',width=1)
                 canvas.create_text((x1+x2)/2,(y1+y2)/2,text=item['label'],fill=cfg['label_color'],font=font)
+            for x1,y1,x2,y2 in clipped_occlusions(area['bounds'],self.occlusions):
+                canvas.create_rectangle(x1,y1,x2,y2,fill=transparent,outline='',width=0)
             if reuse:
                 # Newly opened topmost menus can cover an existing overlay.
                 # Reassert z-order without taking focus or dismissing the menu.
@@ -97,7 +115,7 @@ class GridOverlay:
             user.ShowWindow(hwnd,4);user.SetWindowPos(hwnd,w.HWND(-1),l,t,width,height,0x10|0x40)
             self.windows.append(window)
             self.canvases.append(canvas)
-        self.layout=layout
+        self.layout=layout;self.last_snapshot=snapshot
         shell_drawn=self.shell_layer.draw(snapshot,self.canvases)
         for window in self.windows:
             hwnd=user.GetParent(window.winfo_id()) or window.winfo_id()

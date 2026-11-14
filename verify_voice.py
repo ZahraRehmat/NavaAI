@@ -10,7 +10,7 @@ from direct_commands import parse_direct,is_question
 
 root=Path(__file__).resolve().parent; fixtures=root/'voice_test_audio'; fixtures.mkdir(exist_ok=True)
 recognizer=LocalRecognizer(print); gate=VoiceGate(); results=[]
-phrases=['Gwen listen','Scroll down','Scroll up','Click here','What is a computer?','Gwen sleep']
+phrases=['Nava listen','Scroll down','Scroll up','Click here','What is a computer?','Nava sleep']
 pythoncom.CoInitialize()
 try:
     for i,text in enumerate(phrases):

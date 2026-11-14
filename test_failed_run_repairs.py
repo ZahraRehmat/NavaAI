@@ -10,18 +10,18 @@ class FailedRunRepairs(unittest.TestCase):
     def test_unobserved_app_and_explicit_folder_return_to_agent_with_grid_on(self):
         grid=AdaptiveGrid(FakeMouse(),lambda:[(0,0,800,600)],observer=lambda:[])
         try:
-            for enable in ('gwen grid','gwen full grid'):
+            for enable in ('nava grid','nava full grid'):
                 grid.run(enable)
-                for task in ('open chat g p t','open gwen three folder','open FYP','search youtube','make E5 bold'):
+                for task in ('open chat g p t','open nava three folder','open FYP','search youtube','make E5 bold'):
                     self.assertIsNone(grid.run(task),task);self.assertTrue(grid.active)
         finally:grid.close()
 
     def test_number_word_folder_and_desktop_root(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder)/'Desktop';root.mkdir()
-            target=root/'gwen 3';target.mkdir()
-            self.assertEqual(resolve_folder('gwen three',[root]),target)
-            self.assertEqual(resolve_folder('gwen3',[root]),target)
+            target=root/'nava 3';target.mkdir()
+            self.assertEqual(resolve_folder('nava three',[root]),target)
+            self.assertEqual(resolve_folder('nava3',[root]),target)
             self.assertEqual(resolve_folder('Desktop',[root]),root)
             other=root/'reports by agent B';other.mkdir()
             self.assertEqual(resolve_folder('reports by agent bee',[root],chooser=lambda *_:0),other)
@@ -46,7 +46,7 @@ class FailedRunRepairs(unittest.TestCase):
 
     def test_wake_once_can_start_dictation_without_continuous_commands(self):
         session=CommandVoice({'handsfree':False})
-        self.assertEqual(session.route({'text':'Gwen type','confidence':1})['control'],'dictation_on')
+        self.assertEqual(session.route({'text':'Nava type','confidence':1})['control'],'dictation_on')
         self.assertEqual(session.route({'text':'hello world','confidence':1})['text'],'type hello world')
         self.assertEqual(session.route({'text':'stop dictation','confidence':1})['control'],'dictation_off')
         self.assertFalse(session.handsfree)

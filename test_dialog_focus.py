@@ -21,7 +21,7 @@ class DialogFocusTests(unittest.TestCase):
         self.assertFalse(dialog_action('Save.xlsx'))
     def test_dialog_action_cannot_match_chat_text(self):
         with self.assertRaises(ValueError):named_control_id([{'id':1,'name':"Don't Save",'type':'Text'}],'dont save')
-        prose='Click dont save — Gwen tried to focus the workbook instead of its dialog. I confirmed the workbook is currently disabled.'
+        prose='Click dont save — NAVA AI tried to focus the workbook instead of its dialog. I confirmed the workbook is currently disabled.'
         with self.assertRaises(NoLabelMatch):choose_label([{'text':prose}],'dont save',key='text')
     def test_native_invoke_reacquires_bound_window(self):
         probe=NativeControls();probe.hwnd=20;probe.bounds=(100,100,400,300);el=Mock();probe.controls={1:el}

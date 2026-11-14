@@ -20,3 +20,6 @@ models/Qwen*/
 models/whisper-tiny.en/
 build/
 dist/
+
+# Rebuild the local accessibility renderer from the included sources.
+uiaccess/*.exe

@@ -26,4 +26,4 @@ def compact_phrases():
         'turn on','turn off','switch on','switch off'}
     from command_dictionary import ALIASES
     phrases.update(ALIASES)
-    return sorted(phrases|{'gwen '+p for p in phrases})
+    return sorted(phrases|{'nava '+p for p in phrases})

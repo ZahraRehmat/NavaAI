@@ -14,7 +14,7 @@ class BackgroundVoiceTests(unittest.TestCase):
     def test_listen_latches_across_commands_stop_errors_and_time(self):
         from unittest.mock import patch
         session=CommandVoice();ctx={'grid_active':True,'labels':['FG']}
-        self.assertEqual(session.route({'text':'Gwen listen','confidence':.99})['control'],'handsfree')
+        self.assertEqual(session.route({'text':'Nava listen','confidence':.99})['control'],'handsfree')
         with patch('command_voice.time.monotonic',return_value=time.monotonic()+86400):
             for _ in range(5):
                 self.assertEqual(session.route({'text':'FG','confidence':.99},ctx)['kind'],'command')
@@ -22,7 +22,7 @@ class BackgroundVoiceTests(unittest.TestCase):
                 self.assertTrue(session.handsfree)
                 self.assertEqual(session.route({'text':'click FB','confidence':.99},ctx)['kind'],'review')
                 self.assertTrue(session.handsfree)
-        self.assertEqual(session.route({'text':'Gwen sleep','confidence':.99})['control'],'sleep')
+        self.assertEqual(session.route({'text':'Nava sleep','confidence':.99})['control'],'sleep')
         self.assertEqual(session.route({'text':'FG','confidence':.99},ctx)['kind'],'ignore')
     def test_task_and_review_feedback_never_restore_or_focus_panel(self):
         from unittest.mock import Mock

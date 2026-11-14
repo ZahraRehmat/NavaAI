@@ -11,7 +11,7 @@ on or off and support spoken row numbers/NATO column letters.
 | select from B2 to N6 | Select the rectangular range B2:N6 |
 | select from Y7 to Z9 | Select Y7:Z9 |
 | edit J7 / double click J7 | Select J7 and send Excel's F2 edit key |
-| edit J7 and start dictation | Enter edit mode, then enable Gwen dictation in that window |
+| edit J7 and start dictation | Enter edit mode, then enable NAVA AI dictation in that window |
 | press enter | Send Enter to Excel, normally committing the edit |
 | copy cell C9 | Use Excel's rich clipboard copy |
 | copy B2 to N6 / copy selected cells | Copy that range/selection with formulas and formatting |
@@ -26,7 +26,7 @@ stop; **press enter** commits the cell using Excel's normal behavior. Complete
 an existing in-cell edit or dialog before asking for another native operation.
 Excel may reject COM operations while its cell editor or a modal dialog is open.
 
-**Copy cell 9** is ambiguous because it has no column. Gwen asks for a full
+**Copy cell 9** is ambiguous because it has no column. NAVA AI asks for a full
 address instead of inventing one. Cell and range addresses are validated; the
 new targeted operations are bounded to one contiguous range of at most 10,000
 cells. Existing tables are not silently converted into duplicate tables.
@@ -39,7 +39,7 @@ Excel's own cell addresses are the worksheet grid: say **select G6** or
 dialogs still receive smart-grid labels. Other applications keep their
 existing labeling behavior.
 
-Say **open dropdown**. Gwen observes the app's currently visible, enabled
+Say **open dropdown**. NAVA AI observes the app's currently visible, enabled
 dropdown controls and marks them on screen. Say the displayed letter/NATO
 spelling or click the matching option. Cancel leaves menus untouched.
 

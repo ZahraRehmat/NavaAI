@@ -23,21 +23,21 @@ def canvas_frame(snapshot,canvases):
 
 class UiAccessOverlay:
     def __init__(self,install_root=None):
-        self.install_root=Path(install_root or Path(os.environ.get('ProgramFiles',r'C:\Program Files'))/'Gwen Accessibility')
+        self.install_root=Path(install_root or Path(os.environ.get('ProgramFiles',r'C:\Program Files'))/'NAVA AI Accessibility')
         self.handle=None;self.retry_after=0;self.error='';self.verified=False
 
     def installed(self):
         try:
             meta=json.loads((self.install_root/'install.json').read_text(encoding='utf-8-sig'))
-            return meta['exe_sha256'].lower()==hashlib.sha256((self.install_root/'GwenOverlay.exe').read_bytes()).hexdigest()
+            return meta['exe_sha256'].lower()==hashlib.sha256((self.install_root/'NavaOverlay.exe').read_bytes()).hexdigest()
         except (OSError,KeyError,ValueError):return False
 
     def connect(self):
         if self.handle is not None:return True
         if time.monotonic()<self.retry_after or not self.installed():return False
         import win32api,win32file,win32pipe,win32con
-        name='GwenOverlay-'+uuid.uuid4().hex;pipe='\\\\.\\pipe\\'+name
-        result=win32api.ShellExecute(0,'open',str(self.install_root/'GwenOverlay.exe'),name,str(self.install_root),4)
+        name='NavaOverlay-'+uuid.uuid4().hex;pipe='\\\\.\\pipe\\'+name
+        result=win32api.ShellExecute(0,'open',str(self.install_root/'NavaOverlay.exe'),name,str(self.install_root),4)
         if result<=32:raise OSError('Windows refused the installed UIAccess helper.')
         deadline=time.monotonic()+2
         while time.monotonic()<deadline:

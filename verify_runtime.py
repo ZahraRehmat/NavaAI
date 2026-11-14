@@ -16,9 +16,9 @@ class FailedGPU:
 
 p.pipe=FailedGPU(); p.device='GPU'
 simple={'mode':'browser','elements':[{'id':4,'tag':'INPUT','text':'Name','value':''}],'text':''}
-a=p.next('Fill the Name input with exactly this text: "Gwen recovery test".',simple,None,[],[])
+a=p.next('Fill the Name input with exactly this text: "NAVA AI recovery test".',simple,None,[],[])
 validate_action(a)
 assert p.device=='CPU'
-assert a['action']=='browser_fill' and a['id']==4 and a['text']=='Gwen recovery test',a
+assert a['action']=='browser_fill' and a['id']==4 and a['text']=='NAVA AI recovery test',a
 print('PASS injected GPU fault -> fresh real CPU pipeline -> valid field action',a,flush=True)
 Path('runtime-verification.txt').write_text('PASS: Real large-page inference within 1,600 text tokens. Injected GPU error discarded the session; a new real CPU pipeline generated the expected action. Hardware allocation failure itself was simulated.',encoding='utf8')

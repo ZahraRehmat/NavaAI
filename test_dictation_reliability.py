@@ -33,6 +33,7 @@ class DictationReliabilityTests(unittest.TestCase):
         self.assertTrue(r.english.transcribe_result.call_args.args[1]['dictation_accuracy_pass'])
 
     def test_unicode_delivery_keeps_characters_separate_and_stops_on_focus_change(self):
+        import windows_api # Load real bindings before mocking the DLL factory.
         from unicode_keyboard import type_unicode
         sent=[];api=Mock()
         api.SendInput.side_effect=lambda count,buffer,size:sent.append([event.payload.keyboard.scan for event in buffer]) or count

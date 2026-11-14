@@ -6,7 +6,7 @@ from playwright.sync_api import sync_playwright
 
 ROOT=Path(__file__).resolve().parent
 DOM = r'''(token) => {
- document.querySelectorAll('[data-gwen-id]').forEach(e=>{e.removeAttribute('data-gwen-id');e.removeAttribute('data-gwen-token')});
+ document.querySelectorAll('[data-nava-id]').forEach(e=>{e.removeAttribute('data-nava-id');e.removeAttribute('data-nava-token')});
  const nodes = [...document.querySelectorAll('a,button,input,textarea,select,[role="button"],[contenteditable="true"]')];
  return nodes.filter(e=>{
  if(!e.getClientRects().length || getComputedStyle(e).visibility==='hidden' || e.disabled || e.getAttribute('aria-disabled')==='true')return false;
@@ -15,8 +15,8 @@ DOM = r'''(token) => {
  const hit=document.elementFromPoint((l+right)/2,(t+bottom)/2);
  return !!hit && (e===hit || e.contains(hit) || hit.closest('label')?.control===e);
  }).slice(0,120).map((e,i)=>{
- e.setAttribute('data-gwen-id',String(i));
- e.setAttribute('data-gwen-token',token);
+ e.setAttribute('data-nava-id',String(i));
+ e.setAttribute('data-nava-token',token);
  return {id:i,tag:e.tagName,role:e.getAttribute('role'),focused:e===document.activeElement,text:(e.innerText?.trim()||e.getAttribute('aria-label')||e.placeholder||e.title||'').slice(0,140),type:e.type||'',value:e.type==='password'?'[hidden]':String(e.value||'').slice(0,120),href:e.getAttribute('href')};
  });
 }'''
@@ -71,7 +71,7 @@ class Browser:
                 rows=frame.evaluate(DOM,token)
                 for row in rows:
                     local=row['id']; index=len(elements); row['id']=index
-                    self.elements[index]=frame.locator(f'[data-gwen-id="{local}"][data-gwen-token="{token}"]')
+                    self.elements[index]=frame.locator(f'[data-nava-id="{local}"][data-nava-token="{token}"]')
                     elements.append(row)
                 if rows: texts.append(frame.locator('body').inner_text(timeout=1500)[:4000])
             except Exception: continue
@@ -178,10 +178,10 @@ class Browser:
             for index,option in enumerate(options):
                 box=self.element(option['id']).bounding_box()
                 if box:boxes.append(dict(box,letter=chr(65+index)))
-            self.page.evaluate('''boxes=>{document.querySelector('#gwen-target-choices')?.remove();const root=document.createElement('div');root.id='gwen-target-choices';root.style.cssText='position:fixed;inset:0;z-index:2147483647;pointer-events:none';for(const b of boxes){const e=document.createElement('div');e.style.cssText=`position:absolute;left:${b.x}px;top:${b.y}px;width:${b.width}px;height:${b.height}px;border:3px solid #ffb000;box-sizing:border-box`;const badge=document.createElement('b');badge.textContent=b.letter;badge.style.cssText='position:absolute;left:0;top:0;background:#ffb000;color:#111827;border-radius:50%;font: bold 19px sans-serif;padding:3px 8px';e.append(badge);root.append(e)}document.documentElement.append(root)}''',boxes)
+            self.page.evaluate('''boxes=>{document.querySelector('#nava-target-choices')?.remove();const root=document.createElement('div');root.id='nava-target-choices';root.style.cssText='position:fixed;inset:0;z-index:2147483647;pointer-events:none';for(const b of boxes){const e=document.createElement('div');e.style.cssText=`position:absolute;left:${b.x}px;top:${b.y}px;width:${b.width}px;height:${b.height}px;border:3px solid #ffb000;box-sizing:border-box`;const badge=document.createElement('b');badge.textContent=b.letter;badge.style.cssText='position:absolute;left:0;top:0;background:#ffb000;color:#111827;border-radius:50%;font: bold 19px sans-serif;padding:3px 8px';e.append(badge);root.append(e)}document.documentElement.append(root)}''',boxes)
             try:return chooser(query,options,preview=self.page.screenshot())
             finally:
-                try:self.page.evaluate("document.querySelector('#gwen-target-choices')?.remove()")
+                try:self.page.evaluate("document.querySelector('#nava-target-choices')?.remove()")
                 except Exception:pass
         try:
             if chooser:

@@ -20,7 +20,7 @@ class DialogVoiceTests(unittest.TestCase):
 
     def test_letters_and_nato_with_natural_prefixes(self):
         for text,expected in [('B',1),('bravo',1),('select D',3),('click delta',3),
-                              ('press a',0),('Gwen choose charlie',2),('option alpha',0),('letter b',1)]:
+                              ('press a',0),('Nava choose charlie',2),('option alpha',0),('letter b',1)]:
             self.assertEqual(answer(text,4),expected,text)
         for text in ('b. Okay. Okay.','select d okay','open word','father to sun','E','bravo delta',''):
             self.assertIsNone(answer(text,4),text)
@@ -34,7 +34,7 @@ class DialogVoiceTests(unittest.TestCase):
     def test_small_grammar_tracks_current_choices(self):
         model=Mock();model.vosk_model_find_word.return_value=1
         choices=vocabulary({'dialog_active':True,'dialog_count':4},model)
-        for phrase in ('b','bravo','select d','click delta','cancel','gwen turn off','[unk]'):
+        for phrase in ('b','bravo','select d','click delta','cancel','nava turn off','[unk]'):
             self.assertIn(phrase,choices)
         for phrase in ('echo','open chrome','select e','father to sun'):
             self.assertNotIn(phrase,choices)

@@ -5,7 +5,7 @@ from command_voice import CommandVoice
 
 class CommandDictionaryTests(unittest.TestCase):
     def test_help_phrases_are_exact_and_payload_is_literal(self):
-        for phrase in ('show commands','open dictionary','Gwen show dictionary'):
+        for phrase in ('show commands','open dictionary','Nava show dictionary'):
             self.assertEqual(intent(phrase),{'action':'show'})
         self.assertEqual(intent('hide commands'),{'action':'hide'})
         self.assertEqual(intent('open full dictionary'),{'action':'master'})

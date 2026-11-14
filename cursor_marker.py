@@ -6,7 +6,7 @@ class CursorMarker:
     def __init__(self,root,visible=True):
         self.root=root; self.alive=True;self.visible=bool(visible);self.timer=None
         self.window=tk.Toplevel(root); self.window.withdraw()
-        self.window.title('Gwen Doer Cursor'); self.window.overrideredirect(True)
+        self.window.title('NAVA AI Cursor'); self.window.overrideredirect(True)
         self.window.configure(bg='#010203')
         self.window.attributes('-transparentcolor','#010203','-topmost',True)
         self.canvas=tk.Canvas(self.window,width=64,height=64,bg='#010203',highlightthickness=0)
@@ -24,7 +24,7 @@ class CursorMarker:
         self.shown=False
         # LAYERED + TRANSPARENT + TOOLWINDOW + NOACTIVATE: input passes through.
         user.SetWindowLongW(self.hwnd,-20,user.GetWindowLongW(self.hwnd,-20)|0x080800a0)
-        # Allow desktop capture so remote collaborators can see Gwen's cursor.
+        # Allow desktop capture so remote collaborators can see NAVA AI's cursor.
         user.SetWindowDisplayAffinity.argtypes=[ctypes.c_void_p,ctypes.c_uint]
         user.SetWindowDisplayAffinity(self.hwnd,0)
         self.tick()

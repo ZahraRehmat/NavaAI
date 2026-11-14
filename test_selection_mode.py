@@ -21,7 +21,7 @@ class SelectionModeTests(unittest.TestCase):
             self.assertEqual(say('stop selection')['control'],'selection_off')
 
     def test_selection_arms_next_phrase_without_continuous_listening(self):
-        session=CommandVoice();self.assertEqual(session.route({'text':'Gwen selection','confidence':1})['control'],'selection_on')
+        session=CommandVoice();self.assertEqual(session.route({'text':'Nava selection','confidence':1})['control'],'selection_on')
         self.assertEqual(session.route({'text':'Islamabad to Karachi','confidence':1})['kind'],'command')
         self.assertEqual(session.route({'text':'stop','confidence':1})['control'],'stop');self.assertFalse(session.selecting)
 
@@ -29,7 +29,7 @@ class SelectionModeTests(unittest.TestCase):
         session=CommandVoice({'handsfree':True});session.selecting=True
         self.assertEqual(session.route({'text':'Islamabad to Karachi','confidence':.4})['kind'],'review')
         self.assertEqual(session.route({'text':'start dictation','confidence':1})['control'],'dictation_on');self.assertFalse(session.selecting)
-        session.selecting=True;session.route({'text':'Gwen turn off','confidence':1});self.assertFalse(session.selecting)
+        session.selecting=True;session.route({'text':'Nava turn off','confidence':1});self.assertFalse(session.selecting)
 
     def test_literal_payload_is_not_a_selection_command(self):
         self.assertEqual(parse_direct('type Islamabad to Karachi')['kind'],'type')

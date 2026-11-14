@@ -1,6 +1,6 @@
 # Website commands
 
-Gwen has a cached directory of **10,000 popular domains**, downloaded from
+NAVA AI has a cached directory of **10,000 popular domains**, downloaded from
 [Tranco list 8P8NV](https://tranco-list.eu/list/8P8NV), generated 8 November 2026.
 Domain names, compact brand names, and common spoken aliases resolve locally.
 The `.com`, `.org`, `.net`, `.pk`, etc. ending is optional for indexed names.
@@ -16,7 +16,7 @@ The `.com`, `.org`, `.net`, `.pk`, etc. ending is optional for indexed names.
 | open booking on Edge | Resolve the downloaded domain name to booking.com |
 
 Chrome and Edge reuse existing windows when available. If several windows of
-the requested browser are open, Gwen asks which one to use. Grid on/off does
+the requested browser are open, NAVA AI asks which one to use. Grid on/off does
 not change website routing. A website command bypasses grid mouse-name matching.
 The reverted grid changes remain reverted.
 
@@ -35,7 +35,7 @@ existing file routes, and generic targets such as `current`, `screenshots`,
 - `data/WEBSITES_SOURCE.md`: provenance, source attribution and provider links.
 
 To add a spoken name, add it to the alias list under the desired HTTPS URL in
-`website_aliases.json`, then restart Gwen. Alias lookup ignores spaces and
+`website_aliases.json`, then restart NAVA AI. Alias lookup ignores spaces and
 punctuation, so `stack overflow` and `stackoverflow` share the same lookup.
 Only uniquely strong one-character name typos are corrected; unresolved names
 keep the normal direct-command behavior. No Qwen model is loaded.

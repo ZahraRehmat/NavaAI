@@ -7,7 +7,7 @@ from routing import search_intent,first_result_intent,text_entry_intent
 
 class ReliabilityTests(unittest.TestCase):
     def test_preserve_requested_multiword_text(self):
-        self.assertEqual(text_entry_intent('Replace the Name input with Gwen complete test.')['text'],'Gwen complete test')
+        self.assertEqual(text_entry_intent('Replace the Name input with NAVA AI complete test.')['text'],'NAVA AI complete test')
         self.assertEqual(text_entry_intent('Fill the Name field with "Hello world.".')['text'],'Hello world.')
         self.assertIsNone(text_entry_intent('Fill the Name field with hello then click Apply'))
     def test_youtube_search_has_its_own_route(self):

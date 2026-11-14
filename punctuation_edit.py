@@ -35,7 +35,7 @@ def office_punctuation(app,kind,context=None,stop=None):
     elif kind=='word':
         start=scope.Start;record=False
         try:
-            try:app.UndoRecord.StartCustomRecord('Gwen punctuation');record=True
+            try:app.UndoRecord.StartCustomRecord('NAVA AI punctuation');record=True
             except Exception:pass
             for left,right,value in reversed(changes):
                 check_target(context,stop)

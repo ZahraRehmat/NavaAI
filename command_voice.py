@@ -4,7 +4,7 @@ from direct_commands import is_action_request,is_question
 from speech_context import correct
 
 def power_intent(text):
-    match=re.fullmatch(r'(?:(?:hey|okay|ok)\s+)?(?:gwen|guen|glen|glenn)[,:]?\s+(?:turn|switch)\s+(on|off)[.!]?',text.strip(),re.I)
+    match=re.fullmatch(r'(?:(?:hey|okay|ok)\s+)?(?:nava)\b[,:]?\s+(?:turn|switch)\s+(on|off)[.!]?',text.strip(),re.I)
     return ('power_on' if match[1].lower()=='on' else 'power_off') if match else None
 
 
@@ -48,7 +48,9 @@ class CommandVoice:
     def route(self,result,context=None):
         context=context or {};raw=result.get('text','').strip()
         if not raw:return {'kind':'ignore'}
-        wake=re.match(r'^(?:(?:hey|okay|ok)\s+)?(?:gwen|guen|glen|glenn)\b[,:]?\s*(.*)$',raw,re.I)
+        from branding import invalid_wake
+        if not self.dictating and invalid_wake(raw):return {'kind':'ignore'}
+        wake=re.match(r'^(?:(?:hey|okay|ok)\s+)?(?:nava)\b[,:]?\s*(.*)$',raw,re.I)
         text=normalize_repetition(wake[1].strip() if wake else raw)
         low=text.lower().rstrip('.!?').strip().removeprefix('please ')
         confidence=float(result.get('confidence',0))
@@ -125,11 +127,11 @@ class CommandVoice:
             self.recent_dictation=(self.recent_dictation+' '+payload)[-1000:]
             return {'kind':'command','text':'type '+payload,'raw':raw,'code':'','dictation_input':True}
         # Wake/listen and the command can be spoken in one breath.
-        if re.match(r'^(?:open|visit|go to|navigate to)\b',low) and re.search(r'\bdot\s+(?:gwen|guen|glen|glenn)\b',low):
+        if re.match(r'^(?:open|visit|go to|navigate to)\b',low) and re.search(r'\bdot\s+(?:nava)\b',low):
             return {'kind':'review','text':text,'raw':raw,'reason':'The website ending was unclear. Say the site name alone or repeat its dot com ending.','confirmable':False}
         if wake:
-            joined=re.fullmatch(r'(?:listen|start listening)(?:\s+gwen)?\s+(.+)',text,re.I)
-            if re.fullmatch(r'listen\s+gwen',text,re.I):text='listen';low='listen'
+            joined=re.fullmatch(r'(?:listen|start listening)(?:\s+nava)?\s+(.+)',text,re.I)
+            if re.fullmatch(r'listen\s+nava',text,re.I):text='listen';low='listen'
             elif joined:
                 self.handsfree=True;self.armed_until=0
                 text=joined[1].strip();low=text.lower().rstrip('.!?').strip()
@@ -149,13 +151,13 @@ class CommandVoice:
             return {'kind':'control','control':control}
         from grid_commands import toggle_intent
         toggle=toggle_intent(text)
-        if toggle:text='gwen grid' if toggle=='smart_unavailable' else 'grid off'
+        if toggle:text='nava grid' if toggle=='smart_unavailable' else 'grid off'
         correction=correct(text,context)
         if correction.review:return {'kind':'review','text':correction.text,'raw':raw,'reason':correction.reason,'confirmable':False}
         # A high-confidence wake word must not hide a weakly heard app name.
         if not correction.code and re.match(r'^(?:open|launch|start|click)\s+',text,re.I):
             words=result.get('words',[])
-            ignored={'gwen','guen','glen','glenn','hey','okay','listen','open','launch','start','click','on','the'}
+            ignored={'nava','hey','okay','listen','open','launch','start','click','on','the'}
             from dropdown_control import dropdown_intent
             dropdown=dropdown_intent(text)
             if dropdown:

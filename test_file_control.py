@@ -31,8 +31,8 @@ class FileControlTests(unittest.TestCase):
         with patch('file_control.file_scopes',return_value=[]),patch('file_control.os.startfile') as launch:
             result=open_requested_file('open missing.pdf',threading.Event(),lambda r:None)
             self.assertIsNone(result);launch.assert_not_called()
-    def test_tray_and_gwen_cannot_replace_target(self):
-        for context in ({'title':'System tray overflow window.'},{'title':'','class_name':'Shell_TrayWnd'},{'title':'Gwen Doer - Type commands'}):self.assertFalse(usable_target(context))
+    def test_tray_and_nava_cannot_replace_target(self):
+        for context in ({'title':'System tray overflow window.'},{'title':'','class_name':'Shell_TrayWnd'},{'title':'NAVA AI - Type commands'}):self.assertFalse(usable_target(context))
         self.assertTrue(usable_target({'title':'Program Manager','class_name':'Progman'}))
         self.assertTrue(usable_target({'title':'screenshots - File Explorer','class_name':'CabinetWClass'}))
 

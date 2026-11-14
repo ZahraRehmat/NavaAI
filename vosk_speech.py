@@ -6,7 +6,7 @@ import numpy as np
 from speech_context import LETTERS,DIGITS,CARDINAL
 
 ROOT=Path(__file__).resolve().parent
-BASE='gwen guen glen glenn hey okay listen continuously sleep wake up stop cancel now task show hide chat grid smart full exit microphone off confirm command yes no option choose click double right left middle press select open hold release drag move mouse cursor to from on at in over scroll down up pixel point cell cells range make set change the font size color colour bold italic underline underlined type write save close switch new tab browser chrome edge store word excel powerpoint whatsapp search copy paste undo redo delete clear insert table row column black blue red green increase decrease bigger smaller a little bit lot steps times seconds'.split()
+BASE='nava hey okay listen continuously sleep wake up stop cancel now task show hide chat grid smart full exit microphone off confirm command yes no option choose click double right left middle press select open hold release drag move mouse cursor to from on at in over scroll down up pixel point cell cells range make set change the font size color colour bold italic underline underlined type write save close switch new tab browser chrome edge store word excel powerpoint whatsapp search copy paste undo redo delete clear insert table row column black blue red green increase decrease bigger smaller a little bit lot steps times seconds'.split()
 
 NUMBER_WORDS=['zero','one','two','three','four','five','six','seven','eight','nine']
 NATO='alpha bravo charlie delta echo foxtrot golf hotel india juliet kilo lima mike november oscar papa quebec romeo sierra tango uniform victor whiskey xray yankee zulu'.split()
@@ -31,8 +31,8 @@ def website_names():
 def vocabulary(context,model):
     if (context or {}).get('assistant_active') is False:
         from command_dictionary import ALIASES
-        help_phrases=[p for p in ALIASES if all(model.vosk_model_find_word(w)>=0 for w in p.split())]
-        return ['gwen turn on','gwen turn off','gwen switch on','gwen switch off','[unk]']+help_phrases+['gwen '+p for p in help_phrases]
+        help_phrases=[p for p in ALIASES if model is None or all(model.vosk_model_find_word(w)>=0 for w in p.split())]
+        return ['nava turn on','nava turn off','nava switch on','nava switch off','[unk]']+help_phrases+['nava '+p for p in help_phrases]
     if (context or {}).get('dialog_active'):
         from dialog_voice import grammar
         return [phrase for phrase in grammar(context) if phrase=='[unk]' or all(model.vosk_model_find_word(w)>=0 for w in phrase.split())]
@@ -57,12 +57,12 @@ def vocabulary(context,model):
         words.update(word for word in hinted if model.vosk_model_find_word(word)>=0)
     from voice_controls import compact_phrases
     words.update(word for phrase in compact_phrases() for word in phrase.split() if model.vosk_model_find_word(word)>=0)
-    phrases=['gwen listen','gwen sleep','gwen grid','gwen smart grid','gwen stop','gwen confirm command','show chat','hide chat','scroll up','scroll down','double click','move to','select cell','go to cell']
+    phrases=['nava listen','nava sleep','nava grid','nava smart grid','nava stop','nava confirm command','show chat','hide chat','scroll up','scroll down','double click','move to','select cell','go to cell']
     for action in ('open grid','turn on grid','turn grid on','grid on','close grid','turn off grid','turn grid off','grid off','show grid','hide grid','start grid','stop grid'):
-        phrases.extend((action,'gwen '+action))
-    phrases+=['gwen turn on','gwen turn off','gwen switch on','gwen switch off']
+        phrases.extend((action,'nava '+action))
+    phrases+=['nava turn on','nava turn off','nava switch on','nava switch off']
     from selection_commands import ON,OFF
-    for action in sorted(ON|OFF):phrases.extend((action,'gwen '+action))
+    for action in sorted(ON|OFF):phrases.extend((action,'nava '+action))
     phrases.extend(compact_phrases())
     if (context or {}).get('selection'):
         for word in hinted:
@@ -70,31 +70,31 @@ def vocabulary(context,model):
     from website_directory import directory
     for name in directory().voice_names(300):
         for suffix in ('',' on chrome',' on edge'):
-            phrases.extend(('open '+name+suffix,'gwen open '+name+suffix))
+            phrases.extend(('open '+name+suffix,'nava open '+name+suffix))
     for target in ('first','second','third','fourth','fifth','next','previous','last','one','two','three','four','five'):
-        for prefix in ('select tab ','switch to tab ','close tab '):phrases.extend((prefix+target,'gwen '+prefix+target))
+        for prefix in ('select tab ','switch to tab ','close tab '):phrases.extend((prefix+target,'nava '+prefix+target))
     for action in ('press enter','hit enter','press return','press tab','press escape','press backspace','select all','copy it','paste the copied data','start dictation','stop dictation','finish typing','increase font','decrease font'):
-        phrases.extend((action,'gwen '+action))
+        phrases.extend((action,'nava '+action))
     for action in ('minimize','maximize','restore','close'):
         for target in ('this app','this screen','this window','the current app','the active window'):
-            phrases.extend((action+' '+target,'gwen '+action+' '+target))
+            phrases.extend((action+' '+target,'nava '+action+' '+target))
     for name in names:
         if name and len(name.split())<=10:
             for prefix in ('','open ','click ','switch to ','close ','quit ','stop ','force close ','force stop ','terminate ','minimize ','maximize ','restore '):
                 phrases.append(prefix+name)
-                if prefix:phrases.append('gwen '+prefix+name)
+                if prefix:phrases.append('nava '+prefix+name)
     for label in (context or {}).get('labels',())[:1000]:
         if not re.fullmatch(r'[A-Za-z0-9]{1,8}',label):continue
         spelled=' '.join(NUMBER_WORDS[int(c)] if c.isdigit() else c.lower() for c in label)
         nato=' '.join(NUMBER_WORDS[int(c)] if c.isdigit() else NATO[ord(c.lower())-97] for c in label)
         for code in (spelled,nato):
             for prefix in ('','click ','click on ','double click ','double click on ','press ','press on ','select ','open ','hold ','close ','close tab ','open dropdown ','expand ','scroll down from ','scroll up from ','move to '):
-                phrases.append(prefix+code);phrases.append('gwen '+prefix+code)
+                phrases.append(prefix+code);phrases.append('nava '+prefix+code)
     if (context or {}).get('office')=='excel':
         for column in 'abcdefghijklmnopqrstuvwxyz':
             for digit in list(CARDINAL):
                 for prefix in ('cell ','select cell ','edit cell ','copy cell ','double click cell '):
-                    phrases.append(prefix+column+' '+digit);phrases.append('gwen '+prefix+column+' '+digit)
+                    phrases.append(prefix+column+' '+digit);phrases.append('nava '+prefix+column+' '+digit)
     if (context or {}).get('grid_active') and (context or {}).get('office')!='excel':
         used=set(''.join((context or {}).get('labels',())).lower())&set('abcdefghijklmnopqrstuvwxyz')
         for char in set('abcdefghijklmnopqrstuvwxyz')-used:
@@ -169,15 +169,15 @@ class VoskRecognizer:
         results.append(json.loads(recognizer.FinalResult()))
         words=[{'word':w['word'],'probability':float(w['conf'])} for result in results for w in result.get('result',())]
         text=' '.join(result.get('text','') for result in results).strip()
-        dictation=bool(re.match(r'^(?:(?:hey|okay|ok)\s+)?(?:(?:gwen|guen|glen|glenn)\s+)?(?:listen\s+)?(?:type|write|dictate)\s+',text))
+        dictation=bool(re.match(r'^(?:(?:hey|okay|ok)\s+)?(?:(?:nava)\s+)?(?:listen\s+)?(?:type|write|dictate)\s+',text))
         if context.get('assistant_active') is not False and (dictation or ('[unk]' in text and not context.get('grid_active') and not context.get('dialog_active'))):
             general=self.vosk.KaldiRecognizer(self.model,16000);general.SetWords(True);general.AcceptWaveform(pcm)
             fallback=json.loads(general.FinalResult())
-            if fallback.get('text') and (not dictation or re.match(r'^(?:(?:hey|okay|ok)\s+)?(?:(?:gwen|guen|glen|glenn|when)\s+)?(?:listen\s+)?(?:type|write|dictate)\s+',fallback['text'])):
+            if fallback.get('text') and (not dictation or re.match(r'^(?:(?:hey|okay|ok)\s+)?(?:(?:nava)\s+)?(?:listen\s+)?(?:type|write|dictate)\s+',fallback['text'])):
                 # Only the wake-name homophone may be canonicalized, and only
-                # when the command decoder independently recognized Gwen.
+                # when the command decoder independently recognized NAVA AI.
                 candidate=fallback['text']
-                if text.startswith('gwen '):candidate=re.sub(r'^(?:when|glen|glenn)\b','gwen',candidate)
+                if text.startswith('nava '):candidate=re.sub(r'^(?:nava)\b','nava',candidate)
                 text=candidate;words=[{'word':w['word'],'probability':float(w['conf'])} for w in fallback.get('result',())]
         confidence=sum(w['probability'] for w in words)/len(words) if words else 0
         if '[unk]' in text:confidence=min(confidence,.5)

@@ -147,7 +147,7 @@ class Agent:
                     page.keyboard.press('+'.join(names.get(k,k) for k in command['keys']))
                 return 'Pressed the requested keys.'
         target=self.interaction or win.snapshot()
-        if not target or target['title'].startswith('Gwen Doer'): raise ValueError('Select the app you want to control, then repeat the command.')
+        if not target or target['title'].startswith('NAVA AI'): raise ValueError('Select the app you want to control, then repeat the command.')
         if command['kind']=='scroll' and self._managed_target(target):
             amount=command['steps']*100
             if command['direction'] in ('up','left'): amount=-amount
@@ -310,7 +310,7 @@ class Agent:
             hwnd=bound or desktop_control.foreground_handle()
             if desktop_control.foreground_handle()!=hwnd:
                 if win.focus_handle(hwnd,'requested target window')!=hwnd:raise ObservationChanged('A new dialog appeared; repeat the command for that dialog.')
-            if desktop_control.foreground_title().startswith('Gwen Doer'): raise ValueError('Target app is not foreground')
+            if desktop_control.foreground_title().startswith('NAVA AI'): raise ValueError('Target app is not foreground')
             bounds=desktop_control.window_bounds(hwnd)
             image=desktop_control.capture(bounds,resize=False)
             if self.visual is None:
@@ -514,7 +514,7 @@ class Agent:
                 self.record({'window_command':window_command,'result':result})
                 self.log(result);return result
             headless_context=background and self.mode=='browser' and self.browser.context and self.browser.headless
-            if interaction and not headless_context and not interaction.get('title','').startswith('Gwen Doer'):
+            if interaction and not headless_context and not interaction.get('title','').startswith('NAVA AI'):
                 if self._managed_target(interaction):
                     self.mode='browser';self.active_target={'msedge':'edge'}.get(self.browser.channel,self.browser.channel)
                 else:

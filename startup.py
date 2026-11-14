@@ -1,15 +1,15 @@
-"""Manage Gwen's current-user Windows sign-in startup shortcut."""
+"""Manage NAVA AI's current-user Windows sign-in startup shortcut."""
 import argparse,json,os
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
-DESCRIPTION='Gwen Doer resident assistant - current-user startup'
+DESCRIPTION='NAVA AI resident assistant - current-user startup'
 
 def shortcut_path():
-    return Path(os.environ['APPDATA'])/'Microsoft'/'Windows'/'Start Menu'/'Programs'/'Startup'/'Gwen Doer.lnk'
+    return Path(os.environ['APPDATA'])/'Microsoft'/'Windows'/'Start Menu'/'Programs'/'Startup'/'NAVA AI.lnk'
 
 def expected():
-    return {'target':str(ROOT/'.venv'/'Scripts'/'pythonw.exe'),'arguments':'"'+str(ROOT/'gwen.py')+'"','working_directory':str(ROOT)}
+    return {'target':str(ROOT/'.venv'/'Scripts'/'pythonw.exe'),'arguments':'"'+str(ROOT/'nava.py')+'"','working_directory':str(ROOT)}
 
 def shortcut():
     import win32com.client
@@ -28,7 +28,7 @@ def status():
 
 def enable():
     wanted=expected()
-    for path in (Path(wanted['target']),ROOT/'gwen.py'):
+    for path in (Path(wanted['target']),ROOT/'nava.py'):
         if not path.is_file():raise FileNotFoundError('Startup target is missing: '+str(path))
     path=shortcut_path();path.parent.mkdir(parents=True,exist_ok=True)
     if path.exists() and shortcut().Description!=DESCRIPTION:
@@ -46,8 +46,23 @@ def disable():
         path.unlink()
     return status()
 
+def migrate():
+    """Rename only this installation's existing sign-in shortcut."""
+    legacy=shortcut_path().with_name('Gwen Doer.lnk')
+    if not legacy.exists():return status()
+    import win32com.client
+    old=win32com.client.Dispatch('WScript.Shell').CreateShortcut(str(legacy))
+    wanted=expected()
+    old_args='"'+str(ROOT/'gwen.py')+'"'
+    if str(old.TargetPath).casefold()!=wanted['target'].casefold() or str(old.WorkingDirectory).casefold()!=str(ROOT).casefold() or old.Arguments not in (old_args,wanted['arguments']):
+        raise ValueError('The legacy startup shortcut belongs to another install; left unchanged.')
+    if shortcut_path().exists():raise ValueError('Both shortcut names exist; no automatic overwrite was made.')
+    legacy.rename(shortcut_path())
+    link=shortcut();link.TargetPath=wanted['target'];link.Arguments=wanted['arguments'];link.Description=DESCRIPTION;link.Save()
+    return status()
+
 def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('action',choices=('enable','disable','status'),nargs='?',default='status')
-    args=parser.parse_args();print(json.dumps({'enable':enable,'disable':disable,'status':status}[args.action](),indent=2))
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('action',choices=('enable','disable','status','migrate'),nargs='?',default='status')
+    args=parser.parse_args();print(json.dumps({'enable':enable,'disable':disable,'status':status,'migrate':migrate}[args.action](),indent=2))
 
 if __name__=='__main__':main()

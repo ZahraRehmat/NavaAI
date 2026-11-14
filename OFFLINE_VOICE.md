@@ -1,22 +1,22 @@
 # Offline voice commands
 
-The resident Gwen panel has an **Offline voice** checkbox, a **Hands-free** checkbox and a **Mic…** device selector. With voice enabled, Gwen starts hidden by default. The startup shortcut starts the same background application after Windows sign-in. **Gwen show chat** or F10 explicitly opens the panel. It is not a topmost window and does not reappear after actions. F9 toggles the microphone; the checkbox and spoken controls are alternatives.
+The resident NAVA AI panel has an **Offline voice** checkbox, a **Hands-free** checkbox and a **Mic…** device selector. With voice enabled, Nava starts hidden by default. The startup shortcut starts the same background application after Windows sign-in. **Nava show chat** or F10 explicitly opens the panel. It is not a topmost window and does not reappear after actions. F9 toggles the microphone; the checkbox and spoken controls are alternatives.
 
 ## Say commands
 
-- **Gwen grid**, **open grid**, **turn on grid**, **grid on**: activate smart grid. **Close grid**, **turn off grid**, or **grid off** stops it.
-- **Gwen click F G**: single-click the visible FG target. Letters can be separated naturally.
-- **Gwen listen**: enable continuous hands-free commands once. Then say **F G**, **scroll down from F G**, **double click alpha bravo**, **release**, etc., without repeating Gwen. This setting stays active across commands, task failures, stop/F8 and restarts until explicitly changed.
-- **Gwen sleep**: return to requiring Gwen before commands; this is not a muted microphone.
+- **Nava grid**, **open grid**, **turn on grid**, **grid on**: activate smart grid. **Close grid**, **turn off grid**, or **grid off** stops it.
+- **Nava click F G**: single-click the visible FG target. Letters can be separated naturally.
+- **Nava listen**: enable continuous hands-free commands once. Then say **F G**, **scroll down from F G**, **double click alpha bravo**, **release**, etc., without repeating NAVA AI. This setting stays active across commands, task failures, stop/F8 and restarts until explicitly changed.
+- **Nava sleep**: return to requiring Nava before commands; this is not a muted microphone.
 - **Stop**: stop the current task and release held buttons. Continuous listening stays enabled.
-- **Gwen show chat** / **Gwen hide chat**: control the resident panel.
-- **Gwen microphone off**: stop microphone capture. Re-enable it using the checkbox or F9; a microphone that is off cannot hear a wake word.
-- In Excel: **Gwen cell A two** → `select cell A2`. In a hands-free session, **Cell A2** is enough. **Cell alpha twenty three** and digit-by-digit rows such as **cell B one two** are also normalized.
+- **Nava show chat** / **Nava hide chat**: control the resident panel.
+- **Nava microphone off**: stop microphone capture. Re-enable it using the checkbox or F9; a microphone that is off cannot hear a wake word.
+- In Excel: **NAVA AI cell A two** → `select cell A2`. In a hands-free session, **Cell A2** is enough. **Cell alpha twenty three** and digit-by-digit rows such as **cell B one two** are also normalized.
 - For indistinct codes, use NATO spelling: **alpha bravo**, **foxtrot golf**, **six mike juliet**.
 
-The panel records what was heard and the normalized command. Ambiguous or low-confidence results populate its command field without executing or opening the panel. A double-tone cue means attention is needed: repeat the command, or say **Gwen show chat** for details. For a reviewable code, say **confirm command** while continuously listening, or **Gwen confirm command** in wake-word mode. A missing grid code is not changed to a nearby label. For example `click six M J` becomes `click 6MJ` only when that exact label exists.
+The panel records what was heard and the normalized command. Ambiguous or low-confidence results populate its command field without executing or opening the panel. A double-tone cue means attention is needed: repeat the command, or say **Nava show chat** for details. For a reviewable code, say **confirm command** while continuously listening, or **Nava confirm command** in wake-word mode. A missing grid code is not changed to a nearby label. For example `click six M J` becomes `click 6MJ` only when that exact label exists.
 
-A short single tone signals task completion. A double tone signals an error, cancellation or review request. Tones play on an audio thread using in-memory PCM; no mouse, keyboard, activation, taskbar notification or message-box API is used. The microphone briefly ignores cue playback to prevent self-recognition. A completion never deiconifies, lifts or focuses the panel, so menus and dropdowns are not dismissed by Gwen's completion UI. Actual action execution can still legitimately focus its intended target. On a necessary choice/confirmation request, the voice-enabled choice window and marks use no-activate styles; they do not force keyboard focus. Explicit **show chat**, F10 and relaunch requests may raise the panel because the user requested it.
+A short single tone signals task completion. A double tone signals an error, cancellation or review request. Tones play on an audio thread using in-memory PCM; no mouse, keyboard, activation, taskbar notification or message-box API is used. The microphone briefly ignores cue playback to prevent self-recognition. A completion never deiconifies, lifts or focuses the panel, so menus and dropdowns are not dismissed by NAVA AI's completion UI. Actual action execution can still legitimately focus its intended target. On a necessary choice/confirmation request, the voice-enabled choice window and marks use no-activate styles; they do not force keyboard focus. Explicit **show chat**, F10 and relaunch requests may raise the panel because the user requested it.
 
 Choice popups accept spoken letters (for example **alpha**, **option B**) while the popup is active. Action confirmation popups accept **yes** or **no**. An answer captured before a different popup appeared is ignored. Normal typed commands and popup buttons remain available.
 
@@ -45,7 +45,7 @@ First-time installation or recovery:
 
 The setup script performs the one-time official model download and records its source and SHA-256 hash. Recognition then works without internet. The previously installed Whisper model and API remain for compatibility but are not loaded by the default voice path.
 
-Settings are in `voice_config.json`: microphone state, last hands-free selection, hidden startup, completion beep, model path, input device, silence duration and confidence thresholds. **Gwen listen** saves hands-free mode; **Gwen sleep** or turning voice off saves wake-word mode. **Mic…** selects a Windows input device. If capture is unavailable, the panel reports it. Protected Windows sign-in still needs Windows Voice Access or a separately trusted accessibility component; this ordinary desktop listener does not implement secure-desktop password input.
+Settings are in `voice_config.json`: microphone state, last hands-free selection, hidden startup, completion beep, model path, input device, silence duration and confidence thresholds. **Nava listen** saves hands-free mode; **Nava sleep** or turning voice off saves wake-word mode. **Mic…** selects a Windows input device. If capture is unavailable, the panel reports it. Protected Windows sign-in still needs Windows Voice Access or a separately trusted accessibility component; this ordinary desktop listener does not implement secure-desktop password input.
 
 ## Verification
 
@@ -58,9 +58,9 @@ Settings are in `voice_config.json`: microphone state, last hands-free selection
 Sources: https://alphacephei.com/vosk/models and https://github.com/alphacep/vosk-api
 # Assistant on/off and remote visibility
 
-Say or type **Gwen turn off** to cancel the task, release held buttons, close grids/choices and hide the chat, pointer halo and status badge. Ordinary commands are ignored while off. **Gwen turn on** restores the halo/badge and continuous voice commands without reopening the panel. The preference is saved. F9 also reactivates a powered-off assistant.
+Say or type **Nava turn off** to cancel the task, release held buttons, close grids/choices and hide the chat, pointer halo and status badge. Ordinary commands are ignored while off. **Nava turn on** restores the halo/badge and continuous voice commands without reopening the panel. The preference is saved. F9 also reactivates a powered-off assistant.
 
-Voice reactivation requires a microphone listener: “off” is a **wake-only standby**, not microphone shutdown. Its local recognition grammar is restricted to the on/off phrases; it does not dispatch normal commands or invoke Qwen. **Gwen microphone off** releases microphone capture, and **Quit** exits the process; either requires a manual launcher/hotkey to resume. Exact on/off phrases take precedence over dictation, busy tasks and pending choices.
+Voice reactivation requires a microphone listener: “off” is a **wake-only standby**, not microphone shutdown. Its local recognition grammar is restricted to the on/off phrases; it does not dispatch normal commands or invoke Qwen. **Nava microphone off** releases microphone capture, and **Quit** exits the process; either requires a manual launcher/hotkey to resume. Exact on/off phrases take precedence over dictation, busy tasks and pending choices.
 
 The badge and cursor halo now use Windows `WDA_NONE` (capture allowed), rather than `WDA_EXCLUDEFROMCAPTURE`. This allows desktop capture/remote-control tools such as RustDesk and AnyDesk to include them. Their actual capture mode and viewer settings can still affect display; a remote viewer must verify the end-to-end result. Windows tests check capture affinity, passive visibility toggling and unchanged foreground/pointer.
 
@@ -89,7 +89,7 @@ References: [faster-whisper](https://github.com/SYSTRAN/faster-whisper), [Window
 
 ## Selection mode: select and copy a spoken range
 
-After **stop dictation**, say **selection**. The badge changes to **Selection**. Then say **Islamabad to Karachi** or **from Islamabad to Karachi**. Gwen selects the inclusive span (both endpoints and everything between them) and copies the actual matched text to the Windows clipboard. **Paste the stuff** pastes it normally. Grid may be on or off. Typed commands in the resident panel support the same mode and range syntax. **Selection Islamabad to Karachi** and **select and copy from Islamabad to Karachi** also work as one-shot commands.
+After **stop dictation**, say **selection**. The badge changes to **Selection**. Then say **Islamabad to Karachi** or **from Islamabad to Karachi**. Nava selects the inclusive span (both endpoints and everything between them) and copies the actual matched text to the Windows clipboard. **Paste the stuff** pastes it normally. Grid may be on or off. Typed commands in the resident panel support the same mode and range syntax. **Selection Islamabad to Karachi** and **select and copy from Islamabad to Karachi** also work as one-shot commands.
 
 Selection mode remains active for another range. Say **stop selection** to return to ordinary commands, **start dictation** to type again, or **stop** to cancel. Power off, microphone off and emergency Stop clear selection mode. A range spoken while another task is busy is reviewed rather than queued. The badge/panel stays passive.
 
@@ -119,7 +119,7 @@ Word receives minimal edits in reverse order rather than full-document replaceme
 
 - **Erase it**, **erase that**, **delete last word**, bare **backspace**/**back space**: Ctrl+Backspace, deleting the previous word at the caret (the app handles an existing selection).
 - **Press Backspace**/**press back space**: the actual single-character Backspace key.
-- **Copy it**, **copy it to clipboard**, **paste**, **paste here**, **paste the copied data**, **paste the stuff**: work in dictation, selection, and ordinary active command mode. Paste needs a focused field, not dictation/selection mode. Gwen must be on/listening, as with other voice commands.
+- **Copy it**, **copy it to clipboard**, **paste**, **paste here**, **paste the copied data**, **paste the stuff**: work in dictation, selection, and ordinary active command mode. Paste needs a focused field, not dictation/selection mode. NAVA AI must be on/listening, as with other voice commands.
 - **Type erase it** or **type punctuate it** enters those words literally while dictating.
 
 The compact command grammar includes punctuation/erase/clipboard phrases. Model fallback cannot boost confidence merely because unrelated speech shares “it” or “here.” `test_dictation_punctuation.py` covers raw punctuation removal, word guards, all-mode clipboard/erase commands with grid enabled, real offline model output, quotation marks, paragraph/number preservation, minimal Word edits and Undo grouping, and owned headless browser editing including selection scope, bold preservation and read-only refusal. Six synthetic speech command samples passed; human accent/microphone testing remains separate.
@@ -156,7 +156,7 @@ Selection mode now primes a nonblocking cache of visible vocabulary from the cur
 
 ### Verified foreground activation
 
-A flashing taskbar icon does not prove a successful switch. Window activation now restores minimized windows and first requests the foreground normally. If Windows refuses a background voice worker, Gwen temporarily attaches its input queue to the foreground/target threads, brings the requested window forward, verifies it, and detaches every successful attachment in a finally block. It does not simulate Alt/Enter or change Windows foreground-lock settings. Opening an installed app reuses matching running windows (with the existing chooser); a newly launched app is polled for its actual window before activation is reported. Existing personal browser windows are reused for explicit open-browser app requests. Owned visible browser launches also verify their native window. Background app launches retain launch-only behavior. Smart-grid taskbar app buttons with a running-window count use activation instead of the taskbar toggle, including single-window apps.
+A flashing taskbar icon does not prove a successful switch. Window activation now restores minimized windows and first requests the foreground normally. If Windows refuses a background voice worker, NAVA AI temporarily attaches its input queue to the foreground/target threads, brings the requested window forward, verifies it, and detaches every successful attachment in a finally block. It does not simulate Alt/Enter or change Windows foreground-lock settings. Opening an installed app reuses matching running windows (with the existing chooser); a newly launched app is polled for its actual window before activation is reported. Existing personal browser windows are reused for explicit open-browser app requests. Owned visible browser launches also verify their native window. Background app launches retain launch-only behavior. Smart-grid taskbar app buttons with a running-window count use activation instead of the taskbar toggle, including single-window apps.
 
 
 Dense grids and selection/window choices now reuse the restricted speech-friendly alphabet in two-/three-letter combinations rather than introducing confusable letters. The Vosk grid grammar omits unused standalone letter/NATO choices; explicit keyboard chords such as Ctrl+C and real Excel column letters remain available. Browser tab commands take priority over grid mouse parsing. New tab-selection verification prevents a failed selection from closing the wrong tab. Four synthetic SAPI samples for tab two/current tab/close AF/bravo passed; live human speech accuracy still depends on microphone and pronunciation.
@@ -193,7 +193,7 @@ A same-audio synthetic benchmark preserved both reference sentences: beam 3 took
 
 The first human microphone test did not pass: one phrase was rejected at confidence 0.435, and two later typing requests reported success while Notepad actually contained repeated `w` characters. Direct inspection confirmed this was separate from speech recognition. Bulk Unicode VK_PACKET delivery was replaced with complete-character delivery paced at 8 ms. Where UIA exposes the caret, typing now reads the actual preceding text and verifies the expected insertion; it never retries a failed insertion automatically. Unsupported fields report input sent without claiming text confirmation.
 
-A controlled command through the real Gwen panel then inserted `The blue folder is beside the window` exactly into a separate Notepad tab, independently verified by the editor's text. Execution including confirmation took 0.97 seconds. This proves the text-input repair, not human speech accuracy.
+A controlled command through the real NAVA AI panel then inserted `The blue folder is beside the window` exactly into a separate Notepad tab, independently verified by the editor's text. Execution including confirmation took 0.97 seconds. This proves the text-input repair, not human speech accuracy.
 
 Dictation also makes one beam-3 accuracy pass on the same audio only when the first pass confidence is below 0.72, and uses it only when its confidence improves. Normal clear phrases stay on the faster pass. This can add latency to uncertain speech; no recognizer can guarantee every word from a headset or accent. The dictation badge now distinguishes decoding, ready dictation and a phrase that was not typed. Review state clears after successful submission.
 

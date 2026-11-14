@@ -40,7 +40,7 @@ def screen_roots(context):
     def visit(hwnd,_):
         if not win.user.IsWindowVisible(hwnd) or win.user.IsIconic(hwnd) or win.cloaked(hwnd):return True
         title=win.title(hwnd)
-        if title.startswith('Gwen Doer'):return True
+        if title.startswith('NAVA AI'):return True
         buf=ctypes.create_unicode_buffer(256);win.user.GetClassNameW(hwnd,buf,len(buf));kind=buf.value
         if win.user.GetWindowLongW(hwnd,-20)&0x20 and not interactive_shell(kind):return True
         if kind=='tooltips_class32':return True
@@ -62,7 +62,7 @@ def screen_roots(context):
             el=children.GetElement(i);hwnd=int(el.CachedNativeWindowHandle or 0)
             if not hwnd or el.CachedIsOffscreen or win.cloaked(hwnd):continue
             title=el.CachedName or '';kind=el.CachedClassName or ''
-            if title.startswith('Gwen Doer') or (win.user.GetWindowLongW(hwnd,-20)&0x20 and not interactive_shell(kind)):continue
+            if title.startswith('NAVA AI') or (win.user.GetWindowLongW(hwnd,-20)&0x20 and not interactive_shell(kind)):continue
             scope='taskbar' if kind in ('Shell_TrayWnd','Shell_SecondaryTrayWnd') else 'desktop' if kind in ('Progman','WorkerW') else 'app'
             accessible.append({'hwnd':hwnd,'pid':el.CachedProcessId,'title':title,'kind':kind,'scope':scope})
         found=merge_roots(found,accessible)
@@ -129,7 +129,7 @@ def scan_root(owner,hwnd,pid,scope,budget):
 
 
 def visible_rows(rows):
-    # Exclude controls covered by another app, while ignoring Gwen's own overlays.
+    # Exclude controls covered by another app, while ignoring NAVA AI's own overlays.
     from grid_mouse import GridMouse
     mouse=GridMouse();result=[]
     for row in rows:

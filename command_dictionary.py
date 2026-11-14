@@ -12,10 +12,18 @@ ALIASES={
  'next commands page':'next','previous commands page':'previous',
  'commands more transparent':'lighter','commands less transparent':'darker',
  'dictionary scroll down':'down','dictionary scroll up':'up',
+ 'dictionary more transparent':'lighter','make dictionary more transparent':'lighter',
+ 'make the dictionary more transparent':'lighter','dictionary more visible':'darker',
+ 'make dictionary more visible':'darker','make the dictionary more visible':'darker',
+ 'commands more visible':'darker','make commands more transparent':'lighter','make commands more visible':'darker',
+ 'move dictionary left':'move_left','move dictionary right':'move_right',
+ 'move dictionary to the left':'move_left','move dictionary to the right':'move_right',
+ 'dictionary left':'move_left','dictionary right':'move_right',
+ 'move commands left':'move_left','move commands right':'move_right',
 }
 
 def intent(text):
-    text=re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:gwen|guen|glen|glenn)[,:]?\s+','',text.strip(),flags=re.I)
+    text=re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:nava)\b[,:]?\s+','',text.strip(),flags=re.I)
     text=re.sub(r'^please\s+','',text,flags=re.I).strip().rstrip('.!?')
     action=ALIASES.get(text.casefold())
     if action:return {'action':action}
@@ -156,11 +164,12 @@ group('help','Command help',[
  ('show commands','Show this adaptive transparent overlay'),('hide commands','Hide command help'),
  ('open full dictionary','Open the searchable master dictionary'),('search dictionary for font','Find commands using your own keyword'),
  ('next commands page','Show more contextual commands'),('previous commands page','Go back through contextual commands'),
- ('commands more transparent','Make the overlay more see-through'),('commands less transparent','Make the overlay easier to read'),
+ ('move dictionary left','Dock the command overlay on the left'),('move dictionary right','Dock it on the right'),
+ ('dictionary more transparent','Make the overlay more see-through'),('dictionary more visible','Make the overlay easier to read'),
  ('dictionary scroll down','Scroll the master dictionary'),('close full dictionary','Close the full dictionary'),
 ])
-group('power','Gwen modes',[
- ('gwen turn on','Activate the assistant and microphone'),('gwen turn off','Return to wake-listener standby'),
+group('power','NAVA AI modes',[
+ ('nava turn on','Activate the assistant and microphone'),('nava turn off','Return to wake-listener standby'),
  ('show chat','Show the typed-command panel'),('hide chat','Hide the typed-command panel'),('microphone off','Release the microphone; F9 turns it back on'),
 ])
 

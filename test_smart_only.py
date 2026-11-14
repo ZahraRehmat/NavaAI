@@ -14,13 +14,13 @@ class SmartOnlyTests(unittest.TestCase):
         self.addCleanup(g.close);return g
 
     def test_natural_on_and_off_phrases_including_typos(self):
-        on=('grid','Gwen grid','open grid','open the grid','turn on grid','turn grid on','grid on','griud on','gwen grdi on','show smart grid','enable grid','start grid','activate grid','switch on grid','grid open','can you open grid please','Gwen full grid')
-        off=('close grid','close the smart grid','turn off grid','turn grid off','turhn of grid','grid off','grid close','hide grid','disable grid','stop grid','exit grid','Gwen close grid')
+        on=('grid','Nava grid','open grid','open the grid','turn on grid','turn grid on','grid on','griud on','nava grdi on','show smart grid','enable grid','start grid','activate grid','switch on grid','grid open','can you open grid please','Nava full grid')
+        off=('close grid','close the smart grid','turn off grid','turn grid off','turhn of grid','grid off','grid close','hide grid','disable grid','stop grid','exit grid','Nava close grid')
         session=CommandVoice({'handsfree':True})
         for text in on:
             self.assertEqual(toggle_intent(text),'smart_unavailable',text)
             self.assertEqual(parse(text),[{'action':'smart_unavailable'}],text)
-            self.assertEqual(session.route({'text':text,'confidence':1})['text'],'gwen grid',text)
+            self.assertEqual(session.route({'text':text,'confidence':1})['text'],'grid',text)
         for text in off:
             self.assertEqual(parse(text),[{'action':'disable'}],text)
             self.assertEqual(session.route({'text':text,'confidence':1})['text'],'grid off',text)
@@ -29,7 +29,7 @@ class SmartOnlyTests(unittest.TestCase):
 
     def test_only_accessible_target_boxes_no_uniform_cells(self):
         g=self.controller()
-        for command in ('open grid','Gwen full grid','turn on grid'):
+        for command in ('open grid','Nava full grid','turn on grid'):
             g.run(command);self.assertEqual(g.mode,'smart');self.assertEqual(len(g.grid.targets),2)
             picture=g.grid.snapshot()
             self.assertEqual(len(picture[0]['cells']),2)

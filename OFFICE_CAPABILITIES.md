@@ -37,7 +37,7 @@ All three: text entry; bold/italic/underline; font family, size, relative size a
 
 Word: highlighting, paragraph styles/spacing, borders, page orientation/breaks, table autofit.
 
-Excel: formulas, number formats, wrapping, widths/heights/autofit, merge/unmerge, borders, freeze panes, sorting, sheets add/select/rename, page orientation. Merge refuses to discard populated cells. Sorting uses the first selected column and treats all selected rows as data; exclude headers. Creating a structured table can generate a header row; Gwen reports actual dimensions.
+Excel: formulas, number formats, wrapping, widths/heights/autofit, merge/unmerge, borders, freeze panes, sorting, sheets add/select/rename, page orientation. Merge refuses to discard populated cells. Sorting uses the first selected column and treats all selected rows as data; exclude headers. Creating a structured table can generate a header row; NAVA AI reports actual dimensions.
 
 PowerPoint: slides add/select/duplicate, text boxes, wrapping and vertical alignment. Advanced slide geometry, animations and arbitrary chart-data editing do not yet have parameterized tools.
 
@@ -55,7 +55,7 @@ Sources: https://github.com/OfficeDev/office-fluent-ui-command-identifiers and h
 
 **Historical test, not the current runtime:** `diagnostics/office-planner/result.json` records local Qwen translating a combined request to increase E5 by four points and make it red. The first model interpretation failed; narrowing tools and adding relative-size examples corrected that measured case. The small model can still misunderstand unfamiliar or complex requests. This is not proof of universal language understanding or every Office workflow.
 
-Commands do not save automatically. If a later batch step fails, Gwen reports the completed count; previous edits remain available to Undo. Finish any open modal before editing its document.
+Commands do not save automatically. If a later batch step fails, NAVA AI reports the completed count; previous edits remain available to Undo. Finish any open modal before editing its document.
 
 
 ## Easier Excel and shared dropdown controls
