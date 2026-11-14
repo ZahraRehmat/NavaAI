@@ -29,14 +29,17 @@ This is a roadmap, not a claim that these items are complete.
 
 See [NAVA_RENAME.md](NAVA_RENAME.md) for the exact changed commands and verification.
 
-## 4 · Installer and model cleanup
+## 4 · Installer preview delivered; wider certification remains
 
-- [ ] **Create an installer; first remove the unused AI planner model from the distributable.**
-- [ ] Package only required dependencies and the intended offline speech/punctuation models.
-- [ ] Add first-run microphone setup, dependency/model checks, startup choice, update and uninstall flows.
-- [ ] Measure installation size, startup time and performance on lower-spec PCs.
+- [x] Create the offline installer and native EXE launcher; exclude the unused Qwen planner/weights and OpenVINO.
+- [x] Package only the active dependency closure and used speech/OCR/punctuation assets.
+- [x] Initialize local app discovery and known file locations; include startup choice and dependency checks.
+- [x] Verify fresh install, upgrade and uninstall on Windows 11, including preference/download preservation.
+- [ ] Run real Windows 10 acceptance tests, especially managed Playwright browser controls.
+- [ ] Add publisher signing and complete trusted UIAccess deployment where required.
+- [ ] Improve first-run microphone guidance and benchmark lower-spec PCs/human accents.
 
-**Current position:** Qwen weights and OpenVINO dependencies are excluded from this published snapshot, and runtime dispatch does not call Qwen. The original development folder still retains historical files. A finished installer and clean-environment certification remain to be done. Offline speech and punctuation models are still required for their features.
+**Current position:** the unsigned development installer preview is available from the [installer guide](installer/README.md). It is approximately 830 MiB and contains no orphan Qwen/OpenVINO/Whisper Tiny assets. Offline recognition assets remain because current features use them. Windows 10 and broader clean-environment certification are still pending; see [validation](installer/BUILD_VALIDATION.json).
 
 ## 5 · Two-app multitasking
 

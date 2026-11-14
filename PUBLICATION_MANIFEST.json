@@ -54,8 +54,8 @@
     },
     {
       "path": "INSTALLER.md",
-      "bytes": 6107,
-      "sha256": "02db611f7c72bec66228eece78bc5fafc8bc3a3a1ac86a241ab85e491da2e4d8"
+      "bytes": 6134,
+      "sha256": "6526fad721e4d0535ddc0b3782f7c874a8c07214a50b9d39313a3b4595f64160"
     },
     {
       "path": "NAVA_RENAME.md",
@@ -79,13 +79,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 14212,
-      "sha256": "14117b2b64f9ba3df994c6128b24f3cc1f04ca88b78433bcd0b00cc53f283ab2"
+      "bytes": 14295,
+      "sha256": "0894e3d5e07b59446ef722232f4328f1adfc13c7e46b05fa2f4eb8f64cc1a39e"
     },
     {
       "path": "REMAINING_WORK.md",
-      "bytes": 3898,
-      "sha256": "f270040620ef923d477e6c9dc062465897075cfd10bdc37d14022f2c83f92b37"
+      "bytes": 4284,
+      "sha256": "85b80f04247ca7b86c9cd809c00ce8c1481cf7189352ca044b11af62c7b21873"
     },
     {
       "path": "ROUTING_REPAIRS.md",
@@ -114,8 +114,8 @@
     },
     {
       "path": "TESTING.md",
-      "bytes": 12754,
-      "sha256": "22e1ab7398f7cd4e38ce48fc92b9c5e4895a56f309efe298dd5bef1d415c1c6f"
+      "bytes": 13320,
+      "sha256": "5983cc8888618b1f3052d4aa41ac548a951f2bedfb4b33f2e13da23be8adba7e"
     },
     {
       "path": "TODAYS_PROGRESS_2026-11-15.md",

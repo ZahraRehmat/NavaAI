@@ -75,3 +75,7 @@ Checked on this Windows computer on 27 October 2026.
 The model occasionally repeated actions and prematurely reported completion during combined-task trials. The controller now stops repeated loops and validates the target label for simple explicit browser button/link clicks, finishing these requests after the successful click. This does not eliminate model errors on arbitrary tasks. The latest reproducible suite result is in `verification.txt`.
 
 Physical desktop click/type/drag behavior was implemented with PyAutoGUI but was not exercised against arbitrary installed apps during delivery. Screenshot grounding was tested with the real VLM; Store launch was tested separately. No claim is made that every desktop application or website is supported.
+
+## Installer preview validation · 15 November 2026
+
+212 focused source checks passed. Packaged native/asset/browser checks, grid subprocess and UI lifecycle passed. Actual fresh install, upgrade and uninstall returned 0 with preference/download preservation. These checks ran on Windows 11; Windows 10 acceptance and publisher signing remain pending. See [validation](installer/BUILD_VALIDATION.json), [installer guide](installer/README.md), and [complete progress report](TODAYS_PROGRESS_2026-11-15.md). The broader legacy suite is not claimed fully passing.

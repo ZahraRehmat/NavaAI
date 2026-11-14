@@ -162,7 +162,7 @@ Local runtime logs may contain recognized text, file paths and window titles: ke
 - [Startup and sign-in boundaries](STARTUP_AND_SIGN_IN.md)
 - [Publication manifest](PUBLICATION_MANIFEST.json)
 
-Older guides/development notes may describe earlier milestones; this README and the remaining-work list describe the published snapshot. No installer is provided yet.
+Older guides/development notes may describe earlier milestones; this README and the remaining-work list describe the published snapshot. The installer preview, requirements and validation are documented in [installer/README.md](installer/README.md).
 
 
 ## Adaptive command help
