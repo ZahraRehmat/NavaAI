@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/nava-logo.png" width="160" alt="NAVA AI"></p>
+
 # NAVA AI · Hands-free Windows control
 
 > **Speak. Select. Type. Navigate.** A local accessibility assistant combining direct commands, an adaptive smart grid and offline dictation.
@@ -8,9 +10,19 @@
 
 The product and windows are branded **NAVA AI**. The spoken and typed wake name is **Nava**: say `Nava turn on`, not `NavaAI turn on`. See [Rename details and commands](NAVA_RENAME.md).
 
+## Download the Windows app
+
+### [NAVA AI Windows x64 installer — approximately 830 MiB](https://github.com/ZahraRehmat/NavaAI/releases/download/v1.0.0-preview.1/NAVA-AI-Setup-1.0.0-win-x64.exe)
+
+**Unsigned development preview.** Fresh install, upgrade, uninstall and the packaged EXE were tested on Windows 11. **Windows 10 acceptance testing remains pending**, especially managed-browser support.
+
+[Installer guide](installer/README.md) · [Release assets](https://github.com/ZahraRehmat/NavaAI/releases/tag/v1.0.0-preview.1) · [Checksums](installer/SHA256SUMS.txt) · [Complete progress — 15 November](TODAYS_PROGRESS_2026-11-15.md)
+
+The installer bundles its own runtime and required libraries, prepares local app discovery and sign-in readiness. Users run **NAVA AI.exe**, with no Python/pip/CMD setup. Say **Nava listen** once after sign-in. Qwen, OpenVINO and orphan model directories are excluded; assets used by existing speech/OCR/punctuation features remain.
+
 ## What this system is
 
-NavaAI is a custom automation assistant, not a newly trained general-purpose AI model. Rules, aliases, confidence checks and native tools dispatch supported commands. Pretrained speech models convert voice to text; a separate model restores punctuation when requested. There is no Qwen inference, visual planner or model-generated Office plan in the running assistant.
+NAVA AI is a custom automation assistant, not a newly trained general-purpose AI model. Rules, aliases, confidence checks and native tools dispatch supported commands. Pretrained speech models convert voice to text; a separate model restores punctuation when requested. There is no Qwen inference, visual planner or model-generated Office plan in the running assistant.
 
 ```mermaid
 flowchart TD
@@ -49,13 +61,17 @@ flowchart TD
 
 **The uniform full-screen row/column grid is removed.** Grid activation aliases open the adaptive smart grid. Excel worksheet cells deliberately use their native addresses instead of extra labels.
 
+## Windows EXE installer
+
+The self-contained Windows x64 installer build, used assets, automatic discovery and acceptance-test scope are documented in [INSTALLER.md](INSTALLER.md). The approved NAVA AI logo is in `assets/`.
+
 ## Install and start
 
 Use Windows with Python **3.12**, a working microphone and the applications you want to control. Desktop Office must be installed for its COM controls. No dedicated GPU is required by direct command execution or the current CPU voice configuration. Minimum hardware performance is not yet certified.
 
 ```powershell
 git lfs install
-git clone --branch Chnaged-to-Nava https://github.com/ZahraRehmat/NavaAI.git
+git clone https://github.com/ZahraRehmat/NavaAI.git
 cd NavaAI
 git lfs pull
 py -3.12 -m venv .venv

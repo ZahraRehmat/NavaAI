@@ -1,0 +1,13 @@
+NAVA AI — Windows x64 development installer
+
+Run NAVA-AI-Setup-1.0.0-win-x64.exe. It includes its own runtime, active libraries, offline voice/OCR/punctuation assets and managed browser. No Python, pip, CMD launcher, API key or model download is required on the receiving PC.
+
+Setup discovers that PC's apps and known file locations. Default tasks create a desktop shortcut and start NAVA AI after sign-in. When ready, say "Nava listen" and then give commands normally. The desktop and Start menu shortcuts run NAVA AI.exe.
+
+The installer is about 830 MiB; allow roughly 4 GB free disk space during installation. Qwen, OpenVINO, unused Whisper Tiny, development caches, recordings, browser profiles and personal app catalogs are not included. Vosk, Whisper base, RapidOCR and punctuation assets are included because the existing features actually use them.
+
+This is an unsigned development build targeting Windows 10 (2004+) / Windows 11 x64. Fresh install, upgrade, uninstall, standalone EXE, used assets, managed browser and scanner were tested on Windows 11. Windows 10 still needs a real acceptance test, especially the managed Playwright browser. This is not a 32-bit or native ARM64 package.
+
+Word/Excel/PowerPoint commands require those desktop apps to be installed. Setup does not install paid Office, bypass Windows security, change microphone privacy settings or silently add certificate trust for the optional UIAccess renderer.
+
+User preferences and data survive upgrade/uninstall. BUILD_VALIDATION.json records test scope; SHA256SUMS.txt contains the installer checksum. Full implementation notes are in ../INSTALLER.md.

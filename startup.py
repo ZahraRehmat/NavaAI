@@ -5,11 +5,17 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parent
 DESCRIPTION='NAVA AI resident assistant - current-user startup'
 
+def startup_voice_config(saved):
+    """At sign-in, always arm the mic without accepting unnamed commands."""
+    return {**saved,'enabled':True,'handsfree':False,'assistant_active':True,'start_hidden':True}
+
 def shortcut_path():
     return Path(os.environ['APPDATA'])/'Microsoft'/'Windows'/'Start Menu'/'Programs'/'Startup'/'NAVA AI.lnk'
 
 def expected():
-    return {'target':str(ROOT/'.venv'/'Scripts'/'pythonw.exe'),'arguments':'"'+str(ROOT/'nava.py')+'"','working_directory':str(ROOT)}
+    if (ROOT/'bundle.json').is_file() and (ROOT/'NAVA AI.exe').is_file():
+        return {'target':str(ROOT/'NAVA AI.exe'),'arguments':'--startup','working_directory':str(ROOT)}
+    return {'target':str(ROOT/'.venv'/'Scripts'/'pythonw.exe'),'arguments':'"'+str(ROOT/'nava.py')+'" --startup','working_directory':str(ROOT)}
 
 def shortcut():
     import win32com.client
@@ -18,8 +24,8 @@ def shortcut():
 def status():
     path=shortcut_path();voice_path=ROOT/'voice_config.json'
     voice=json.loads(voice_path.read_text(encoding='utf-8')) if voice_path.exists() else {}
-    mode='offline hands-free mode' if voice.get('handsfree') else 'offline wake-word mode'
-    result={'shortcut':str(path),'installed':path.exists(),'starts':'after this user signs in','voice':mode if voice.get('enabled') else 'off','pre_sign_in_control':False}
+    mode='offline wake-word mode: say Nava listen'
+    result={'shortcut':str(path),'installed':path.exists(),'starts':'after this user signs in','voice':mode,'pre_sign_in_control':False}
     if path.exists():
         link=shortcut();result.update(target=link.TargetPath,arguments=link.Arguments,working_directory=link.WorkingDirectory,description=link.Description)
         wanted=expected()
@@ -34,7 +40,7 @@ def enable():
     if path.exists() and shortcut().Description!=DESCRIPTION:
         raise ValueError('A different startup shortcut already uses '+str(path)+'. It was left unchanged.')
     link=shortcut();link.TargetPath=wanted['target'];link.Arguments=wanted['arguments'];link.WorkingDirectory=wanted['working_directory'];link.Description=DESCRIPTION
-    link.IconLocation=wanted['target']+',0';link.WindowStyle=1;link.Save()
+    link.IconLocation=wanted['target']+',0';link.WindowStyle=7;link.Save()
     result=status()
     if not result.get('matches_this_install'):raise RuntimeError('Startup shortcut verification failed.')
     return result
@@ -54,7 +60,7 @@ def migrate():
     old=win32com.client.Dispatch('WScript.Shell').CreateShortcut(str(legacy))
     wanted=expected()
     old_args='"'+str(ROOT/'gwen.py')+'"'
-    if str(old.TargetPath).casefold()!=wanted['target'].casefold() or str(old.WorkingDirectory).casefold()!=str(ROOT).casefold() or old.Arguments not in (old_args,wanted['arguments']):
+    if str(old.TargetPath).casefold()!=wanted['target'].casefold() or str(old.WorkingDirectory).casefold()!=str(ROOT).casefold() or old.Arguments not in (old_args,'"'+str(ROOT/'nava.py')+'"',wanted['arguments']):
         raise ValueError('The legacy startup shortcut belongs to another install; left unchanged.')
     if shortcut_path().exists():raise ValueError('Both shortcut names exist; no automatic overwrite was made.')
     legacy.rename(shortcut_path())

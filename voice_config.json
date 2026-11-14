@@ -9,7 +9,7 @@
   "silence_ms": 900,
   "minimum_confidence": 0.72,
   "review_confidence": 0.86,
-  "assistant_active": true,
+  "assistant_active": false,
   "dictation_model": "models/whisper-base.en",
   "dictation_silence_ms": 750,
   "cpu_threads": 2,

@@ -6,11 +6,15 @@ enable_dpi_awareness()
 import tkinter as tk
 from tkinter import ttk,scrolledtext,messagebox
 
-def gui(smoke=False,instance=None):
+def gui(smoke=False,instance=None,startup=False):
     import windows_api as win
     from cursor_marker import CursorMarker
     startup_target=win.choose_target(win.snapshot(),[])
     root=tk.Tk();root.withdraw(); root.title('NAVA AI - Type commands'); root.configure(bg='#172033')
+    icon_path=Path(__file__).with_name('assets')/'nava.ico'
+    if icon_path.is_file():
+        try:root.iconbitmap(default=str(icon_path))
+        except tk.TclError:pass
     width,height=480,480
     root.geometry(f'{width}x{height}+{max(0,root.winfo_screenwidth()-width-18)}+{max(0,root.winfo_screenheight()-height-70)}')
     root.minsize(480,460); root.attributes('-topmost',False)
@@ -21,6 +25,9 @@ def gui(smoke=False,instance=None):
     from speech_context import codes
     config_path=Path(__file__).with_name('voice_config.json')
     voice_config=json.loads(config_path.read_text(encoding='utf-8'))
+    if startup:
+        from startup import startup_voice_config
+        voice_config=startup_voice_config(voice_config)
     voice_session=CommandVoice(voice_config);voice_engine=None;pending_voice=None;voice_dialog=None;dialog_version=0;voice_notice_until=0;voice_notice=None
     from dictation_queue import DictationQueue
     dictation_queue=DictationQueue()
@@ -515,7 +522,7 @@ def gui(smoke=False,instance=None):
                     path=Path(__file__).with_name('logs')/'voice_runtime.json';path.parent.mkdir(exist_ok=True)
                     path.write_text(json.dumps({'updated_at':time.time(),'microphone_open':mic_open,
                         'device':voice_engine.active_device if voice_engine else '', 'level':level,
-                        'status':voice_engine.last_status if voice_engine else 'Off',
+                        'status':voice_engine.last_status if voice_engine else 'Off','status_badge':badge_state[0],
                         'handsfree':voice_session.handsfree,'assistant_active':voice_session.active,'last_decision':last_voice_decision,
                         'dictating':voice_session.dictating,'selecting':voice_session.selecting,
                         'busy':busy,'current_task':current_task if busy else '',
@@ -531,7 +538,7 @@ def gui(smoke=False,instance=None):
     root.mainloop()
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--task');parser.add_argument('--background',action='store_true');parser.add_argument('--ui-smoke',action='store_true')
+    parser=argparse.ArgumentParser();parser.add_argument('--task');parser.add_argument('--background',action='store_true');parser.add_argument('--ui-smoke',action='store_true');parser.add_argument('--startup',action='store_true')
     args=parser.parse_args()
     if args.task:
         from agent import Agent
@@ -540,9 +547,9 @@ def main():
         finally:agent.close()
     else:
         from app_runtime import SingleInstance
-        instance=SingleInstance()
+        instance=SingleInstance(show_existing=not args.startup)
         try:
-            if instance.owner:gui(args.ui_smoke,instance)
+            if instance.owner:gui(args.ui_smoke,instance,startup=args.startup)
         finally:instance.close()
 
 if __name__=='__main__':main()

@@ -1,22 +1,16 @@
 {
   "snapshot": "2026-11-15",
-  "branch": "Chnaged-to-Nava",
+  "branch": "main",
   "display_name": "NAVA AI",
   "wake_word": "Nava",
-  "mode": "direct",
+  "execution_mode": "direct",
   "qwen_weights_included": false,
-  "offline_speech_models": "Existing Vosk, Whisper and punctuation assets retained via Git LFS",
-  "excluded": [
-    "local app catalog",
-    "credentials",
-    "browser profiles",
-    "logs",
-    "recordings",
-    "virtual environment",
-    "unused Qwen models",
-    "local certificate keys",
-    "generated helper executables"
-  ],
+  "installer": {
+    "release": "v1.0.0-preview.1",
+    "url": "https://github.com/ZahraRehmat/NavaAI/releases/download/v1.0.0-preview.1/NAVA-AI-Setup-1.0.0-win-x64.exe",
+    "bytes": 869637148,
+    "sha256": "39bddc10fd70e3abc732813b5befa6540193c2a1ce5979a1239bd96d978c594e"
+  },
   "files": [
     {
       "path": ".gitattributes",
@@ -25,8 +19,8 @@
     },
     {
       "path": ".gitignore",
-      "bytes": 402,
-      "sha256": "da15c7e7345299a080b993abea682ea23442fcccfc92cc36c9f00252d62cf477"
+      "bytes": 515,
+      "sha256": "b05a6d0d44cde2ba009de5bd2f0018a8ba512e130d5c9cfbd2134fb34cbcca75"
     },
     {
       "path": "COMMAND_DICTIONARY.md",
@@ -59,6 +53,11 @@
       "sha256": "172471265e8acbba8ff77843e53347cf1dcc0cb2a4943886cbaa7942a1c543d8"
     },
     {
+      "path": "INSTALLER.md",
+      "bytes": 6107,
+      "sha256": "02db611f7c72bec66228eece78bc5fafc8bc3a3a1ac86a241ab85e491da2e4d8"
+    },
+    {
       "path": "NAVA_RENAME.md",
       "bytes": 8728,
       "sha256": "056a141181fc263503b67386dea0ff7a0d5acd810cc1da68c333a3956bc0c285"
@@ -75,13 +74,13 @@
     },
     {
       "path": "OFFLINE_VOICE.md",
-      "bytes": 33855,
-      "sha256": "e5c2221352b81b869d018203feee51ccf24de575c7dbb4ad4b8f74c55be6a8b3"
+      "bytes": 34058,
+      "sha256": "00b654c89daf94470a28b81f68ce439a88fe462c5bafbe63a0afe1e5e7f25e04"
     },
     {
       "path": "README.md",
-      "bytes": 12937,
-      "sha256": "6e505f6a8f1b93810ea9f861e13b351c4ca743acd95b83751274b1375487dd22"
+      "bytes": 14212,
+      "sha256": "14117b2b64f9ba3df994c6128b24f3cc1f04ca88b78433bcd0b00cc53f283ab2"
     },
     {
       "path": "REMAINING_WORK.md",
@@ -105,8 +104,8 @@
     },
     {
       "path": "STARTUP_AND_SIGN_IN.md",
-      "bytes": 3995,
-      "sha256": "15ee433ec35f6fce844ea673af528029737b6be4055c5735956ac26310b89c85"
+      "bytes": 4508,
+      "sha256": "f21136992fb2b652e88b377ce3274d4fe4449a202bf706e61bd60335077a2dc8"
     },
     {
       "path": "Start NAVA AI.cmd",
@@ -117,6 +116,11 @@
       "path": "TESTING.md",
       "bytes": 12754,
       "sha256": "22e1ab7398f7cd4e38ce48fc92b9c5e4895a56f309efe298dd5bef1d415c1c6f"
+    },
+    {
+      "path": "TODAYS_PROGRESS_2026-11-15.md",
+      "bytes": 19253,
+      "sha256": "f84643f73e2b930d51919037678c497d2e607374308c337f80bb2cbaa63c9a87"
     },
     {
       "path": "WEBSITES.md",
@@ -170,8 +174,23 @@
     },
     {
       "path": "app_runtime.py",
-      "bytes": 828,
-      "sha256": "2e1871f73bcf319d4cb773a9935755d3849f910fe862af35626796c8f62bddec"
+      "bytes": 865,
+      "sha256": "71700aac8bcef3ce254ca1022e9998916b12c746dd8fb28490bc667bacd70733"
+    },
+    {
+      "path": "assets/installer-logo.bmp",
+      "bytes": 196662,
+      "sha256": "02864d9740e12642411ed91943d4aaa7c993d86f23c7eabe67eccf54ee312699"
+    },
+    {
+      "path": "assets/nava-logo.png",
+      "bytes": 1204976,
+      "sha256": "499ae3ce0a1dd619dc3e9481ff693b001866746a6bfb150ae0579cb8684fd85c"
+    },
+    {
+      "path": "assets/nava.ico",
+      "bytes": 76855,
+      "sha256": "ea150f054ed5700646046b538f350d12ab5840f56b97bd0276d6aec36d1bb7d7"
     },
     {
       "path": "branding.py",
@@ -419,6 +438,41 @@
       "sha256": "db857f492d307a33f5a11f94f1415cc184432d23ad0b6e4239fc00d6a7c949ab"
     },
     {
+      "path": "installed_bootstrap.py",
+      "bytes": 3912,
+      "sha256": "3e2c61ab8c0bed38f2084c099016990a845d41903081cf2188cb03aef73f8f72"
+    },
+    {
+      "path": "installer/BUILD_VALIDATION.json",
+      "bytes": 866,
+      "sha256": "74f31d27172d562a4a6192655e789fee1fe5a0594045bd5c0df9806dedcc5cf6"
+    },
+    {
+      "path": "installer/PAYLOAD_MANIFEST.json",
+      "bytes": 1206772,
+      "sha256": "1abb12fc657ec625b70cf40d727038cc3a8efb306488e257075181c4b8ae4d79"
+    },
+    {
+      "path": "installer/READ-ME-FIRST.txt",
+      "bytes": 1649,
+      "sha256": "bd8d3618a78f2d2a570b6a60191c9da076242b7b2599d5f83de675de062b6044"
+    },
+    {
+      "path": "installer/README.md",
+      "bytes": 5102,
+      "sha256": "4aa3218d912e06b076414e9fe96f16713d8d800d76f852671894bfd970ee7260"
+    },
+    {
+      "path": "installer/SHA256SUMS.txt",
+      "bytes": 99,
+      "sha256": "e83a2d28f129f373a088caba4920b491a338ab0a3867beb5098a9852aef453e7"
+    },
+    {
+      "path": "installer/THIRD_PARTY_PACKAGES.json",
+      "bytes": 7048,
+      "sha256": "1265b0fdb2241475b84c1d29d60e6d15aa8c432fa01fa1b866552b872ec2beed"
+    },
+    {
       "path": "label_aliases.json",
       "bytes": 584,
       "sha256": "13380b9943e2b710aa67abbd015434982bf6ebf4fcf3c701003b452af8c0d4a0"
@@ -594,6 +648,26 @@
       "sha256": "745c2174f1fd9dbbc047ac4ce360dcda117bc9e2aeaefc43ab56a3029920fdf6"
     },
     {
+      "path": "packaging/Build-Installer.ps1",
+      "bytes": 1207,
+      "sha256": "ce9401d55464806c77e5662c71509bf5f28fbe9ae8be882bc54fecb309ed350c"
+    },
+    {
+      "path": "packaging/Launcher.cs",
+      "bytes": 2353,
+      "sha256": "6402621739687c085609f21623953e5117a1391b302b27d435e9c294bf15d124"
+    },
+    {
+      "path": "packaging/NavaAI.iss",
+      "bytes": 3431,
+      "sha256": "b4aa5969ce694fcf779a237a471dc909c6c31d8cfab1728901980104630b4980"
+    },
+    {
+      "path": "packaging/build.py",
+      "bytes": 8515,
+      "sha256": "274d47e629a89fd5847f2832e17766ca2758dc4dfcce34294aa98ab215c300d3"
+    },
+    {
       "path": "planner.py",
       "bytes": 18399,
       "sha256": "6ffd125de447af07b0bed8c911a5208b07fef0313fd7ad873b87420fe605a1a5"
@@ -725,8 +799,8 @@
     },
     {
       "path": "startup.py",
-      "bytes": 3915,
-      "sha256": "3eb41341de58a4c33e5204515f226085a4e32d50e9173893ea7bedba69dda953"
+      "bytes": 4271,
+      "sha256": "4adfba9bba84b187cf801e34868c08598aebf99fa37501d66be66afd0f9b0b5f"
     },
     {
       "path": "status_indicator.py",
@@ -899,6 +973,11 @@
       "sha256": "19c95ba4fd87a8ebcd76b3c670c89cce573804caa555ab6f664305240811bd3e"
     },
     {
+      "path": "test_installer_contract.py",
+      "bytes": 1593,
+      "sha256": "c80ec35bfc816e46e1a9b18ee22ebe354fe58814ecfc85565fefc054e0bd551d"
+    },
+    {
       "path": "test_label_matching.py",
       "bytes": 3810,
       "sha256": "ccdaeb353fb5fa6f9ce2e7feaee4fe6ea7dbe88695e6f1732cf2ba6afff1f61c"
@@ -1004,6 +1083,11 @@
       "sha256": "a6cf217837a78c109ec2731b743d40b5438c90de27fd002b7a489c1c3090a466"
     },
     {
+      "path": "test_startup_wake.py",
+      "bytes": 1767,
+      "sha256": "31c0eaed5043172a98d4d6a2bc0be6c98cee08fc9dea2109cfdb2f18ce59a757"
+    },
+    {
       "path": "test_status_indicator.py",
       "bytes": 2928,
       "sha256": "5f39a76277ae4684fe277633ab2c4176137aaa3e5bc97e9939d3e3568e61ea6f"
@@ -1090,8 +1174,8 @@
     },
     {
       "path": "typed_ui.py",
-      "bytes": 38588,
-      "sha256": "f957c688da6a97ba86770550165641dfe258a4523bcbee9b9f814abadd329c07"
+      "bytes": 39036,
+      "sha256": "476cac81b39d6088511a36fa85075f901d853cfa5e93533a99f874ec2bc3841b"
     },
     {
       "path": "uiaccess/NavaOverlay.cs",
@@ -1105,8 +1189,8 @@
     },
     {
       "path": "uiaccess/README.md",
-      "bytes": 2243,
-      "sha256": "c3d0d143c1672ab43e424510dafede08ee1118377e910d5d5d011076af0c1ece"
+      "bytes": 2277,
+      "sha256": "fb3b8c2d92b72118e9044feee95e4b132bf65787b43089ff7626ddc85fd68782"
     },
     {
       "path": "uiaccess/build.ps1",
@@ -1235,8 +1319,8 @@
     },
     {
       "path": "voice_config.json",
-      "bytes": 494,
-      "sha256": "a344fec344ebae5e6979662defed4d760e6f44ba9ae5a406ef208094120a7952"
+      "bytes": 495,
+      "sha256": "41e5132ea27d9021e2c8fbb5c20bd6f130a712205b82bd8eb706331caf5aa1f4"
     },
     {
       "path": "voice_controls.py",
@@ -1285,8 +1369,27 @@
     }
   ],
   "verification": {
-    "targeted_regression_tests_passed": 206,
-    "synthetic_offline_speech_checks_passed": 6,
-    "legacy_full_suite_caveats": "See NAVA_RENAME.md; not claimed fully passing"
+    "date": "2026-11-15",
+    "tested_windows_build": 26200,
+    "target": "Windows 10/11 x64",
+    "windows_10_tested": false,
+    "source_regression_tests_passed": 212,
+    "packaged_native_imports_passed": 19,
+    "standalone_payload_self_test": true,
+    "installed_exe_self_test": true,
+    "installed_grid_worker_targets": 138,
+    "ui_smoke_exit": 0,
+    "fresh_install_exit": 0,
+    "upgrade_exit": 0,
+    "settings_and_downloads_preserved_on_upgrade": true,
+    "uninstall_exit": 0,
+    "settings_and_downloads_preserved_on_uninstall": true,
+    "existing_startup_unchanged": true,
+    "qwen_openvino_orphan_tiny_included": false,
+    "limitations": [
+      "Windows 10 acceptance run still required, especially managed Playwright browser",
+      "Unsigned development installer and launcher",
+      "Optional trusted UIAccess deployment not installed by this package"
+    ]
   }
 }

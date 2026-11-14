@@ -23,3 +23,7 @@ dist/
 
 # Rebuild the local accessibility renderer from the included sources.
 uiaccess/*.exe
+
+# Installer sources are tracked; generated payloads stay in Release assets.
+packaging/*.log
+installer/*.exe

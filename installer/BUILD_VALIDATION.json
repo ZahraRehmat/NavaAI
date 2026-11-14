@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-15",
+  "tested_windows_build": 26200,
+  "target": "Windows 10/11 x64",
+  "windows_10_tested": false,
+  "source_regression_tests_passed": 212,
+  "packaged_native_imports_passed": 19,
+  "standalone_payload_self_test": true,
+  "installed_exe_self_test": true,
+  "installed_grid_worker_targets": 138,
+  "ui_smoke_exit": 0,
+  "fresh_install_exit": 0,
+  "upgrade_exit": 0,
+  "settings_and_downloads_preserved_on_upgrade": true,
+  "uninstall_exit": 0,
+  "settings_and_downloads_preserved_on_uninstall": true,
+  "existing_startup_unchanged": true,
+  "qwen_openvino_orphan_tiny_included": false,
+  "limitations": [
+    "Windows 10 acceptance run still required, especially managed Playwright browser",
+    "Unsigned development installer and launcher",
+    "Optional trusted UIAccess deployment not installed by this package"
+  ]
+}

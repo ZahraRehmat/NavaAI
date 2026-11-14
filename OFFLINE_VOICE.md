@@ -1,17 +1,17 @@
 # Offline voice commands
 
-The resident NAVA AI panel has an **Offline voice** checkbox, a **Hands-free** checkbox and a **Mic…** device selector. With voice enabled, Nava starts hidden by default. The startup shortcut starts the same background application after Windows sign-in. **Nava show chat** or F10 explicitly opens the panel. It is not a topmost window and does not reappear after actions. F9 toggles the microphone; the checkbox and spoken controls are alternatives.
+The resident NAVA AI panel has an **Offline voice** checkbox, a **Hands-free** checkbox and a **Mic…** device selector. With voice enabled, Nava starts hidden by default. The startup shortcut starts the same background application after Windows sign-in with the microphone on and a **Say Nava listen** badge; this sign-in profile waits for a wake command, even if voice was disabled before shutdown. **Nava show chat** or F10 explicitly opens the panel. It is not a topmost window and does not reappear after actions. F9 toggles the microphone; the checkbox and spoken controls are alternatives.
 
 ## Say commands
 
 - **Nava grid**, **open grid**, **turn on grid**, **grid on**: activate smart grid. **Close grid**, **turn off grid**, or **grid off** stops it.
 - **Nava click F G**: single-click the visible FG target. Letters can be separated naturally.
-- **Nava listen**: enable continuous hands-free commands once. Then say **F G**, **scroll down from F G**, **double click alpha bravo**, **release**, etc., without repeating NAVA AI. This setting stays active across commands, task failures, stop/F8 and restarts until explicitly changed.
+- **Nava listen**: enable continuous hands-free commands once. Then say **F G**, **scroll down from F G**, **double click alpha bravo**, **release**, etc., without repeating NAVA AI. This setting stays active across commands, task failures, stop/F8 and normal manual restarts. At Windows sign-in the startup profile returns to **Say Nava listen**.
 - **Nava sleep**: return to requiring Nava before commands; this is not a muted microphone.
 - **Stop**: stop the current task and release held buttons. Continuous listening stays enabled.
 - **Nava show chat** / **Nava hide chat**: control the resident panel.
 - **Nava microphone off**: stop microphone capture. Re-enable it using the checkbox or F9; a microphone that is off cannot hear a wake word.
-- In Excel: **NAVA AI cell A two** → `select cell A2`. In a hands-free session, **Cell A2** is enough. **Cell alpha twenty three** and digit-by-digit rows such as **cell B one two** are also normalized.
+- In Excel: **Nava cell A two** → `select cell A2`. In a hands-free session, **Cell A2** is enough. **Cell alpha twenty three** and digit-by-digit rows such as **cell B one two** are also normalized.
 - For indistinct codes, use NATO spelling: **alpha bravo**, **foxtrot golf**, **six mike juliet**.
 
 The panel records what was heard and the normalized command. Ambiguous or low-confidence results populate its command field without executing or opening the panel. A double-tone cue means attention is needed: repeat the command, or say **Nava show chat** for details. For a reviewable code, say **confirm command** while continuously listening, or **Nava confirm command** in wake-word mode. A missing grid code is not changed to a nearby label. For example `click six M J` becomes `click 6MJ` only when that exact label exists.

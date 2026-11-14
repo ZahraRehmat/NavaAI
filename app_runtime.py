@@ -3,13 +3,13 @@ import hashlib
 from pathlib import Path
 
 class SingleInstance:
-    def __init__(self,key_suffix=''):
+    def __init__(self,key_suffix='',show_existing=True):
         import win32event,win32api,win32con
         key=hashlib.sha256((str(Path(__file__).resolve().parent).lower()+key_suffix).encode()).hexdigest()[:16]
         self.mutex=win32event.CreateMutex(None,False,'Local\\NavaAI-'+key)
         self.owner=win32api.GetLastError()!=183
         self.show_event=win32event.CreateEvent(None,False,False,'Local\\NavaShow-'+key)
-        if not self.owner: win32event.SetEvent(self.show_event)
+        if not self.owner and show_existing: win32event.SetEvent(self.show_event)
 
     def show_requested(self):
         import win32event

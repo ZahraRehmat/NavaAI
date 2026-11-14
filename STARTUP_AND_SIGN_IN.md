@@ -1,6 +1,6 @@
 # Startup and hands-free sign-in
 
-NAVA AI is registered in the current user's Windows Startup folder. After Windows signs this user in, the shortcut starts the resident background assistant and cursor marker using this installation's virtual environment. The working directory and script paths are absolute and support spaces. The existing single-instance guard prevents a second resident process. Offline voice restores the last listening mode when enabled in `voice_config.json`; **Nava listen** stays enabled until **Nava sleep** or voice off. The panel starts hidden by default; **Nava show chat** or F10 restores it explicitly. See [OFFLINE_VOICE.md](OFFLINE_VOICE.md).
+NAVA AI is registered in the current user's Windows Startup folder. After Windows signs this user in, the shortcut starts the resident background assistant and cursor marker using this installation's virtual environment. The working directory and script paths are absolute and support spaces. The existing single-instance guard prevents a second resident process. The sign-in shortcut passes `--startup`: the microphone starts automatically, the assistant is active, continuous commands are initially off, and the badge reaches **Say Nava listen** when ready. This startup profile takes effect even if the microphone or assistant was off at the end of the previous session. Say **Nava listen** once to enable continuous commands; no launcher click is needed. Microphone device selection and recognition settings are preserved. Normal manual launches retain their saved listening mode. The panel starts hidden by default; **Nava show chat** or F10 restores it explicitly. See [OFFLINE_VOICE.md](OFFLINE_VOICE.md).
 
 ## Manage automatic startup
 
@@ -25,7 +25,7 @@ The intended combined flow is:
 1. Windows starts and reaches its sign-in screen.
 2. Windows Voice Access handles supported sign-in interactions using the user's spoken commands.
 3. After successful sign-in, Windows starts NAVA AI automatically.
-4. NAVA AI handles desktop apps, grids and agent commands using its offline voice module.
+4. The NAVA AI badge says **Say Nava listen**. Say that phrase once, then use desktop apps, grid and dictation commands.
 
 Microsoft's guide: https://support.microsoft.com/en-gb/accessibility/windows/voice-access/use-voice-access-to-set-up-and-log-in-to-your-pc
 
@@ -38,4 +38,4 @@ Microsoft references:
 - https://learn.microsoft.com/en-us/windows/win32/winauto/uiauto-securityoverview
 - https://learn.microsoft.com/en-us/windows/win32/winauto/ease-of-access---assistive-technology-registration
 
-Verification here checks the shortcut target, arguments and working directory and launches the same shortcut into the existing single-instance runtime. No reboot, sign-out, lock-screen interaction or password entry is performed during development verification.
+Verification checks the shortcut target, `--startup` arguments and working directory, then launches the actual sign-in shortcut and checks the runtime microphone, hands-free state and badge text. A duplicate startup launch is silent and does not show the panel. No reboot, sign-out, lock-screen interaction or password entry is performed during development verification.
