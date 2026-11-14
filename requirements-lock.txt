@@ -54,3 +54,8 @@ typing_extensions==4.16.0
 urllib3==2.8.0
 vosk==0.3.45
 websockets==17.4
+winrt-runtime==4.1.0
+winrt-Windows.Media.Control==4!10.0.28000.2957
+winrt-Windows.Foundation==4!10.0.28000.2957
+winrt-Windows.Foundation.Collections==4!10.0.28000.2957
+winrt-Windows.Storage.Streams==4!10.0.28000.2957

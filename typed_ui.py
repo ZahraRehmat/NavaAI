@@ -26,11 +26,16 @@ def gui(smoke=False,instance=None):
     dictation_queue=DictationQueue()
     from selection_hints import VisibleWordHints
     selection_hints=VisibleWordHints()
+    from word_context import read_editor
+    word_hints=VisibleWordHints(reader=read_editor)
     from task_feedback import SoundCues,BackgroundPresenter
     cues=SoundCues(voice_config.get('completion_beep',True));presenter=BackgroundPresenter(root,cues)
     marker=CursorMarker(root,visible=voice_session.active)
-    from status_indicator import StatusIndicator,indicator_state
+    from status_indicator import StatusIndicator,indicator_state,dictation_state
     indicator=StatusIndicator(root,visible=voice_session.active)
+    from command_help_ui import CommandHelp
+    from command_dictionary import intent as help_intent
+    command_help=CommandHelp(root)
     mic_listening=False;mic_error=False;recognizing=False;last_voice_diagnostic=0;last_voice_decision=''
     from grid_overlay import GridOverlay
     from grid_mouse import GridMouse
@@ -78,7 +83,7 @@ def gui(smoke=False,instance=None):
         halt(); closing=True
         if voice_engine:voice_engine.close()
         cues.close()
-        indicator.close();smart_grid.close();grid_overlay.close(); marker.close(); root.withdraw(); work.put(None)
+        command_help.close();indicator.close();smart_grid.close();grid_overlay.close(); marker.close(); root.withdraw(); work.put(None)
     def confirm(message):
         answer=queue.Queue(); events.put(('confirm',(message,answer)))
         while not stop.is_set():
@@ -125,6 +130,9 @@ def gui(smoke=False,instance=None):
         smart_grid.emergency_stop();agent.close(); events.put(('closed',None))
     def send_task(task,ctx):
         nonlocal busy,pending_voice,current_task,task_started
+        help_request=help_intent(task)
+        if help_request:
+            command_help.apply(help_request);command.set('');return 'break'
         power=power_intent(task)
         if power:
             set_power(power=='power_on');return 'break'
@@ -173,7 +181,11 @@ def gui(smoke=False,instance=None):
             snapshot['dialog_kind']=voice_dialog['kind'];snapshot['dialog_count']=voice_dialog['count']
             snapshot['dialog_labels']=list(voice_dialog['chooser'].labels)
             snapshot['dialog_numbers']=list(voice_dialog['chooser'].numbers)
-        if voice_session.selecting:snapshot['selection_hints']=selection_hints.get(ctx) or voice_session.recent_dictation
+        if voice_session.selecting:snapshot['selection_hints']=selection_hints.get(ctx)
+        editor=word_hints.get(ctx)
+        if isinstance(editor,dict):
+            snapshot['word_hints']=editor['text']
+            snapshot['interaction']={**ctx,'text_field_id':editor['identity']}
         with smart_grid.lock:
             snapshot['grid_active']=smart_grid.active
             snapshot['grid_version']=(smart_grid.mode,smart_grid.generation)
@@ -204,7 +216,7 @@ def gui(smoke=False,instance=None):
         value=bool(value)
         if not value:
             halt(notify=False)
-            selection_hints.clear()
+            selection_hints.clear();word_hints.clear()
             if voice_dialog and not voice_dialog['chooser'].done:voice_dialog['chooser'].finish(None)
             grid_overlay.close()
         voice_session.active=value;voice_session.handsfree=value;voice_session.dictating=False;voice_session.armed_until=0
@@ -259,12 +271,26 @@ def gui(smoke=False,instance=None):
             words=packet.get('words',[]),grid_active=captured.get('grid_active',False),
             handsfree=voice_session.handsfree,busy=busy,target_at_utterance=captured.get('interaction'),
             backend=packet.get('backend'),primary_text=packet.get('primary_text'),primary_confidence=packet.get('primary_confidence'),
-            dictation=captured.get('dictation',False),selection=captured.get('selection',False),decode_seconds=packet.get('seconds'))
+            word_target_unclear=packet.get('word_target_unclear',False),rejected_word_text=packet.get('rejected_word_text'),rejected_word_confidence=packet.get('rejected_word_confidence'),rejected_word_words=packet.get('rejected_word_words'),
+            dictation=captured.get('dictation',False),selection=captured.get('selection',False),decode_seconds=packet.get('seconds'),
+            queue_seconds=packet.get('queue_seconds'),after_audio_seconds=packet.get('after_audio_seconds'),audio_seconds=packet.get('audio_seconds'))
         raw=packet.get('text','').strip();plain=re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:gwen|guen|glen|glenn)[,:]?\s*','',raw,flags=re.I).strip().rstrip('.!?').lower()
+        help_request=help_intent(raw)
+        if help_request:
+            if packet.get('confidence',0)>=voice_config.get('review_confidence',.86):
+                pending_voice=None;last_voice_decision='control'
+                speech_trace('help',request=help_request);command_help.apply(help_request)
+            else:voice_status.set('Command help request unclear; repeat show commands or hide commands.')
+            return
         power=power_intent(raw)
         if power:
             if packet.get('confidence',0)>=voice_config.get('review_confidence',.86):
                 speech_trace('power',control=power);set_power(power=='power_on')
+            return
+        if command_help.master_focused():
+            if packet.get('confidence',0)>=voice_config.get('review_confidence',.86) and plain in ('scroll down','scroll up','close this window','close this app'):
+                command_help.apply({'action':'down' if plain=='scroll down' else 'up' if plain=='scroll up' else 'close_master'})
+            else:voice_status.set('Dictionary: say search dictionary for a keyword, or close full dictionary.')
             return
         if not voice_session.active:
             speech_trace('ignored',reason='assistant_off');return
@@ -318,7 +344,7 @@ def gui(smoke=False,instance=None):
                 if control in ('handsfree','sleep'):
                     save_voice();root.withdraw();cues.notify()
             return
-        if time.monotonic()-captured.get('captured_at',0)>12 or stale(captured,speech_context(),decision.get('code','')):
+        if time.monotonic()-captured.get('audio_completed_at',captured.get('captured_at',0))>12 or stale(captured,speech_context(),decision.get('code',''),text_input=bool(decision.get('dictation_input'))):
             speech_trace('not_executed',reason='stale_screen_or_expired')
             voice_status.set('Voice: screen/grid changed while recognizing; repeat the command');presenter.review();return
         log('Heard: '+raw+(' → '+decision['text'] if raw!=decision['text'] else ''))
@@ -336,6 +362,7 @@ def gui(smoke=False,instance=None):
             speech_trace('not_executed',reason='busy_or_starting')
             voice_status.set('Voice: task is busy or starting; repeat when ready');presenter.review()
         else:
+            pending_voice=None
             speech_trace('submitted',text=decision['text'])
             send_task(decision['text'],captured.get('interaction'))
     def open_voice_dialog(query,options,respond,kind='choice',preview=None):
@@ -359,6 +386,7 @@ def gui(smoke=False,instance=None):
                 if last_target and last_target['hwnd']!=current['hwnd']:
                     target_history[:]=[last_target]+[old for old in target_history if old['hwnd'] not in (last_target['hwnd'],current['hwnd'])]
                     del target_history[8:]
+                word_hints.get(current)
                 last_target=current; target.set('Target: '+(current['title'] or 'Desktop')[:52])
             for key in (0x77,0x78,0x79):
                 state=ctypes.windll.user32.GetAsyncKeyState(key);down=bool(state&0x8000)
@@ -449,9 +477,11 @@ def gui(smoke=False,instance=None):
             if busy:
                 badge_state=('Working '+str(int(time.monotonic()-task_started))+'s · F8','#fbbf24')
                 if voice_dialog and not voice_dialog['chooser'].done:badge_state=('Choose / say cancel','#fbbf24')
-            elif voice_session.dictating and mic_open and not mic_error:badge_state=('Dictating · say stop','#c4b5fd')
+            elif voice_session.dictating and mic_open and not mic_error:badge_state=dictation_state(recognizing=recognizing,review=bool(pending_voice))
             elif voice_session.selecting and mic_open and not mic_error:badge_state=('Selection · say from / to','#93c5fd')
             indicator.update(badge_state,level)
+            command_help.update({'active':voice_session.active,'target':last_target,'dictating':voice_session.dictating,
+                'selecting':voice_session.selecting,'grid':smart_grid.active,'dialog':bool(voice_dialog and not voice_dialog['chooser'].done)})
             if time.monotonic()-last_voice_diagnostic>1:
                 last_voice_diagnostic=time.monotonic()
                 try:

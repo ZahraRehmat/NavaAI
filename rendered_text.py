@@ -33,7 +33,7 @@ SELECT=r"""(state,p)=>{
 }"""
 
 
-def browser_document_select(page,start,end,copy=False,chooser=None):
+def browser_document_select(page,start,end,copy=False,chooser=None,single=False):
     from text_input import span_offsets,copy_selected,SelectionResolutionError
     candidates=[];handles=[]
     try:
@@ -42,7 +42,7 @@ def browser_document_select(page,start,end,copy=False,chooser=None):
                 state=frame.evaluate_handle(SNAPSHOT);handles.append(state)
                 text=state.evaluate('s=>s&&s.text')
                 if not text:continue
-                span_offsets(text,start,end,chooser=lambda *args:0)
+                span_offsets(text,start,end,chooser=lambda *args:0,single=single)
                 candidates.append((state,text,frame))
             except Exception:continue
         if not candidates:raise ValueError('Could not find both endpoints in visible selectable page text. Bring the text into view and repeat.')
@@ -55,7 +55,7 @@ def browser_document_select(page,start,end,copy=False,chooser=None):
             if index is None:raise SelectionResolutionError('Selection cancelled. Nothing was selected or copied.')
             if not isinstance(index,int) or not 0<=index<len(options):raise SelectionResolutionError('Invalid page text choice.')
         state,text,frame=candidates[index]
-        left,right=span_offsets(text,start,end,chooser=chooser)
+        left,right=span_offsets(text,start,end,chooser=chooser,single=single)
         payload={'left':len(text[:left].encode('utf-16-le'))//2,
                  'right':len(text[:right].encode('utf-16-le'))//2}
         actual=state.evaluate(SELECT,payload)

@@ -35,13 +35,15 @@ class BrowserCommandTests(unittest.TestCase):
         act.assert_not_called()
     def test_native_pause_uses_button_and_does_not_toggle_if_paused(self):
         from native_browser import command
-        probe=Mock();probe.observe.return_value=[dict(id=5,type='Button',name='Pause (k)')]
-        with patch('native_browser.focused'),patch('accessibility.NativeControls',return_value=probe):
+        element=Mock();element.element_info.runtime_id=[5]
+        playing=dict(element=element,name='Pause (k)',state='pause',visible=True)
+        paused=dict(element=element,name='Play (k)',state='play',visible=True)
+        with patch('system_media.command',return_value=None),patch('native_media.check_active'),patch('native_browser.focused'),patch('native_media.controls',side_effect=[[playing],[playing],[paused]]),patch('native_media.focus_control'),patch('native_media.click_control') as click:
             result=command(CHROME,{'action':'media_pause'},threading.Event())
-        self.assertIn('Pause',result);probe.act.assert_called_once_with({'action':'ui_click','id':5,'expected_name':'Pause (k)'})
-        probe.reset_mock();probe.observe.return_value=[dict(id=5,type='Button',name='Play (k)')]
-        with patch('native_browser.focused'),patch('accessibility.NativeControls',return_value=probe):self.assertIn('already paused',command(CHROME,{'action':'media_pause'},threading.Event()))
-        probe.act.assert_not_called()
+            self.assertIn('paused',result);click.assert_called_once()
+        with patch('system_media.command',return_value=None),patch('native_media.check_active'),patch('native_browser.focused'),patch('native_media.controls',return_value=[paused]),patch('native_media.click_control') as click:
+            self.assertIn('already paused',command(CHROME,{'action':'media_pause'},threading.Event()))
+            click.assert_not_called()
     def test_explicit_tab_request_reuses_background_browser(self):
         a=Agent(log=lambda _:None);a.last_browser_window=dict(CHROME)
         with patch('windows_api.target_alive',return_value=True),patch('windows_api.title',return_value=CHROME['title']),patch('native_browser.command',return_value='Switched to tab') as run:

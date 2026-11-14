@@ -20,6 +20,27 @@ class HybridRecognizer:
         # A chooser temporarily supersedes dictation/selection. Never send short
         # letter answers through the free-sentence decoder or control rescue.
         if context.get('dialog_active'):return command
+        from word_context import expected_action,contextual_candidate
+        word_action=expected_action(command,context)
+        from selection_recognition import known
+        primary_word=parse_direct(re.sub(r'^gwen\s+','',command.get('text',''),flags=re.I))
+        grounded=bool(primary_word and primary_word.get('kind')=='word_action' and not command.get('word_target_unclear') and known(primary_word['word'],context.get('word_hints','')))
+        if word_action and not grounded and context.get('word_hints') and context.get('assistant_active') is not False:
+            targeted=self.commands.transcribe_word_targets(audio,context,word_action)
+            recovered=contextual_candidate(command,targeted,context)
+            if recovered is not command:
+                recovered['seconds']=time.monotonic()-started
+                return recovered
+        if command.get('word_target_unclear'):
+            from word_commands import recover_word_packet
+            english=self.english.transcribe_result(audio,{**context,'word_command':True,'selection':False,'dictation':False})
+            recovered=contextual_candidate(command,english,context) if context.get('word_hints') else command
+            if recovered is command:recovered=recover_word_packet(command,english,hints=context.get("word_hints",""))
+            if recovered is not command:
+                recovered['backend']='whisper-word';recovered['seconds']=time.monotonic()-started
+                return recovered
+            return {**command,'rejected_word_text':english.get('text'),'rejected_word_confidence':english.get('confidence'),
+                    'rejected_word_words':english.get('words'),'seconds':time.monotonic()-started}
         if context.get('assistant_active') is not False:
             from voice_controls import compact_phrases
             if command['text'] not in compact_phrases() or command.get('confidence',0)<.86:
@@ -30,6 +51,8 @@ class HybridRecognizer:
         from selection_commands import ON,OFF
         from voice_controls import DICTATION_ON,DICTATION_OFF
         control=low in DICTATION_ON|DICTATION_OFF|{'listen','start listening','sleep','stop','cancel','show chat','hide chat','microphone off','mute microphone','yes','no','confirm','confirm command'}
+        from command_dictionary import intent as help_intent
+        control=control or bool(help_intent(command['text']))
         ready=command.get('confidence',0)>=.72 and '[unk]' not in command['text']
         if context.get('assistant_active') is False:return command
         if power_intent(command['text']) and command.get('confidence',0)>=.86:return command
@@ -39,18 +62,32 @@ class HybridRecognizer:
             if parse_excel(text):return command
         if context.get('selection'):
             edit=parse_direct(text)
-            if ready and ((edit and edit['kind'] in ('keys','punctuate')) or control):return command
+            if ready and ((edit and edit['kind'] in ('keys','punctuate','word_action')) or control):return command
+            from selection_recognition import fast_range
+            if fast_range(command,context):
+                command['recognition_note']='Fast endpoint path: both endpoints matched current-app vocabulary.'
+                command['backend']='vosk-selection';command['seconds']=time.monotonic()-started
+                return command
             result=self.english.transcribe_result(audio,context)
-            self.selection_sentence(result)
+            self.selection_sentence(result,context)
+            result['primary_text']=command.get('text');result['primary_confidence']=command.get('confidence')
             result['backend']='whisper-base.en';result['seconds']=time.monotonic()-started
             return result
         if context.get('dictation') and ready:
             edit=parse_direct(text)
             known={'ctrl','alt','shift','enter','tab','esc','backspace','delete','space','up','down','left','right','home','end','pageup','pagedown','insert'}
             safe_keys=edit and edit['kind']=='keys' and all(k in known or re.fullmatch(r'[a-z0-9]|f(?:[1-9]|1\d|2[0-4])',k) for k in edit['keys'])
-            if control or safe_keys or (edit and edit['kind'] in ('font_delta','punctuate')):return command
+            if control or safe_keys or (edit and edit['kind'] in ('font_delta','punctuate','word_action')):return command
         if context.get('dictation'):
             result=self.english.transcribe_result(audio,context)
+            # Spend extra decoding work only on an uncertain phrase, using the
+            # same audio once more. Never invent a target from the test prompt.
+            if result.get('confidence',0)<.72:
+                checked=self.english.transcribe_result(audio,{**context,'dictation_accuracy_pass':True})
+                if checked.get('text') and checked.get('confidence',0)>result.get('confidence',0)+.03:
+                    checked['first_pass_text']=result.get('text')
+                    checked['first_pass_confidence']=result.get('confidence',0)
+                    result=checked
             from direct_commands import parse_direct
             edit=parse_direct(result['text'])
             control=result['text'].lower().strip().rstrip('.! ')
@@ -79,6 +116,8 @@ class HybridRecognizer:
         if compact.get('confidence',0)<.9 or not words or min(w.get('probability',0) for w in words)<.65:return primary
         def payload(text):return re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:gwen|guen|glen|glenn)[,:]?\s*','',text.strip(),flags=re.I).lower().rstrip('.!?')
         original=payload(primary.get('text',''));candidate=payload(compact['text'])
+        from command_dictionary import intent as help_intent
+        if help_intent(candidate) and not help_intent(original):return primary
         from browser_commands import intent as browser_intent
         from grid_commands import toggle_intent
         from direct_commands import parse_direct
@@ -100,17 +139,19 @@ class HybridRecognizer:
         return {**compact,'primary_text':primary['text'],'primary_confidence':primary.get('confidence',0)}
 
     @staticmethod
-    def selection_sentence(result):
+    def selection_sentence(result,context=None):
         """One range per utterance; do not append a decoder's trailing sentence."""
         from selection_commands import range_command
         first=re.split(r'(?<=[.!?])\s+',result['text'].strip(),maxsplit=1)[0]
-        if first==result['text'].strip() or not range_command(first,mode=True):return
-        words=result.get('words',[]);count=len(re.findall(r'\w+(?:[’\'-]\w+)*',first))
-        spoken=[w for w in words if re.search(r'\w',w.get('word',''))][:count]
-        if len(spoken)!=count:return
-        result['text']=first;result['words']=spoken
-        result['confidence']=sum(w['probability'] for w in spoken)/count
-        result['recognition_note']='Selection mode accepts one complete range sentence per utterance.'
+        if first!=result['text'].strip() and range_command(first,mode=True):
+            words=result.get('words',[]);count=len(re.findall(r'\w+(?:[’\'-]\w+)*',first))
+            spoken=[w for w in words if re.search(r'\w',w.get('word',''))][:count]
+            if len(spoken)==count:
+                result['text']=first;result['words']=spoken
+                result['confidence']=sum(w['probability'] for w in spoken)/count
+                result['recognition_note']='Selection mode accepts one complete range sentence per utterance.'
+        from selection_recognition import trim_unreliable_tail
+        trim_unreliable_tail(result,context)
 
     @staticmethod
     def consensus(command,result):

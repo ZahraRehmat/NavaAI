@@ -76,6 +76,7 @@ class DropdownTests(unittest.TestCase):
             self.assertEqual(probe.act({'action':'ui_click','id':1}),'Dropdown open.')
         wrapper.iface_invoke.Invoke.assert_not_called()
         wrapper.element_info.control_type='Button'
+        pattern.CurrentExpandCollapseState=3 # A regular button has no submenu.
         with patch('windows_api.focus_handle',return_value=20),patch('windows_api.rect',return_value=probe.bounds):probe.act({'action':'ui_click','id':1})
         wrapper.iface_invoke.Invoke.assert_called_once()
 

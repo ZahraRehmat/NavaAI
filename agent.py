@@ -125,6 +125,9 @@ class Agent:
                 if not page.evaluate("()=>{let e=document.activeElement;return e && (e.isContentEditable || ['INPUT','TEXTAREA'].includes(e.tagName))}"): raise ValueError('Focus an input in the browser before typing.')
                 from text_input import browser_type
                 browser_type(page,command['text']); return 'Typed the requested text.'
+            if command['kind']=='word_action':
+                from text_input import browser_select
+                return browser_select(page,command['word'],command['word'],chooser=select_chooser,single=True,word_action=command['action'])
             if command['kind']=='select_text':
                 from text_input import browser_select
                 return browser_select(page,command['start'],command['end'],copy=command.get('copy',False),chooser=select_chooser)
@@ -135,8 +138,14 @@ class Agent:
                 page.keyboard.press('Control+Shift+.' if command['direction']>0 else 'Control+Shift+,')
                 return 'Sent the browser editor’s font-size shortcut.'
             if command['kind']=='keys':
-                names={'ctrl':'Control','alt':'Alt','shift':'Shift','enter':'Enter','esc':'Escape','tab':'Tab','space':'Space','backspace':'Backspace','delete':'Delete','pagedown':'PageDown','pageup':'PageUp','left':'ArrowLeft','right':'ArrowRight','up':'ArrowUp','down':'ArrowDown'}
-                page.keyboard.press('+'.join(names.get(k,k) for k in command['keys'])); return 'Pressed the requested keys.'
+                if command['keys']==['ctrl','backspace'] and page.evaluate("()=>{const e=document.activeElement;return e&&typeof e.selectionStart==='number'?e.selectionStart!==e.selectionEnd:!getSelection().isCollapsed}"):
+                    command={**command,'keys':['backspace']}
+                names={'ctrl':'Control','alt':'Alt','shift':'Shift','enter':'Enter','esc':'Escape','tab':'Tab','space':'Space','backspace':'Backspace','delete':'Delete','pagedown':'PageDown','pageup':'PageUp','left':'ArrowLeft','right':'ArrowRight','up':'ArrowUp','down':'ArrowDown','home':'Home','end':'End'}
+
+                for _ in range(command.get('repeat',1)):
+                    if self.stop.is_set():raise InterruptedError('Stopped')
+                    page.keyboard.press('+'.join(names.get(k,k) for k in command['keys']))
+                return 'Pressed the requested keys.'
         target=self.interaction or win.snapshot()
         if not target or target['title'].startswith('Gwen Doer'): raise ValueError('Select the app you want to control, then repeat the command.')
         if command['kind']=='scroll' and self._managed_target(target):
@@ -167,6 +176,9 @@ class Agent:
             amount=command['steps']*(-1 if command['direction'] in ('down','left') else 1)
             win.scroll_at(target['hwnd'],x,y,amount,horizontal=command['direction'] in ('left','right'))
             return 'Scrolled '+command['direction']+'.'
+        if command['kind']=='word_action':
+            from text_input import native_word
+            return native_word(target,command['word'],command['action'],chooser=select_chooser,stop=self.stop)
         if command['kind']=='select_text':
             from text_input import FocusedText,select_screen_text
             return select_screen_text(target,command['start'],command['end'],copy=command.get('copy',False),chooser=select_chooser)
@@ -175,15 +187,26 @@ class Agent:
             desktop.act({'action':'hotkey','keys':['ctrl','shift','.' if command['direction']>0 else ',']},bounds=bounds)
             return 'Sent the app’s increase-font shortcut.' if command['direction']>0 else 'Sent the app’s decrease-font shortcut.'
         if command['kind']=='type':
-            from text_input import prepare_text
-            value=prepare_text(command['text'],target)
+            value=command['text']
             if len(value)>20000:raise ValueError('Text exceeds 20,000 characters')
             if not any(c in value for c in '\r\n\t'):
-                from unicode_keyboard import type_unicode
-                type_unicode(value,target['hwnd'],stop=self.stop)
-            else:desktop.act({'action':'type','text':value},bounds=bounds)
+                from text_input import native_type
+                return native_type(command['text'],target,stop=self.stop)
+            else:
+                from text_input import prepare_text
+                desktop.act({'action':'type','text':prepare_text(value,target)},bounds=bounds)
             return 'Typed the requested text.'
-        if command['kind']=='keys': desktop.act({'action':'hotkey','keys':command['keys']},bounds=bounds); return 'Pressed '+ ' + '.join(command['keys'])+'.'
+        if command['kind']=='keys':
+            if command['keys']==['ctrl','backspace']:
+                try:
+                    from text_input import FocusedText
+                    access=FocusedText(target);access.check();ranges=access.pattern.GetSelection()
+                    if ranges.Length==1 and ranges.GetElement(0).GetText(1):command={**command,'keys':['backspace']}
+                except Exception:pass
+            for _ in range(command.get('repeat',1)):
+                if self.stop.is_set():raise InterruptedError('Stopped')
+                desktop.act({'action':'hotkey','keys':command['keys']},bounds=bounds)
+            return 'Pressed '+ ' + '.join(command['keys'])+(' '+str(command['repeat'])+' times' if command.get('repeat',1)>1 else '')+'.'
         raise ValueError('Unknown direct input')
 
     def dispatch(self, a, background):
@@ -406,6 +429,9 @@ class Agent:
                         except InterruptedError:raise
                         except Exception as exc:result='Excel action stopped: '+str(exc).splitlines()[0][:250]
                     self.record({'excel_command':cell_command,'result':result});self.log(result);return result
+            from word_commands import word_intent,parse_word
+            if word_intent(task) and not parse_word(task):
+                return 'Which word? Say the command and its target together, for example select word work.'
             from dropdown_control import dropdown_intent,missing_target
             if missing_target(task):
                 from dropdown_choices import choose
@@ -454,7 +480,7 @@ class Agent:
                         self.last_browser_window=dict(self.interaction)
                     elif managed_session or (visible_browser and self._managed_target(self.interaction)):
                         result=self.browser.command(browser_command,chooser);self.mode='browser'
-                    elif browser_command['action']=='tab_new':
+                    elif browser_command['action'] in ('tab_new','tab_open_url'):
                         self.dispatch({'action':'open_browser','channel':'chrome'},background)
                         result=self.browser.command(browser_command,chooser)
                     else:raise ValueError('Select the browser window, then repeat the tab/video command.')
@@ -543,7 +569,7 @@ class Agent:
                 if cell_command.code and not cell_command.review:task=cell_command.text
             immediate=parse_direct(task)
             addressed_write=parse_office(task) if office and re.match(r'^(?:write|enter|put)\s+',task,re.I) else None
-            if immediate and immediate['kind'] in ('type','keys','select_text','punctuate') and not (addressed_write and addressed_write.get('range')):
+            if immediate and immediate['kind'] in ('type','keys','select_text','punctuate','word_action') and not (addressed_write and addressed_write.get('range')):
                 try:result=self._direct(immediate)
                 except Exception as exc:result='Could not perform that input: '+str(exc)[:240]
                 self.log(result);return result

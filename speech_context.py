@@ -68,6 +68,8 @@ def correct(text,context=None):
     # numeric text merely because a word sounds like a letter/number.
     if re.match(r'^(?:type|write|dictate|enter text)\b',clean,re.I):return Correction(text)
     clean=re.sub(r'^(?:please|can you|could you)\s+','',clean,flags=re.I)
+    from word_commands import parse_word
+    if parse_word(clean):return Correction(clean)
     if context.get('office')=='excel':
         selection=re.fullmatch(r'(?:select|choose|go to)\s+(?:cell\s+)?(.+)',clean,re.I)
         if selection:

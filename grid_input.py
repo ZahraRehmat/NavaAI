@@ -14,13 +14,16 @@ def keyboard_command(task,context=None):
     from routing import website_intent
     if website_intent(text):return True
     from browser_commands import intent as browser_intent
-    if browser_intent(text,browser_active=False):return True
+    from routing import browser_channel
+    if browser_intent(text,browser_active=bool(browser_channel(context))):return True
     from window_commands import intent
     window=intent(text)
     if window and window['action'] in ('close_window','close_named','force_close_window','force_close_named','switch_window','minimize_window','maximize_window','restore_window','minimize_named','maximize_named','restore_named'):return True
+    from word_commands import word_intent
+    if word_intent(text):return True
     direct=parse_direct(text)
     if not direct:return False
-    if direct['kind'] in ('type','select_text','font_delta','punctuate'):return True
+    if direct['kind'] in ('type','select_text','font_delta','punctuate','word_action'):return True
     if direct['kind']!='keys':return False
     # "press F" is a grid click, whereas "press enter" is a keyboard action.
     keys=direct['keys']

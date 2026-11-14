@@ -43,7 +43,7 @@ class NativeControls:
                 try:
                     parent=el.parent().element_info;name=arrow_name(name,parent.name,parent.control_type)
                 except Exception:pass
-                result.append({'id':index,'name':name,'source_name':info.name,'type':info.control_type,'expandable':expandable(el) if info.control_type in ('SplitButton','ComboBox','MenuItem') else False,'focused':el.has_keyboard_focus(),'automation_id':info.automation_id,'bounds':[rect.left,rect.top,rect.right,rect.bottom]})
+                result.append({'id':index,'name':name,'source_name':info.name,'type':info.control_type,'expandable':expandable(el) if info.control_type in ('SplitButton','ComboBox','MenuItem','Button') else False,'focused':el.has_keyboard_focus(),'automation_id':info.automation_id,'bounds':[rect.left,rect.top,rect.right,rect.bottom]})
             except Exception: continue
         return result
 
@@ -61,7 +61,7 @@ class NativeControls:
             if el.get_value()!=a['text']: raise ValueError('Text entry verification failed')
         else:
             from dropdown_control import expand_wrapper,expandable
-            if a.get('expand') or el.element_info.control_type in ('SplitButton','ComboBox') or (el.element_info.control_type=='MenuItem' and expandable(el)):
+            if a.get('expand') or el.element_info.control_type in ('SplitButton','ComboBox') or (el.element_info.control_type in ('MenuItem','Button') and expandable(el)):
                 return expand_wrapper(el)
             # Prefer semantic invocation; fallback targets the observed control rectangle.
             try:pattern=el.iface_invoke

@@ -2,7 +2,8 @@
 import re
 
 ON={'selection','selection mode','start selection','select text','start selecting'}
-OFF={'stop selection','end selection','cancel selection','exit selection','finish selection'}
+OFF={'stop selection','end selection','cancel selection','exit selection','finish selection',
+     'close selection','selection off','turn off selection','stop selecting','finish selecting'}
 
 
 def range_command(text,mode=False):

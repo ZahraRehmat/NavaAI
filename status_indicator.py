@@ -1,5 +1,5 @@
 """Small passive resident badge. No focus, pointer, or input operations."""
-import ctypes
+import ctypes,time
 from ctypes import wintypes as w
 import tkinter as tk
 
@@ -15,6 +15,12 @@ def indicator_state(*, ready, busy, enabled, microphone, handsfree, armed=False,
     if recognizing: return 'Hearing you', '#c4b5fd'
     if handsfree or armed: return 'Listening', '#4ade80'
     return 'Say Gwen listen', '#67e8f9'
+
+
+def dictation_state(*,recognizing=False,review=False):
+    if recognizing:return 'Decoding text', '#c4b5fd'
+    if review:return 'Not typed · repeat', '#fbbf24'
+    return 'Dictating · say stop', '#c4b5fd'
 
 
 class StatusIndicator:
@@ -43,7 +49,7 @@ class StatusIndicator:
         self.user.SetWindowLongW(self.hwnd,-20,self.user.GetWindowLongW(self.hwnd,-20)|0x080800a0)
         self.user.SetWindowDisplayAffinity.argtypes=[w.HWND,w.DWORD]
         self.user.SetWindowDisplayAffinity(self.hwnd,0) # Visible to desktop/remote capture.
-        self.last=None;self.position=None;self.visible=bool(visible)
+        self.last=None;self.position=None;self.last_raise=0;self.visible=bool(visible)
         # Tk deiconify may activate a newly mapped window despite NOACTIVATE.
         self.user.ShowWindow(self.hwnd,4 if self.visible else 0)  # SW_SHOWNOACTIVATE
         self.update(('Starting','#94a3b8'))
@@ -61,13 +67,18 @@ class StatusIndicator:
         area=w.RECT()
         if self.user.SystemParametersInfoW(0x30,0,ctypes.byref(area),0):
             position=(max(area.left,area.right-196),area.top+12)
-            if position!=self.position:
+            now=time.monotonic()
+            # Owned Tk tool windows can lose their effective Z-order when a
+            # sibling overlay is hidden, even with WS_EX_TOPMOST still set.
+            # Reassert the passive topmost position without activating it.
+            if position!=self.position or now-self.last_raise>=.5:
                 self.user.SetWindowPos(self.hwnd,w.HWND(-1),*position,184,36,0x10|0x40)
-                self.position=position
+                self.position=position;self.last_raise=now
 
     def close(self):
         self.window.destroy()
 
     def set_visible(self,value):
         self.visible=bool(value)
+        self.position=None;self.last_raise=0
         self.user.ShowWindow(self.hwnd,4 if self.visible else 0)

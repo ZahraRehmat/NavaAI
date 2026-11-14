@@ -14,3 +14,8 @@ comtypes==1.4.17
 vosk==0.3.45
 sentencepiece==0.2.3
 onnxruntime==1.31.1
+winrt-runtime==4.1.0
+winrt-Windows.Media.Control==4!10.0.28000.2957
+winrt-Windows.Foundation==4!10.0.28000.2957
+winrt-Windows.Foundation.Collections==4!10.0.28000.2957
+winrt-Windows.Storage.Streams==4!10.0.28000.2957

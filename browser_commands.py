@@ -6,6 +6,14 @@ NUMBERS={'first':1,'second':2,'third':3,'fourth':4,'fifth':5,'sixth':6,'seventh'
 def intent(task,browser_active=False):
     text=re.sub(r'^\s*(?:please\s+|can you\s+|could you\s+)','',task,flags=re.I).strip().rstrip('.!')
     low=text.lower()
+    from media_commands import intent as media_intent
+    media=media_intent(low,browser_active)
+    if media:return media
+    website_tab=re.fullmatch(r'(?:open|visit)\s+(.+?)\s+(?:in|on)\s+(?:(?:a|the)\s+)?new\s+tab',text,re.I)
+    if website_tab:
+        from routing import website_intent
+        website=website_intent('open '+website_tab[1])
+        if website:return {'action':'tab_open_url','url':website['url']}
     if re.fullmatch(r'open\s+(?:(?:a|the)\s+)?(?:browser\s+)?tab',low):return {'action':'tab_new'}
     if re.fullmatch(r'(?:open|add|create|start)?\s*(?:a\s+)?(?:new|another)\s+(?:browser\s+)?tab',low):return {'action':'tab_new'}
     if re.fullmatch(r'close\s+(?:the\s+)?(?:(?:this|current|active|selected)\s+)?(?:browser\s+)?tab',low):return {'action':'tab_close'}

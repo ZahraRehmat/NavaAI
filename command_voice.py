@@ -26,6 +26,25 @@ class CommandVoice:
         self.selecting=False;self.recent_dictation=''
         if not self.active:self.handsfree=False
 
+    def accept_dictation_prose(self,result,text,context):
+        # Prose is editable text, not an instruction. Do not apply a relaxed
+        # dictation threshold to keys, mode switches, media or Office actions.
+        if not self.dictating or not str(result.get('backend','')).startswith('whisper'):return False
+        if result.get('confidence',0)<self.config.get('dictation_minimum_confidence',.60):return False
+        from voice_controls import DICTATION_ON,DICTATION_OFF
+        from selection_commands import ON,OFF
+        from direct_commands import parse_direct
+        from browser_commands import intent as browser_intent
+        low=text.lower().strip().rstrip('.!?')
+        if low in DICTATION_ON|DICTATION_OFF|ON|OFF:return False
+        edit=parse_direct(text)
+        if edit and edit['kind']!='type':return False
+        if browser_intent(text,True):return False
+        if context.get('office')=='excel':
+            from excel_commands import parse as parse_excel
+            if parse_excel(text):return False
+        return bool(text.strip())
+
     def route(self,result,context=None):
         context=context or {};raw=result.get('text','').strip()
         if not raw:return {'kind':'ignore'}
@@ -38,11 +57,16 @@ class CommandVoice:
             self.active=power=='power_on';self.handsfree=self.active;self.armed_until=0;self.dictating=False
             self.selecting=False
             return {'kind':'control','control':power}
+        from command_dictionary import intent as help_intent
+        help_request=help_intent(raw)
+        if help_request:
+            if confidence>=self.config.get('review_confidence',.86):return {'kind':'control','control':'command_help','request':help_request}
+            return {'kind':'review','text':text,'raw':raw,'reason':'Command help request unclear; repeat it.','confirmable':False}
         if power or not self.active:return {'kind':'ignore'}
         if low in ('stop','stop now','cancel','cancel task','stop the task') and confidence>=.5:
             self.dictating=False;self.selecting=False;return {'kind':'control','control':'stop'}
         if not (wake or self.handsfree or self.dictating or self.selecting or time.monotonic()<self.armed_until):return {'kind':'ignore'}
-        if confidence<self.config.get('minimum_confidence',.72):
+        if confidence<self.config.get('minimum_confidence',.72) and not self.accept_dictation_prose(result,text,context):
             return {'kind':'review','text':text,'raw':raw,'reason':'Speech confidence is low; repeat or review the command.','confirmable':False}
         from voice_controls import DICTATION_ON,DICTATION_OFF
         if low in DICTATION_OFF:
@@ -61,25 +85,39 @@ class CommandVoice:
             return {'kind':'control','control':'selection_on'}
         if low in OFF:
             self.selecting=False;return {'kind':'control','control':'selection_off'}
+        from word_commands import word_intent,parse_word
+        if result.get('word_target_unclear'):
+            return {'kind':'review','text':text,'raw':raw,'reason':'The target word was unclear. Repeat the command and target together; nothing was changed.','confirmable':False}
+        if word_intent(text) and not parse_word(text):
+            return {'kind':'review','text':text,'raw':raw,'reason':'Which word? Say the command and its target together, for example select word work.','confirmable':False}
+        from routing import browser_channel
+        from browser_commands import intent as browser_intent
+        media=browser_intent(text,True) if browser_channel(context.get('interaction')) else None
+        if media and media['action'].startswith('media_'):
+            if context.get('busy'):return {'kind':'review','text':text,'raw':raw,'reason':'Wait for the current command to finish.','confirmable':False}
+            return {'kind':'command','text':text,'raw':raw,'code':''}
         if self.selecting:
             from direct_commands import parse_direct
             if low in DICTATION_ON:
                 self.selecting=False;self.dictating=True;return {'kind':'control','control':'dictation_on'}
             edit=parse_direct(text)
-            if edit and edit['kind'] in ('keys','punctuate'):
+            if edit and edit['kind'] in ('keys','punctuate','word_action'):
                 return {'kind':'command','text':text,'raw':raw,'code':''}
             command=range_command(text,mode=True)
             if command:
+                from selection_recognition import endpoint_error
+                reason=endpoint_error({**result,'text':text})
+                if reason:return {'kind':'review','text':text,'raw':raw,'reason':reason,'confirmable':False}
                 if context.get('busy'):return {'kind':'review','text':text,'raw':raw,'reason':'Wait for the current task to finish, then repeat the range.','confirmable':False}
                 return {'kind':'command','text':canonical(command),'raw':raw,'code':''}
             edit=parse_direct(text)
-            if not edit or edit['kind'] not in ('keys','punctuate'):
+            if not edit or edit['kind'] not in ('keys','punctuate','word_action'):
                 return {'kind':'review','text':text,'raw':raw,'reason':'Say the start and end words, for example Islamabad to Karachi, or stop selection.','confirmable':False}
             return {'kind':'command','text':text,'raw':raw,'code':''}
         if self.dictating:
             from direct_commands import parse_direct
             edit=parse_direct(text)
-            if edit and edit['kind'] in ('keys','select_text','font_delta','punctuate'):
+            if edit and edit['kind'] in ('keys','select_text','font_delta','punctuate','word_action'):
                 return {'kind':'command','text':text,'raw':raw,'code':'','dictation_input':True}
             from dictation_punctuation import raw_dictation
             payload=raw_dictation(edit['text'] if edit and edit['kind']=='type' else raw)
@@ -137,10 +175,14 @@ class CommandVoice:
         if weak_code:return {'kind':'review','text':text,'raw':raw,'reason':'Please confirm the recognized letters/numbers or repeat them using NATO spelling.','confirmable':True,'code':correction.code}
         return {'kind':'command','text':text,'raw':raw,'code':correction.code}
 
-def stale(context,current,code=''):
+def stale(context,current,code='',text_input=False):
     """Speech uses the grid the speaker saw, not a later grid reusing its labels."""
     before=context.get('interaction') or {};after=current.get('interaction') or {}
     if before and after and (before.get('hwnd'),before.get('pid'))!=(after.get('hwnd'),after.get('pid')):return True
+    if text_input:
+        old_field=before.get('text_field_id');new_field=after.get('text_field_id')
+        if old_field and new_field and old_field!=new_field:return True
+        return False # Text does not refer to the grid's changing letter labels.
     if code and context.get('office')=='excel' and before.get('title')!=after.get('title'):return True
     if context.get('grid_active')!=current.get('grid_active'):return True
     if context.get('grid_active'):

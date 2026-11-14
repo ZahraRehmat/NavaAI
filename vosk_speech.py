@@ -30,7 +30,9 @@ def website_names():
 
 def vocabulary(context,model):
     if (context or {}).get('assistant_active') is False:
-        return ['gwen turn on','gwen turn off','gwen switch on','gwen switch off','[unk]']
+        from command_dictionary import ALIASES
+        help_phrases=[p for p in ALIASES if all(model.vosk_model_find_word(w)>=0 for w in p.split())]
+        return ['gwen turn on','gwen turn off','gwen switch on','gwen switch off','[unk]']+help_phrases+['gwen '+p for p in help_phrases]
     if (context or {}).get('dialog_active'):
         from dialog_voice import grammar
         return [phrase for phrase in grammar(context) if phrase=='[unk]' or all(model.vosk_model_find_word(w)>=0 for w in phrase.split())]
@@ -50,6 +52,9 @@ def vocabulary(context,model):
     words.update(word for word in ('dropdown','drop','arrow','expand','menu') if model.vosk_model_find_word(word)>=0)
     words.update(word for word in ('next','previous','last','first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth') if model.vosk_model_find_word(word)>=0)
     words.update(word for word in ('edit','selected','selection','copied','into') if model.vosk_model_find_word(word)>=0)
+    if (context or {}).get('selection'):
+        hinted=re.findall(r'[a-z]+',(context or {}).get('selection_hints','').casefold())[:100]
+        words.update(word for word in hinted if model.vosk_model_find_word(word)>=0)
     from voice_controls import compact_phrases
     words.update(word for phrase in compact_phrases() for word in phrase.split() if model.vosk_model_find_word(word)>=0)
     phrases=['gwen listen','gwen sleep','gwen grid','gwen smart grid','gwen stop','gwen confirm command','show chat','hide chat','scroll up','scroll down','double click','move to','select cell','go to cell']
@@ -59,6 +64,9 @@ def vocabulary(context,model):
     from selection_commands import ON,OFF
     for action in sorted(ON|OFF):phrases.extend((action,'gwen '+action))
     phrases.extend(compact_phrases())
+    if (context or {}).get('selection'):
+        for word in hinted:
+            if word in words:phrases.extend(('select from '+word,'from '+word,'to '+word))
     from website_directory import directory
     for name in directory().voice_names(300):
         for suffix in ('',' on chrome',' on edge'):
@@ -130,6 +138,19 @@ class VoskRecognizer:
         if '[unk]' in text or text not in phrases:confidence=0
         return {'text':text,'confidence':confidence,'words':words,'seconds':time.monotonic()-started,'backend':'vosk-controls'}
 
+    def transcribe_word_targets(self,audio,context,action):
+        from word_context import phrases
+        grammar=phrases(context,action,self.model)
+        if not grammar:return {'text':'','confidence':0,'words':[]}
+        if isinstance(audio,(str,Path)):
+            from faster_whisper.audio import decode_audio
+            audio=decode_audio(str(audio),sampling_rate=16000)
+        audio=np.asarray(audio,dtype=np.float32).reshape(-1)
+        recognizer=self.vosk.KaldiRecognizer(self.model,16000,json.dumps(grammar+['[unk]']))
+        recognizer.SetWords(True);recognizer.AcceptWaveform((np.clip(audio,-1,1)*32767).astype('<i2').tobytes())
+        result=json.loads(recognizer.FinalResult());words=[{'word':w['word'],'probability':float(w['conf'])} for w in result.get('result',())]
+        return {'text':result.get('text',''),'confidence':sum(w['probability'] for w in words)/len(words) if words else 0,'words':words,'backend':'vosk-editor-word'}
+
     def transcribe_result(self,audio,context=None):
         started=time.monotonic();context=context or {}
         if isinstance(audio,(str,Path)):
@@ -160,4 +181,18 @@ class VoskRecognizer:
                 text=candidate;words=[{'word':w['word'],'probability':float(w['conf'])} for w in fallback.get('result',())]
         confidence=sum(w['probability'] for w in words)/len(words) if words else 0
         if '[unk]' in text:confidence=min(confidence,.5)
-        return {'text':text,'confidence':confidence,'words':words,'seconds':time.monotonic()-started,'backend':'vosk'}
+        packet={'text':text,'confidence':confidence,'words':words,'seconds':time.monotonic()-started,'backend':'vosk'}
+        from word_commands import word_intent,recover_word_packet
+        if not context.get('dialog_active') and context.get('assistant_active') is not False and word_intent(text):
+            # Command grammar cannot contain every word users may refer to.
+            # Decode this same utterance with the normal language graph, only
+            # accepting a complete target with the original action preserved.
+            general=self.vosk.KaldiRecognizer(self.model,16000);general.SetWords(True)
+            general.AcceptWaveform(pcm);raw=json.loads(general.FinalResult())
+            full_words=[{'word':w['word'],'probability':float(w['conf'])} for w in raw.get('result',())]
+            candidate={'text':raw.get('text',''),'words':full_words,
+                       'confidence':sum(w['probability'] for w in full_words)/len(full_words) if full_words else 0,
+                       'backend':'vosk-word','seconds':time.monotonic()-started}
+            recovered=recover_word_packet(packet,candidate)
+            packet=({**packet,'word_target_unclear':True} if recovered is packet else recovered)
+        return packet

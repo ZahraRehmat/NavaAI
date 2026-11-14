@@ -1,5 +1,5 @@
 """Unicode keyboard packets for ordinary dictation, preserving the whole clipboard."""
-import ctypes
+import ctypes,time
 from ctypes import wintypes as w
 
 
@@ -24,10 +24,16 @@ def type_unicode(text,hwnd,stop=None):
     import windows_api as win
     user=ctypes.WinDLL('user32',use_last_error=True)
     user.SendInput.argtypes=[w.UINT,ctypes.POINTER(Input),ctypes.c_int];user.SendInput.restype=w.UINT
-    events=list(packets(text))
-    for index in range(0,len(events),128):
+    # Modern RichEdit/UWP editors can coalesce a burst of VK_PACKET messages
+    # into repeated final characters. Deliver a complete Unicode character at
+    # a time and let the target pump its input queue between characters.
+    for index,char in enumerate(text):
         if stop and stop.is_set():raise InterruptedError('Stopped')
         if win.foreground()!=hwnd:raise ValueError('Active app changed during typing. Remaining text was stopped.')
-        batch=events[index:index+128];buffer=(Input*len(batch))(*batch)
+        batch=list(packets(char));buffer=(Input*len(batch))(*batch)
         if user.SendInput(len(batch),buffer,ctypes.sizeof(Input))!=len(batch):
             raise RuntimeError('Windows blocked some typing input. Inspect the field before retrying.')
+        if index+1<len(text):
+            if stop:
+                if stop.wait(.008):raise InterruptedError('Stopped')
+            else:time.sleep(.008)

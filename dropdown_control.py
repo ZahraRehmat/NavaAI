@@ -74,7 +74,20 @@ def expand_wrapper(wrapper,timeout=.7):
         if state!=1:pattern.Expand()
         deadline=time.monotonic()+timeout
         while pattern.CurrentExpandCollapseState!=1:
-            if time.monotonic()>=deadline:raise ValueError('Windows did not confirm that the dropdown opened. No main-button action was invoked.')
+            if time.monotonic()>=deadline:
+                # XAML menu buttons (notably current Notepad) can expose a
+                # no-op Expand implementation. These entire controls are
+                # dropdowns; split/combo main actions must never be clicked.
+                role=getattr(getattr(wrapper,'element_info',None),'control_type',None)
+                if role not in ('Button','MenuItem'):
+                    raise ValueError('Windows did not confirm that the dropdown opened. No main-button action was invoked.')
+                if not wrapper.is_visible() or not wrapper.is_enabled():raise ValueError('The dropdown is no longer available.')
+                wrapper.click_input()
+                retry=time.monotonic()+timeout
+                while pattern.CurrentExpandCollapseState!=1:
+                    if time.monotonic()>=retry:raise ValueError('The app did not open this dropdown after one observed click. No repeated input was sent.')
+                    time.sleep(.03)
+                break
             time.sleep(.03)
         return 'Dropdown open.'
     # Some providers expose only a real arrow child. Its observed control is

@@ -15,4 +15,6 @@ class DictationQueue:
         before=context.get('interaction') or {};after=current.get('interaction') or {}
         if saved_epoch!=epoch or time.monotonic()-when>30 or not before or (before.get('hwnd'),before.get('pid'))!=(after.get('hwnd'),after.get('pid')):
             self.clear();raise ValueError('Queued dictation cancelled because the active app changed or the phrase expired.')
+        if before.get('text_field_id') and after.get('text_field_id') and before['text_field_id']!=after['text_field_id']:
+            self.clear();raise ValueError('Queued dictation cancelled because the active text field changed.')
         return text,context.get('interaction')

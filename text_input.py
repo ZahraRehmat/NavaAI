@@ -18,11 +18,11 @@ def endpoint_spec(phrase):
     return (match[1],int(match[2])) if match else (phrase,None)
 
 
-def span_offsets(text,start,end,chooser=None,locate=None):
+def span_offsets(text,start,end,chooser=None,locate=None,single=False):
     def matches(phrase):
         pattern=r'(?<!\w)'+r'\s+'.join(re.escape(w) for w in phrase.split())+r'(?!\w)'
         found=list(re.finditer(pattern,text,re.I))
-        if found:return found
+        if found or single:return found
         # Homophones only resolve against actual text, never rewrite dictation.
         groups=[('sun','son'),('there','their'),('to','too','two'),('for','four')]
         alternatives=next((g for g in groups if phrase.casefold() in g),())
@@ -82,6 +82,11 @@ def span_offsets(text,start,end,chooser=None,locate=None):
             if choice<len(batch):return batch[choice]
             offset+=24
 
+    if single:
+        found=endpoint(start)
+        if not found:raise ValueError('The requested word was not found in this text.')
+        item=pick(found,'word',start)
+        return item.start(),item.end()
     starts=endpoint(start);ends=endpoint(end)
     last_end=max((b.start() for b in ends),default=-1)
     starts=[a for a in starts if a.start()<=last_end]
@@ -149,18 +154,27 @@ class FocusedText:
         from pywinauto.uia_defines import IUIA
         from comtypes.gen.UIAutomationClient import IUIAutomationTextPattern
         self.target=target;self.win=win;self.uia=IUIA().iuia
-        self.element=self.uia.GetFocusedElement()
-        if self.element.CurrentProcessId!=target['pid']:raise ValueError('The focused text belongs to another app.')
-        if self.element.CurrentIsPassword:raise ValueError('Text inspection is unavailable in password fields.')
-        self.identity=tuple(self.element.GetRuntimeId())
-        el=self.element;self.pattern=None
-        for _ in range(6):
-            if not el or el.CurrentProcessId!=target['pid']:break
-            try:
-                self.pattern=el.GetCurrentPattern(10014).QueryInterface(IUIAutomationTextPattern)
-                break
-            except Exception:el=self.uia.ControlViewWalker.GetParentElement(el)
-        if self.pattern is None:raise ValueError('This app does not expose text selection through Windows accessibility.')
+        import time
+        deadline=time.monotonic()+.7
+        while True:
+            self.element=self.uia.GetFocusedElement();self.pattern=None
+            if self.element.CurrentProcessId==target['pid']:
+                if self.element.CurrentIsPassword:raise ValueError('Text inspection is unavailable in password fields.')
+                self.identity=tuple(self.element.GetRuntimeId());el=self.element
+                for _ in range(6):
+                    if not el or el.CurrentProcessId!=target['pid']:break
+                    try:
+                        self.pattern=el.GetCurrentPattern(10014).QueryInterface(IUIAutomationTextPattern)
+                        break
+                    except Exception:el=self.uia.ControlViewWalker.GetParentElement(el)
+                if self.pattern is not None:break
+            # Foreground activation and UIA edit focus arrive asynchronously.
+            # Wait only while Windows still identifies the requested app.
+            if win.foreground()!=target['hwnd']:raise ValueError('The active app changed before text focus settled.')
+            if time.monotonic()>=deadline:
+                if self.element.CurrentProcessId!=target['pid']:raise ValueError('Windows did not restore text focus to the requested app.')
+                raise ValueError('This focused control does not expose text selection. Click inside its typing field first.')
+            time.sleep(.025)
 
     def check(self):
         if self.win.foreground()!=self.target['hwnd']:raise ValueError('The active app changed; repeat the text command.')
@@ -174,11 +188,11 @@ class FocusedText:
         before=selection.Clone();before.MoveEndpointByUnit(0,0,-1)
         return before.GetText(4),False
 
-    def select(self,start,end,copy=False,chooser=None):
+    def select(self,start,end,copy=False,chooser=None,single=False):
         self.check();document=self.pattern.DocumentRange
         text=document.GetText(100001)
         if len(text)>100000:raise ValueError('Focus a smaller text field before selecting by words.')
-        left,right=span_offsets(text,start,end,chooser=chooser,locate=native_locator(document,text))
+        left,right=span_offsets(text,start,end,chooser=chooser,locate=native_locator(document,text),single=single)
         self.check()
         if document.GetText(100001)!=text:raise SelectionResolutionError('The text changed while choosing; repeat selection.')
         result=native_span(document,text,left,right)
@@ -194,9 +208,9 @@ def copy_selected(text):
     return 'Selected and copied '+str(len(text))+' characters.'
 
 
-def select_screen_text(target,start,end,copy=False,chooser=None):
+def select_screen_text(target,start,end,copy=False,chooser=None,single=False):
     """Try the focused provider, then visible document/edit providers in this app."""
-    try:return FocusedText(target).select(start,end,copy=copy,chooser=chooser)
+    try:return FocusedText(target).select(start,end,copy=copy,chooser=chooser,single=single)
     except ValueError as exc:
         if isinstance(exc,SelectionResolutionError) or 'Several similar' in str(exc):raise
     import time
@@ -229,7 +243,7 @@ def select_screen_text(target,start,end,copy=False,chooser=None):
                         region=pattern.DocumentRange
                     text=region.GetText(100001)
                     if text and len(text)<=100000:
-                        left,right=span_offsets(text,start,end,chooser=lambda *args:0)
+                        left,right=span_offsets(text,start,end,chooser=lambda *args:0,single=single)
                         if not visible.Length:
                             locator=native_locator(region,text)
                             if not locator(left,left+1) or not locator(right-1,right):
@@ -260,12 +274,36 @@ def select_screen_text(target,start,end,copy=False,chooser=None):
         if index is None:raise SelectionResolutionError('Selection cancelled. Nothing was selected or copied.')
         if not isinstance(index,int) or not 0<=index<len(options):raise SelectionResolutionError('Invalid text area choice.')
     region,text,el=candidates[index]
-    left,right=span_offsets(text,start,end,chooser=chooser,locate=native_locator(region,text))
+    left,right=span_offsets(text,start,end,chooser=chooser,locate=native_locator(region,text),single=single)
     if win.foreground()!=target['hwnd']:raise SelectionResolutionError('The active app changed; repeat selection.')
     if region.GetText(100001)!=text:raise SelectionResolutionError('The text changed while choosing; repeat selection.')
     chosen=native_span(region,text,left,right);chosen.Select()
     return copy_selected(text[left:right]) if copy else 'Selected the requested text.'
 
+
+
+def native_type(value,target,stop=None):
+    import time
+    from unicode_keyboard import type_unicode
+    access=None
+    try:
+        access=FocusedText(target);before,selected=access.preceding()
+        value=spaced_text(value,before,selected)
+    except Exception:access=None
+    if access:access.check()
+    type_unicode(value,target['hwnd'],stop=stop)
+    if not access:return 'Typing input sent; this field does not expose text confirmation.'
+    deadline=time.monotonic()+.6
+    while True:
+        access.check();ranges=access.pattern.GetSelection()
+        if ranges.Length==1:
+            caret=ranges.GetElement(0)
+            if not caret.GetText(1):
+                preceding=caret.Clone();preceding.MoveEndpointByUnit(0,0,-(len(value)+2))
+                if preceding.GetText(-1).endswith(value):return 'Typed and verified the requested text.'
+        if stop and stop.is_set():raise InterruptedError('Stopped')
+        if time.monotonic()>=deadline:raise ValueError('The app did not confirm the typed text. Inspect the field; no automatic repeat was sent.')
+        time.sleep(.025)
 
 
 def prepare_text(value,target):
@@ -286,19 +324,25 @@ def browser_type(page,value):
     page.keyboard.insert_text(spaced_text(value,**state) if state else value)
 
 
-def browser_select(page,start,end,copy=False,chooser=None):
+def browser_select(page,start,end,copy=False,chooser=None,single=False,word_action=None):
     handle=page.evaluate_handle('document.activeElement')
     try:
         text=handle.evaluate("e=>e.type==='password'?null:(['INPUT','TEXTAREA'].includes(e.tagName)?e.value:e.isContentEditable?e.textContent:null)")
         if text is None:
             from rendered_text import browser_document_select
-            return browser_document_select(page,start,end,copy,chooser)
-        try:left,right=span_offsets(text,start,end,chooser=chooser)
+            if word_action in ('move','move_end','erase'):raise SelectionResolutionError('Focus an editable text field before moving its caret or erasing a word.')
+            return browser_document_select(page,start,end,copy,chooser,single=single)
+        try:left,right=span_offsets(text,start,end,chooser=chooser,single=single)
         except SelectionResolutionError:raise
         except ValueError:
             from rendered_text import browser_document_select
-            return browser_document_select(page,start,end,copy,chooser)
+            if word_action in ('move','move_end','erase'):raise SelectionResolutionError('Focus an editable text field before moving its caret or erasing a word.')
+            return browser_document_select(page,start,end,copy,chooser,single=single)
         selected_text=text[left:right]
+        if word_action=='erase' and not handle.evaluate("e=>!e.disabled&&!e.readOnly&&(e.isContentEditable||['INPUT','TEXTAREA'].includes(e.tagName))"):
+            raise SelectionResolutionError('This text field is read-only. Nothing was erased.')
+        if word_action=='move':right=left
+        if word_action=='move_end':left=right
         # DOM Range offsets use UTF-16 units, including surrogate pairs.
         left=len(text[:left].encode('utf-16-le'))//2;right=len(text[:right].encode('utf-16-le'))//2
         handle.evaluate("""(e,p)=>{if(document.activeElement!==e||!e.isConnected||(typeof e.value==='string'?e.value:e.textContent)!==p.text)throw Error('The focused text changed');
@@ -307,5 +351,40 @@ def browser_select(page,start,end,copy=False,chooser=None):
           while(n=walk.nextNode()){const end=at+n.length;if(!found&&p.left<=end){r.setStart(n,p.left-at);found=true;}
             if(found&&p.right<=end){r.setEnd(n,p.right-at);const s=getSelection();s.removeAllRanges();s.addRange(r);return;}at=end;}
           throw Error('Text range is unavailable');} """,{'text':text,'left':left,'right':right})
+        if word_action=='erase':page.keyboard.press('Backspace');return 'Erased the requested word.'
+        if word_action in ('move','move_end'):return 'Moved the text cursor to the '+('end' if word_action=='move_end' else 'start')+' of the word.'
         return copy_selected(selected_text) if copy else 'Selected text from '+start+' to '+end+'.'
     finally:handle.dispose()
+
+
+def native_word(target,word,action,chooser=None,stop=None):
+    """Named word operations bind to one focused field, never a guessed click."""
+    if target.get('text_field_id'):
+        access=FocusedText(target);access.check()
+        if tuple(target['text_field_id'])!=access.identity:raise SelectionResolutionError('The typing field changed after the command was spoken. Nothing was changed.')
+    if action=='select':return select_screen_text(target,word,word,chooser=chooser,single=True)
+    access=FocusedText(target);access.check();region=access.pattern.DocumentRange
+    text=region.GetText(100001)
+    if len(text)>100000:raise SelectionResolutionError('Focus a smaller text field first.')
+    left,right=span_offsets(text,word,word,chooser=chooser,locate=native_locator(region,text),single=True)
+    access.check()
+    if region.GetText(100001)!=text:raise SelectionResolutionError('The text changed while choosing. Nothing was changed.')
+    chosen=native_span(region,text,left,right)
+    if action=='erase':
+        readonly=chosen.GetAttributeValue(40015) # UIA_IsReadOnlyAttributeId
+        if not isinstance(readonly,(bool,int)) or readonly!=0:raise SelectionResolutionError('This text is read-only or its editability could not be confirmed. Nothing was erased.')
+    elif action=='move':chosen.MoveEndpointByRange(1,chosen,0)
+    elif action=='move_end':chosen.MoveEndpointByRange(0,chosen,1)
+    else:raise ValueError('Unknown word action')
+    access.check()
+    if stop and stop.is_set():raise SelectionResolutionError('Word action cancelled.')
+    chosen.Select()
+    if action=='erase':
+        access.check()
+        selections=access.pattern.GetSelection()
+        if selections.Length!=1 or selections.GetElement(0).GetText(100001)!=text[left:right]:raise SelectionResolutionError('The chosen word is no longer selected. Nothing was erased.')
+        if stop and stop.is_set():raise SelectionResolutionError('Word action cancelled.')
+        import desktop_control
+        desktop_control.act({'action':'hotkey','keys':['backspace']},bounds=target.get('bounds'))
+        return 'Erased the requested word.'
+    return 'Moved the text cursor to the '+('end' if action=='move_end' else 'start')+' of the word.'

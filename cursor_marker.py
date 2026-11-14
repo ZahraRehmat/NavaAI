@@ -20,6 +20,8 @@ class CursorMarker:
         user.SetWindowLongW.argtypes=[ctypes.c_void_p,ctypes.c_int,ctypes.c_long]; user.SetWindowLongW.restype=ctypes.c_long
         self.hwnd=user.GetParent(self.window.winfo_id()) or self.window.winfo_id()
         self.user=user;user.ShowWindow.argtypes=[ctypes.c_void_p,ctypes.c_int]
+        user.SetWindowPos.argtypes=[ctypes.c_void_p,ctypes.c_void_p,ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_uint]
+        self.shown=False
         # LAYERED + TRANSPARENT + TOOLWINDOW + NOACTIVATE: input passes through.
         user.SetWindowLongW(self.hwnd,-20,user.GetWindowLongW(self.hwnd,-20)|0x080800a0)
         # Allow desktop capture so remote collaborators can see Gwen's cursor.
@@ -37,8 +39,11 @@ class CursorMarker:
             except tk.TclError:pass
         if self.visible:
             from windows_api import cursor
-            x,y=cursor(); self.window.geometry(f'64x64+{max(0,x-32)}+{max(0,y-32)}')
-            self.user.ShowWindow(self.hwnd,4) # SW_SHOWNOACTIVATE; never take the edit caret.
+            x,y=cursor()
+            # Tk geometry and repeated ShowWindow calls can disturb transient
+            # menus. Move the already mapped halo without activation/z-order.
+            self.user.SetWindowPos(self.hwnd,None,max(0,x-32),max(0,y-32),64,64,0x4|0x10)
+            if not self.shown:self.user.ShowWindow(self.hwnd,4);self.shown=True
         self.timer=self.root.after(20,self.tick)
 
     def close(self):
@@ -51,3 +56,4 @@ class CursorMarker:
     def set_visible(self,value):
         self.visible=bool(value)
         self.user.ShowWindow(self.hwnd,4 if self.visible else 0)
+        self.shown=self.visible

@@ -74,7 +74,7 @@ class SmartMouseActions:
             self.move(self.grid.cell(label)['point'])
         elif self.point:
             self.move(self.point)
-        if label and (op=='expand' or (op in ('double click','doubleclick') and self.grid.cell(label).get('expandable'))):
+        if label and (op=='expand' or (op in ('double click','doubleclick') and self.grid.cell(label).get('expandable')) or (op in ('click','left click','double click','doubleclick') and self.grid.cell(label).get('type') in ('MenuItem','Button') and self.grid.cell(label).get('expandable'))):
             if self.mouse.held:raise ValueError('Release the held mouse button before opening a dropdown.')
             return self.mouse.expand(self.grid.cell(label),self.stop)
         if op == 'move':

@@ -64,34 +64,20 @@ def select_tab(context,target,stop,chooser=None):
 
 def command(context,request,stop,chooser=None):
     op=request['action']
+    if op=='tab_open_url':
+        keys(context,['ctrl','t'],stop)
+        result=navigate_window(context,request['url'],stop)
+        return 'Opened website in a new tab. '+result
     if op=='tab_new':keys(context,['ctrl','t'],stop);return 'Opened a new browser tab.'
     if op=='tab_close':
         if request.get('target'):context,_=select_tab(context,request['target'],stop,chooser)
         keys(context,['ctrl','w'],stop,expected_title=context['title'])
         return 'Close requested for the selected browser tab. Any unsaved-work prompt is left for you.'
     if op=='tab_switch':return select_tab(context,request['target'],stop,chooser)[1]
-    if op in ('media_pause','media_play'):
+    if op in ('media_pause','media_play','media_seek','media_next','media_previous','media_skip_ad'):
         if request.get('site')=='youtube' and 'youtube' not in context.get('title','').lower():context,_=select_tab(context,'youtube',stop,chooser)
-        focused(context,stop)
-        from accessibility import NativeControls
-        probe=NativeControls();controls=probe.observe(hwnd=context['hwnd'],depth=24,limit=700)
-        def playback(label):
-            return [row for row in controls if row['type']=='Button' and re.fullmatch(label+r'(?:\s+(?:video|button|playback))?(?:\s*\([^)]*\))?',row['name'].strip(),re.I)]
-        desired='pause' if op=='media_pause' else 'play|resume'
-        candidates=playback('(?:'+desired+')')
-        if not candidates:
-            opposite=playback('(?:play|resume)' if op=='media_pause' else 'pause')
-            if len(opposite)==1:return 'The observed player is already '+('paused.' if op=='media_pause' else 'playing.')
-            raise ValueError('No unambiguous Play/Pause control was exposed by this page. Show the video controls and retry.')
-        index=0
-        if len(candidates)>1:
-            if not chooser:raise ValueError('Several playback controls are visible. Specify the player.')
-            index=chooser('Which playback control?', [dict(row,label=row['name'],match_score=100) for row in candidates])
-            if index is None:raise InterruptedError('Media selection cancelled.')
-        target=candidates[index]
-        if stop.is_set():raise InterruptedError('Stopped')
-        probe.act({'action':'ui_click','id':target['id'],'expected_name':target['name']})
-        return 'Clicked the observed '+target['name']+' video control.'
+        from native_media import command as media_command
+        return media_command(context,request,stop,chooser)
     raise ValueError('Unknown native browser command')
 
 

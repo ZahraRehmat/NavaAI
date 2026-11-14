@@ -1,5 +1,5 @@
 """Persistent, separate browser profile. DOM operations also work headlessly."""
-import json
+import json,re
 from urllib.parse import urlparse
 from pathlib import Path
 from playwright.sync_api import sync_playwright
@@ -85,6 +85,11 @@ class Browser:
     def command(self,command,chooser=None):
         from browser_commands import tab_index
         op=command['action'];p=self.page
+        if op=='tab_open_url':
+            self.selected=self.context.new_page()
+            if not self.headless:self.selected.bring_to_front()
+            self.selected.goto(command['url'],wait_until='domcontentloaded',timeout=30000)
+            return 'Opened website in a new tab: '+self.selected.url
         if op=='tab_new':
             self.selected=self.context.new_page()
             if not self.headless:self.selected.bring_to_front()
@@ -106,9 +111,27 @@ class Browser:
             self.selected=chosen
             if not self.headless:chosen.bring_to_front()
             return 'Switched to tab: '+(chosen.title() or chosen.url)+'.'
-        if op in ('media_pause','media_play'):
+        if op in ('media_pause','media_play','media_seek','media_next','media_previous','media_skip_ad'):
             if command.get('site')=='youtube' and 'youtube.com' not in (urlparse(p.url).hostname or ''):
                 self.command({'action':'tab_switch','target':'youtube'},chooser);p=self.page
+            if op=='media_skip_ad':
+                host=urlparse(p.url).hostname or ''
+                if host!='youtube.com' and not host.endswith('.youtube.com'):raise ValueError('Skip ad requires an open YouTube video.')
+                button=p.get_by_role('button',name=re.compile(r'^Skip(?: ads?)?$',re.I))
+                available=[button.nth(i) for i in range(button.count()) if button.nth(i).is_visible() and button.nth(i).is_enabled()]
+                if not available:return 'No available Skip ad button. The ad may not be skippable yet, or no ad is playing.'
+                if len(available)!=1:raise ValueError('Several Skip ad buttons are exposed. Nothing was clicked.')
+                chosen=available[0];chosen.click(timeout=2000)
+                try:chosen.wait_for(state='hidden',timeout=2000)
+                except Exception:raise ValueError('Skip ad was clicked once, but YouTube did not confirm the change. No repeat click was sent.')
+                return 'YouTube Skip ad button clicked; the button has disappeared.'
+            if op in ('media_next','media_previous'):
+                host=urlparse(p.url).hostname or ''
+                if host!='youtube.com' and not host.endswith('.youtube.com'):raise ValueError('Next/previous video requires an open YouTube tab.')
+                button=p.locator('.ytp-next-button' if op=='media_next' else '.ytp-prev-button').first
+                if not button.count() or not button.is_visible() or button.get_attribute('aria-disabled')=='true':raise ValueError('This YouTube player has no available '+('next' if op=='media_next' else 'previous')+' video control.')
+                button.click(timeout=3000)
+                return 'Requested the '+('next' if op=='media_next' else 'previous')+' YouTube video.'
             players=[]
             for frame in p.frames:
                 try:
@@ -126,6 +149,15 @@ class Browser:
                 chosen=preferred[index]
             else:chosen=preferred[0]
             element=chosen['frame'].locator('video,audio').nth(chosen['index'])
+            if op=='media_seek':
+                seconds=command.get('seconds')
+                if seconds not in (-10,-5,5,10):raise ValueError('Use a five- or ten-second seek.')
+                result=element.evaluate('''(e,seconds)=>{const old=e.currentTime;
+                  if(!Number.isFinite(old)||!Number.isFinite(e.duration)||e.duration<=0)throw Error('This player has no finite seekable duration.');
+                  const target=Math.max(0,Math.min(e.duration,old+seconds));e.currentTime=target;
+                  return {old,target,actual:e.currentTime};}''',seconds)
+                if abs(result['actual']-result['target'])>.5:raise ValueError('The player did not accept the requested seek.')
+                return 'Moved playback to '+str(round(result['actual'],1))+' seconds.'
             if op=='media_pause':
                 paused=element.evaluate('e=>{e.pause();return e.paused}')
                 if not paused:raise ValueError('The player did not confirm a paused state.')

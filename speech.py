@@ -52,7 +52,11 @@ class LocalRecognizer:
         if (context or {}).get('selection'):
             vocabulary=(context or {}).get('selection_hints','')[-600:]
             prompt='Text selection: from first, second, third, or last occurrence of a phrase to another. Vocabulary: '+vocabulary
-        segments,_=self.model.transcribe(audio,language='en',beam_size=self.config.get('beam_size',3),best_of=1,temperature=0,condition_on_previous_text=False,vad_filter=True,vad_parameters={'min_silence_duration_ms':300},initial_prompt=prompt,word_timestamps=True,max_new_tokens=256)
+        if (context or {}).get('word_command'):
+            prompt='Voice text editing commands: move cursor to word, select word, erase word. Editor vocabulary: '+(context or {}).get('word_hints','')[:1200]
+        selecting=bool((context or {}).get('selection') or (context or {}).get('word_command'))
+        dictating=bool((context or {}).get('dictation'))
+        segments,_=self.model.transcribe(audio,language='en',beam_size=1 if selecting else 3 if (context or {}).get('dictation_accuracy_pass') else self.config.get('dictation_beam_size',1) if dictating else self.config.get('beam_size',3),best_of=1,temperature=0,condition_on_previous_text=False,vad_filter=True,vad_parameters={'min_silence_duration_ms':300},initial_prompt=prompt,word_timestamps=True,max_new_tokens=48 if selecting else 128 if dictating else 256)
         accepted=[s for s in segments if s.no_speech_prob<.6 and s.avg_logprob> -1.25]
         words=[{'word':w.word.strip(),'probability':float(w.probability)} for s in accepted for w in (s.words or ())]
         import re
@@ -131,7 +135,13 @@ class VoiceEngine:
             if not self.enabled.is_set() or epoch!=self.epoch: continue
             try:
                 self.report('Recognizing speech...')
+                decoding_started=time.monotonic()
                 result=recognizer.transcribe_result(audio,context)
+                result['seconds']=time.monotonic()-decoding_started
+                completed=context.get('audio_completed_at',decoding_started)
+                result['queue_seconds']=max(0,decoding_started-completed)
+                result['after_audio_seconds']=max(0,time.monotonic()-completed)
+                result['audio_seconds']=len(audio)/16000
                 if result['text'] and self.enabled.is_set() and epoch==self.epoch:self.on_text(result if self.detailed else result['text'],context)
                 self.report('Microphone listening' if self.microphone_open.is_set() else 'Microphone off')
             except Exception as exc: self.report('Speech recognition error: '+str(exc)[:160])
@@ -178,11 +188,12 @@ class VoiceEngine:
                         utterance=segmenter.add(chunk)
                         if not was_active and segmenter.parts:utterance_context=self.context_fn()
                         if utterance_context:
-                            segmenter.silence_frames=max(12,round(self.config.get('dictation_silence_ms',1200) / 30)) if utterance_context.get('dictation') else max(12,round(self.config.get('silence_ms',900)/30))
+                            segmenter.silence_frames=max(12,round(self.config.get('dictation_silence_ms',750) / 30)) if utterance_context.get('dictation') else max(12,round(self.config.get('silence_ms',900)/30))
                         if utterance is not None:
                             if rate!=16000:
                                 utterance=np.interp(np.arange(round(len(utterance)*16000/rate))*rate/16000,np.arange(len(utterance)),utterance).astype(np.float32)
-                            context=utterance_context or self.context_fn();utterance_context=None
+                            context=dict(utterance_context or self.context_fn());utterance_context=None
+                            context['audio_completed_at']=time.monotonic()
                             try: self.utterances.put_nowait((utterance,context,chunk_epoch))
                             except queue.Full: self.on_status('Speech queue busy; repeat the last command.')
                 segmenter.reset()

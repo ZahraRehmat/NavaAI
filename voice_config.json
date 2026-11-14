@@ -11,7 +11,9 @@
   "review_confidence": 0.86,
   "assistant_active": true,
   "dictation_model": "models/whisper-base.en",
-  "dictation_silence_ms": 1200,
+  "dictation_silence_ms": 750,
   "cpu_threads": 2,
-  "beam_size": 3
+  "beam_size": 3,
+  "dictation_beam_size": 1,
+  "dictation_minimum_confidence": 0.6
 }

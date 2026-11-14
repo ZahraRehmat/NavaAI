@@ -175,3 +175,30 @@ The offline website directory indexes 10,000 downloaded Tranco domains, domain-b
 ### Direct Excel cell commands
 
 When Excel is active, explicit cell/range, editing and targeted copy/paste commands take precedence over generic text-selection and dictation payload parsing. **Type ...** remains literal. Spoken **select from B two to N six**, **edit J seven**, **copy cell C nine**, and **paste copied data in cell K ten** resolve to native addresses. **Edit J7 and start dictation** enables dictation only after selection/edit entry succeeds and the same live window/task epoch is still active. No mode switch occurs after a failed/stopped edit. Generic **open dropdown** uses the existing bounded chooser grammar and marked native controls; the regular grid is temporarily hidden while those choices are shown.
+
+## Dictation reliability and latency repair — 14 November 2026
+
+Recent live logs showed correctly enabled dictation rejecting two prose phrases at confidence 0.708 and 0.666 under the generic command threshold of 0.72. Decoding took 1.14–3.98 seconds, after the old 1.2-second end-of-phrase silence wait. These were recognition/routing delays; the successful typing action itself took 0.09 seconds.
+
+- Dictated prose from the Whisper backend has its own configurable threshold (`dictation_minimum_confidence`, default 0.60). Mode switches, keyboard edits, media commands and Excel actions retain the command threshold. Very uncertain prose is still reviewed rather than silently typed.
+- CPU int8 base.en remains the dictation model. Dictation uses greedy decoding (`dictation_beam_size=1`) and a 128-token bound; selection and ordinary command decoder settings keep their own limits. The new dictation endpoint waits 750 ms of silence instead of 1200 ms. Pause briefly between phrases; uninterrupted speech is still split into bounded chunks.
+- Grid label refreshes no longer invalidate dictated text. A change of target app or a known change of text-field identity still cancels it. Label-based mouse commands retain their original strict grid-generation checks.
+- Phrase expiry is measured from completed audio instead of the beginning of the utterance, so a long sentence does not expire while the user is still speaking. Queue expiry and app/field guards remain.
+- `dictation start` and `dictation stop` are explicit aliases, alongside `dictation on`, `start dictation`, `dictation off` and `stop dictation`.
+- Recognition logs now separate actual decode time, queue wait, audio duration and completion-to-result delay. No raw microphone audio is saved by this change.
+
+A same-audio synthetic benchmark preserved both reference sentences: beam 3 took 1.109 / 0.906 seconds; beam 1 took 0.844 / 0.828 seconds. These are local synthetic speech measurements, not a guarantee for a human accent or a noisy room. Live microphone verification is recorded separately.
+
+### Follow-up live typing fault
+
+The first human microphone test did not pass: one phrase was rejected at confidence 0.435, and two later typing requests reported success while Notepad actually contained repeated `w` characters. Direct inspection confirmed this was separate from speech recognition. Bulk Unicode VK_PACKET delivery was replaced with complete-character delivery paced at 8 ms. Where UIA exposes the caret, typing now reads the actual preceding text and verifies the expected insertion; it never retries a failed insertion automatically. Unsupported fields report input sent without claiming text confirmation.
+
+A controlled command through the real Gwen panel then inserted `The blue folder is beside the window` exactly into a separate Notepad tab, independently verified by the editor's text. Execution including confirmation took 0.97 seconds. This proves the text-input repair, not human speech accuracy.
+
+Dictation also makes one beam-3 accuracy pass on the same audio only when the first pass confidence is below 0.72, and uses it only when its confidence improves. Normal clear phrases stay on the faster pass. This can add latency to uncertain speech; no recognizer can guarantee every word from a headset or accent. The dictation badge now distinguishes decoding, ready dictation and a phrase that was not typed. Review state clears after successful submission.
+
+Final regression run: 159 tests passed after the character-delivery and confirmation fixes. The resident app was restarted with the updated code. GT808 microphone input and continuous hands-free commands were restored. The separate human-accent check remains explicitly separate from the exact typing verification.
+
+The subsequent human GT808 check reached the field: `My next class begins at Monday` was typed and verified. Decoder time was 1.218 seconds, queue wait zero and typing/verification 0.58 seconds. The requested reference used `on Monday`; recognition heard `at Monday`, so this is successful delivery with a wording discrepancy, not a perfect transcription claim.
+
+Further live GT808 phrases were transcribed as `My next class begins on Monday` and `My next class begins on Friday`; both were typed and verified in Notepad (0.55 / 0.58 seconds for input). The respective decoder times were 1.281 / 1.140 seconds with zero queue wait. This demonstrates successful human-speech-to-editor delivery after the repair; occasional word errors remain possible.

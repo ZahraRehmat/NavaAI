@@ -13,6 +13,9 @@ def normalize_command(text):
 def parse_direct(text):
     text=normalize_command(text)
     simple=text.lower().strip().rstrip('.! ').strip()
+    from word_commands import parse_word
+    word=parse_word(text)
+    if word:return word
     if re.fullmatch(r'copy\s+(?:(?:it|this|the text)\s+)?to\s+(?:the\s+)?clipboard',simple):return {'kind':'keys','keys':['ctrl','c']}
     if not re.match(r'^(?:type|write|dictate)\b',text,re.I):
         from selection_commands import range_command
@@ -31,6 +34,26 @@ def parse_direct(text):
         if len(value)>=2 and value[0]==value[-1] and value[0] in ('"',"'"): value=value[1:-1]
         return {'kind':'type','text':value}
     if re.fullmatch(r'(?:punctuate|add punctuation(?: to)?)(?:\s+(?:it|this|that|the text|this text|the written text))?',simple):return {'kind':'punctuate'}
+    # Caret movement is explicitly distinct from grid/mouse movement.
+    m=re.fullmatch(r'move(?: the)? (?:text cursor|cursor|caret) (forward|backward|backwards)(?: (?:one|a))? word',simple)
+    if m:return {'kind':'keys','keys':['ctrl','right' if m[1]=='forward' else 'left']}
+    m=re.fullmatch(r'(?:move|put)(?: the)? (?:text cursor|cursor|caret) (up|down|left|right|forward|backward|backwards)(?: (\d+|one|two|three|four|five)(?: (?:lines?|characters?|spaces?|times))?)?',simple)
+    if not m:m=re.fullmatch(r'(?:move|go) (up|down|left|right) (\d+|one|two|three|four|five) (?:lines?|characters?|spaces?)',simple)
+    if m:
+        direction,count=m.groups();direction={'forward':'right','backward':'left','backwards':'left'}.get(direction,direction);numbers={'one':1,'two':2,'three':3,'four':4,'five':5}
+        count=numbers.get(count,int(count) if count and count.isdigit() else 1)
+        if not 1<=count<=50:raise ValueError('Move the text cursor 1 to 50 steps at a time.')
+        result={'kind':'keys','keys':[direction]}
+        if count>1:result['repeat']=count
+        return result
+    m=re.fullmatch(r'(?:move (?:the )?(?:text cursor|cursor|caret) to|go to) (?:the )?(start|beginning|end) of (?:the |this |current )?line',simple)
+    if m:return {'kind':'keys','keys':['end' if m[1]=='end' else 'home']}
+    if re.fullmatch(r'previous line|line above|move (?:to )?(?:the )?previous line',simple):return {'kind':'keys','keys':['up']}
+    if re.fullmatch(r'(?:move|go) to (?:the )?next line|line below',simple):return {'kind':'keys','keys':['down']}
+    if re.fullmatch(r'(?:erase|delete|remove)(?: the)?(?: last)? (?:letter|character|alphabet)|(?:erase|delete|remove) (?:one|a|single) (?:letter|character|alphabet)',simple):
+        return {'kind':'keys','keys':['backspace']}
+    if re.fullmatch(r'(?:undo|redo)(?: (?:last (?:action|change)|last|typing|edit))?',simple):
+        return {'kind':'keys','keys':['ctrl','z' if simple.startswith('undo') else 'y']}
     if re.fullmatch(r'(?:backspace|back space|erase(?:\s+(?:it|that|the last word|last word))?|delete\s+(?:the\s+)?last\s+word)',simple):return {'kind':'keys','keys':['ctrl','backspace']}
     if re.fullmatch(r'paste\s+(?:here|in\s+(?:this|the)\s+(?:field|box|typing bar))',simple):return {'kind':'keys','keys':['ctrl','v']}
     if re.fullmatch(r'paste\s+(?:(?:it|this|the copied data|the copied text)\s+)?(?:here|(?:to|in)\s+(?:this|the)\s+(?:field|box|typing bar))',simple):return {'kind':'keys','keys':['ctrl','v']}
@@ -50,9 +73,10 @@ def parse_direct(text):
                'go back':['alt','left'],'back':['alt','left'],'go forward':['alt','right'],'forward':['alt','right'],
                'go home':['alt','home'],'go up':['alt','up']}
     if simple in shortcuts: return {'kind':'keys','keys':shortcuts[simple]}
-    m=re.fullmatch(r'(?:press|hit)\s+(.+)',simple)
+    m=re.fullmatch(r'(?:(?:press|hit)\s+(.+)|((?:ctrl|control|alt|shift)(?:\s*\+\s*|\s+).+))',simple)
     if m:
-        key_text=re.sub(r'\b(?:key|button)\b',' ',m[1]).strip()
+        key_text=re.sub(r'\b(?:key|button)\b',' ',m[1] or m[2]).strip()
+        key_text=re.sub(r'\bplus\b','+',key_text)
         key_text=re.sub(r'\bback\s+space\b','backspace',key_text)
         key_text=re.sub(r'\bspace\s+bar\b','spacebar',key_text)
         aliases={'control':'ctrl','escape':'esc','return':'enter','spacebar':'space','delete':'delete'}
