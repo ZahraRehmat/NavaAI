@@ -18,6 +18,16 @@
       "sha256": "87677e4b116cbf2e8daf4132e90328063c3b4d54f893a2262b9b5b7ff29ea803"
     },
     {
+      "path": ".github/scripts/assemble_installer.py",
+      "bytes": 3659,
+      "sha256": "f342c5f2256c295444c5bd25e622dd1b072c67f435e7e7391282967166d3d43c"
+    },
+    {
+      "path": ".github/workflows/assemble-installer.yml",
+      "bytes": 694,
+      "sha256": "22f289ca78481d27b872c1b12f150c650627adeb38a6875b72e1c438e9ef8cfe"
+    },
+    {
       "path": ".gitignore",
       "bytes": 515,
       "sha256": "b05a6d0d44cde2ba009de5bd2f0018a8ba512e130d5c9cfbd2134fb34cbcca75"
@@ -54,8 +64,8 @@
     },
     {
       "path": "INSTALLER.md",
-      "bytes": 6134,
-      "sha256": "6526fad721e4d0535ddc0b3782f7c874a8c07214a50b9d39313a3b4595f64160"
+      "bytes": 6599,
+      "sha256": "34a13284ffb0c9d53ff414f107ad823c24a5e4fd70d8b490d6aeaeb9b64d63ea"
     },
     {
       "path": "NAVA_RENAME.md",

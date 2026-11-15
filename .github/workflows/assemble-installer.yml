@@ -1,0 +1,29 @@
+name: Assemble verified installer release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_id:
+        description: Draft release ID containing the upload parts
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nava-installer-release
+  cancel-in-progress: false
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble, verify and upload the single installer
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_ID: ${{ inputs.release_id }}
+        run: python .github/scripts/assemble_installer.py

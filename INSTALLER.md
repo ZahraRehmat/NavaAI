@@ -63,3 +63,7 @@ Build documentation: https://docs.python.org/3.12/using/windows.html#the-embedda
 ## Completed local acceptance results
 
 212 source regression checks passed. Both the standalone and freshly installed EXE passed 19 native imports, Tcl/Tk, used speech/OCR asset loading and an offline managed-browser smoke check. The installed worker observed 138 controls. Fresh install, reinstall/upgrade and uninstall returned exit code 0; changed dictionary opacity and a sample download survived upgrade and uninstall, and the existing development startup shortcut was unchanged. See [published validation](installer/BUILD_VALIDATION.json). The installer is 869,637,148 bytes (about 830 MiB), with no orphan Qwen, OpenVINO or Whisper Tiny payload.
+
+## Release upload recovery
+
+For a slow or interrupted uplink, temporary 16 MiB draft-release parts can be assembled by the manually dispatched `assemble-installer.yml` workflow. It verifies the complete installer SHA-256, uploads the single setup EXE and removes the temporary parts. Users still download one installer; no manual joining is required. The workflow has only repository contents permission and refuses an unexpected or already-published release.
