@@ -1,0 +1,812 @@
+{
+  "source": "origin/main:command_dictionary.py",
+  "groups": [
+    {
+      "scope": "general",
+      "section": "Windows & apps",
+      "commands": [
+        {
+          "command": "open Notepad",
+          "description": "Open or switch to a named app"
+        },
+        {
+          "command": "switch to Chrome",
+          "description": "Bring an open app forward"
+        },
+        {
+          "command": "close this app",
+          "description": "Request closing the active app"
+        },
+        {
+          "command": "close Word",
+          "description": "Request closing a named app"
+        },
+        {
+          "command": "force close Notepad",
+          "description": "Force-stop a named app; unsaved work can be lost"
+        },
+        {
+          "command": "minimize this app",
+          "description": "Minimize the active window"
+        },
+        {
+          "command": "maximize this app",
+          "description": "Maximize the active window"
+        },
+        {
+          "command": "restore this app",
+          "description": "Restore the active window size"
+        },
+        {
+          "command": "open FYP folder",
+          "description": "Find and open a folder"
+        },
+        {
+          "command": "open README.md",
+          "description": "Find and open a file; use your actual name"
+        },
+        {
+          "command": "click on Save",
+          "description": "Choose an observed named control"
+        },
+        {
+          "command": "open dropdown",
+          "description": "Mark the available dropdown choices"
+        },
+        {
+          "command": "scroll down",
+          "description": "Scroll the current target"
+        },
+        {
+          "command": "scroll up",
+          "description": "Scroll upward"
+        },
+        {
+          "command": "press escape",
+          "description": "Dismiss a menu or dialog"
+        },
+        {
+          "command": "stop",
+          "description": "Stop the current action"
+        }
+      ]
+    },
+    {
+      "scope": "general",
+      "section": "Keyboard & clipboard",
+      "commands": [
+        {
+          "command": "copy it",
+          "description": "Copy selected text"
+        },
+        {
+          "command": "paste",
+          "description": "Paste the clipboard into the focused field"
+        },
+        {
+          "command": "cut it",
+          "description": "Cut selected text"
+        },
+        {
+          "command": "select all",
+          "description": "Select all in the focused control"
+        },
+        {
+          "command": "undo",
+          "description": "Undo the last edit"
+        },
+        {
+          "command": "redo",
+          "description": "Redo an edit"
+        },
+        {
+          "command": "press enter",
+          "description": "Press Enter; the app decides its meaning"
+        },
+        {
+          "command": "press tab",
+          "description": "Move to the next field"
+        },
+        {
+          "command": "press control s",
+          "description": "Send the app save shortcut"
+        },
+        {
+          "command": "type hello",
+          "description": "Type literal text after the word type"
+        }
+      ]
+    },
+    {
+      "scope": "dictation",
+      "section": "Voice typing",
+      "commands": [
+        {
+          "command": "dictation on",
+          "description": "Start speaking text into the focused field"
+        },
+        {
+          "command": "dictation stop",
+          "description": "Stop voice typing"
+        },
+        {
+          "command": "press enter",
+          "description": "Press Enter, including a newline or Send"
+        },
+        {
+          "command": "erase it",
+          "description": "Delete selection or the last word"
+        },
+        {
+          "command": "erase letter",
+          "description": "Delete one character"
+        },
+        {
+          "command": "punctuate it",
+          "description": "Add punctuation to the current text"
+        },
+        {
+          "command": "copy it",
+          "description": "Copy selected text"
+        },
+        {
+          "command": "paste",
+          "description": "Paste copied data"
+        },
+        {
+          "command": "undo",
+          "description": "Undo the last edit"
+        },
+        {
+          "command": "select word example",
+          "description": "Select the named word; replace example"
+        },
+        {
+          "command": "erase word example",
+          "description": "Delete the named word"
+        },
+        {
+          "command": "move cursor to example",
+          "description": "Move the caret before a named word"
+        },
+        {
+          "command": "move cursor after word example",
+          "description": "Move the caret after a named word"
+        },
+        {
+          "command": "move cursor forward",
+          "description": "Move one character forward"
+        },
+        {
+          "command": "move cursor backward a word",
+          "description": "Move one word backward"
+        },
+        {
+          "command": "go to end of line",
+          "description": "Move the caret to the line end"
+        },
+        {
+          "command": "go to start of line",
+          "description": "Move the caret to the line start"
+        },
+        {
+          "command": "type press enter",
+          "description": "Type the words literally instead of pressing Enter"
+        }
+      ]
+    },
+    {
+      "scope": "selection",
+      "section": "Text selection",
+      "commands": [
+        {
+          "command": "selection mode",
+          "description": "Start selection by spoken endpoints"
+        },
+        {
+          "command": "Islamabad to Karachi",
+          "description": "Select and copy text between your endpoint words"
+        },
+        {
+          "command": "first work to last testing",
+          "description": "Disambiguate repeated endpoint words"
+        },
+        {
+          "command": "select word example",
+          "description": "Select a single named word"
+        },
+        {
+          "command": "copy it",
+          "description": "Copy the current selection"
+        },
+        {
+          "command": "paste",
+          "description": "Paste selected/copied data into a focused field"
+        },
+        {
+          "command": "stop selection",
+          "description": "Return to normal commands"
+        }
+      ]
+    },
+    {
+      "scope": "grid",
+      "section": "Smart grid mouse",
+      "commands": [
+        {
+          "command": "open grid",
+          "description": "Show adaptive labels over controls"
+        },
+        {
+          "command": "grid off",
+          "description": "Hide the grid and release the mouse"
+        },
+        {
+          "command": "A",
+          "description": "Click the displayed label A; use your label"
+        },
+        {
+          "command": "move to A",
+          "description": "Move the pointer without clicking"
+        },
+        {
+          "command": "double click A",
+          "description": "Open the item at a displayed label"
+        },
+        {
+          "command": "right click A",
+          "description": "Open that target\u00e2\u20ac\u2122s context menu"
+        },
+        {
+          "command": "scroll down on A",
+          "description": "Scroll downward over a labelled target"
+        },
+        {
+          "command": "scroll up on A",
+          "description": "Scroll upward over a labelled target"
+        },
+        {
+          "command": "hold A",
+          "description": "Hold the mouse at a label"
+        },
+        {
+          "command": "drag A to F",
+          "description": "Drag between two displayed labels"
+        },
+        {
+          "command": "release",
+          "description": "Release held mouse buttons"
+        },
+        {
+          "command": "move left 10 pixels",
+          "description": "Nudge the mouse"
+        },
+        {
+          "command": "refresh grid",
+          "description": "Refresh the observed targets"
+        },
+        {
+          "command": "open A dropdown",
+          "description": "Expand the labelled menu arrow"
+        }
+      ]
+    },
+    {
+      "scope": "browser",
+      "section": "Chrome / Edge",
+      "commands": [
+        {
+          "command": "open youtube on new tab",
+          "description": "Open a website in a new tab"
+        },
+        {
+          "command": "open new tab",
+          "description": "Create a blank browser tab"
+        },
+        {
+          "command": "close this tab",
+          "description": "Close the selected tab"
+        },
+        {
+          "command": "next tab",
+          "description": "Switch to the next tab"
+        },
+        {
+          "command": "previous tab",
+          "description": "Switch to the previous tab"
+        },
+        {
+          "command": "switch to tab YouTube",
+          "description": "Select a tab by its title"
+        },
+        {
+          "command": "select second tab",
+          "description": "Select a numbered tab"
+        },
+        {
+          "command": "open google.com",
+          "description": "Navigate the selected browser"
+        },
+        {
+          "command": "search for weather",
+          "description": "Search using the current browser"
+        },
+        {
+          "command": "click on Sign in",
+          "description": "Choose a visible page control by name"
+        },
+        {
+          "command": "go back",
+          "description": "Go back in browser history"
+        },
+        {
+          "command": "go forward",
+          "description": "Go forward in history"
+        }
+      ]
+    },
+    {
+      "scope": "youtube",
+      "section": "YouTube playback",
+      "commands": [
+        {
+          "command": "pause video",
+          "description": "Pause the current video"
+        },
+        {
+          "command": "resume video",
+          "description": "Resume playback"
+        },
+        {
+          "command": "forward five seconds",
+          "description": "Seek forward 5 seconds"
+        },
+        {
+          "command": "rewind five seconds",
+          "description": "Seek backward 5 seconds"
+        },
+        {
+          "command": "forward ten seconds",
+          "description": "Seek forward 10 seconds"
+        },
+        {
+          "command": "rewind ten seconds",
+          "description": "Seek backward 10 seconds"
+        },
+        {
+          "command": "play next video",
+          "description": "Request the next video"
+        },
+        {
+          "command": "play previous video",
+          "description": "Request previous video; usually needs a playlist"
+        },
+        {
+          "command": "skip ad",
+          "description": "Click Skip when YouTube makes it available"
+        },
+        {
+          "command": "search cats on youtube",
+          "description": "Search YouTube for your own words"
+        }
+      ]
+    },
+    {
+      "scope": "notepad",
+      "section": "Notepad editor",
+      "commands": [
+        {
+          "command": "dictation on",
+          "description": "Speak into the focused Notepad text"
+        },
+        {
+          "command": "selection mode",
+          "description": "Select text by its start and end words"
+        },
+        {
+          "command": "select word example",
+          "description": "Select a word in this editor"
+        },
+        {
+          "command": "erase word example",
+          "description": "Erase a word in this editor"
+        },
+        {
+          "command": "move cursor after word example",
+          "description": "Place the caret after a word"
+        },
+        {
+          "command": "press enter",
+          "description": "Start the next line"
+        },
+        {
+          "command": "undo",
+          "description": "Undo the previous edit"
+        },
+        {
+          "command": "paste",
+          "description": "Paste into the editor"
+        },
+        {
+          "command": "press control s",
+          "description": "Open Notepad\u00e2\u20ac\u2122s Save action"
+        },
+        {
+          "command": "open dropdown",
+          "description": "Mark available menus or dropdowns"
+        }
+      ]
+    },
+    {
+      "scope": "explorer",
+      "section": "Files & Desktop",
+      "commands": [
+        {
+          "command": "open FYP folder",
+          "description": "Open a folder using your own name"
+        },
+        {
+          "command": "open first folder",
+          "description": "Open an ordinal folder in the current location"
+        },
+        {
+          "command": "open example.pdf",
+          "description": "Open a file using its name"
+        },
+        {
+          "command": "double click A",
+          "description": "Open a file through its grid label"
+        },
+        {
+          "command": "go back",
+          "description": "Go back to the previous folder"
+        },
+        {
+          "command": "go forward",
+          "description": "Go forward to a visited folder"
+        },
+        {
+          "command": "go up",
+          "description": "Open the parent folder"
+        },
+        {
+          "command": "go home",
+          "description": "Open Explorer Home"
+        },
+        {
+          "command": "open dropdown",
+          "description": "Mark available dropdown controls"
+        }
+      ]
+    },
+    {
+      "scope": "whatsapp",
+      "section": "WhatsApp",
+      "commands": [
+        {
+          "command": "open WhatsApp",
+          "description": "Open or focus WhatsApp"
+        },
+        {
+          "command": "open Alex chat",
+          "description": "Find a chat using your actual contact name"
+        },
+        {
+          "command": "click on Search",
+          "description": "Choose the visible Search control"
+        },
+        {
+          "command": "dictation on",
+          "description": "Dictate into the focused message box"
+        },
+        {
+          "command": "press enter",
+          "description": "Use Enter; it may send the message"
+        },
+        {
+          "command": "open grid",
+          "description": "Label accessible chat and message controls"
+        }
+      ]
+    },
+    {
+      "scope": "store",
+      "section": "Microsoft Store",
+      "commands": [
+        {
+          "command": "open store",
+          "description": "Open Microsoft Store"
+        },
+        {
+          "command": "search Instagram on store",
+          "description": "Search Store for your own app name"
+        },
+        {
+          "command": "click on Netflix",
+          "description": "Choose a visible app result"
+        },
+        {
+          "command": "click on Get",
+          "description": "Click the observed Get button"
+        },
+        {
+          "command": "open grid",
+          "description": "Label visible Store controls"
+        }
+      ]
+    },
+    {
+      "scope": "taskmanager",
+      "section": "Task Manager",
+      "commands": [
+        {
+          "command": "open task manager",
+          "description": "Open Task Manager"
+        },
+        {
+          "command": "search WhatsApp",
+          "description": "Search the Task Manager process list"
+        },
+        {
+          "command": "open grid",
+          "description": "Label the visible process controls"
+        }
+      ]
+    },
+    {
+      "scope": "word",
+      "section": "Word document",
+      "commands": [
+        {
+          "command": "new document",
+          "description": "Create a blank document"
+        },
+        {
+          "command": "insert table 3 by 4",
+          "description": "Insert a visible 3-row, 4-column table"
+        },
+        {
+          "command": "set table borders blue",
+          "description": "Change visible table lines to blue"
+        },
+        {
+          "command": "highlight yellow",
+          "description": "Highlight selected text"
+        },
+        {
+          "command": "apply heading 1",
+          "description": "Apply a heading style"
+        },
+        {
+          "command": "insert page break",
+          "description": "Insert a page break"
+        },
+        {
+          "command": "set page landscape",
+          "description": "Change page orientation"
+        },
+        {
+          "command": "increase indent",
+          "description": "Indent the selected paragraph"
+        },
+        {
+          "command": "decrease indent",
+          "description": "Reduce paragraph indentation"
+        }
+      ]
+    },
+    {
+      "scope": "excel",
+      "section": "Excel cells & sheets",
+      "commands": [
+        {
+          "command": "select G6",
+          "description": "Select a cell by its native address"
+        },
+        {
+          "command": "select from B2 to N6",
+          "description": "Select a cell range"
+        },
+        {
+          "command": "edit J7",
+          "description": "Open a cell for editing"
+        },
+        {
+          "command": "copy cell A9",
+          "description": "Copy a cell\u00e2\u20ac\u2122s contents"
+        },
+        {
+          "command": "paste copied data in cell K10",
+          "description": "Paste at a cell address"
+        },
+        {
+          "command": "make a table",
+          "description": "Convert the selected range into an Excel table"
+        },
+        {
+          "command": "make B2:N6 into a table",
+          "description": "Create a table from a named range"
+        },
+        {
+          "command": "open cell dropdown",
+          "description": "Expand the current cell\u00e2\u20ac\u2122s available list"
+        },
+        {
+          "command": "clear cells B2:N6",
+          "description": "Clear values without shifting cells"
+        },
+        {
+          "command": "delete cells B2:N6 shift up",
+          "description": "Delete cells and shift the remaining cells up"
+        },
+        {
+          "command": "set table borders blue",
+          "description": "Set table line colour"
+        },
+        {
+          "command": "autofit columns",
+          "description": "Fit column widths to data"
+        },
+        {
+          "command": "set column width to 20",
+          "description": "Set the selected column width"
+        },
+        {
+          "command": "set row height to 24",
+          "description": "Set the selected row height"
+        },
+        {
+          "command": "merge cells",
+          "description": "Merge the selected cells"
+        },
+        {
+          "command": "unmerge cells",
+          "description": "Unmerge the selection"
+        },
+        {
+          "command": "wrap text",
+          "description": "Wrap text within cells"
+        },
+        {
+          "command": "freeze panes",
+          "description": "Freeze at the active cell"
+        },
+        {
+          "command": "sort A1:D10 ascending",
+          "description": "Sort a selected/addressed range"
+        },
+        {
+          "command": "set formula A1 to =SUM(B1:B5)",
+          "description": "Enter a formula"
+        },
+        {
+          "command": "format A1 as currency",
+          "description": "Set a cell number format"
+        },
+        {
+          "command": "add sheet named Budget",
+          "description": "Add a worksheet"
+        },
+        {
+          "command": "select sheet Budget",
+          "description": "Switch to a sheet"
+        },
+        {
+          "command": "rename sheet Budget to Costs",
+          "description": "Rename a worksheet"
+        }
+      ]
+    },
+    {
+      "scope": "powerpoint",
+      "section": "PowerPoint slides",
+      "commands": [
+        {
+          "command": "new presentation",
+          "description": "Create a presentation"
+        },
+        {
+          "command": "add slide",
+          "description": "Insert a new slide"
+        },
+        {
+          "command": "select slide 2",
+          "description": "Switch to a numbered slide"
+        },
+        {
+          "command": "duplicate slide 2",
+          "description": "Duplicate a slide"
+        },
+        {
+          "command": "insert table 3 by 4",
+          "description": "Insert a table on the slide"
+        },
+        {
+          "command": "add text box: Hello",
+          "description": "Add a text box with your text"
+        }
+      ]
+    },
+    {
+      "scope": "help",
+      "section": "Command help",
+      "commands": [
+        {
+          "command": "show commands",
+          "description": "Show this adaptive transparent overlay"
+        },
+        {
+          "command": "hide commands",
+          "description": "Hide command help"
+        },
+        {
+          "command": "open full dictionary",
+          "description": "Open the searchable master dictionary"
+        },
+        {
+          "command": "search dictionary for font",
+          "description": "Find commands using your own keyword"
+        },
+        {
+          "command": "next commands page",
+          "description": "Show more contextual commands"
+        },
+        {
+          "command": "previous commands page",
+          "description": "Go back through contextual commands"
+        },
+        {
+          "command": "move dictionary left",
+          "description": "Dock the command overlay on the left"
+        },
+        {
+          "command": "move dictionary right",
+          "description": "Dock it on the right"
+        },
+        {
+          "command": "dictionary more transparent",
+          "description": "Make the overlay more see-through"
+        },
+        {
+          "command": "dictionary more visible",
+          "description": "Make the overlay easier to read"
+        },
+        {
+          "command": "dictionary scroll down",
+          "description": "Scroll the master dictionary"
+        },
+        {
+          "command": "close full dictionary",
+          "description": "Close the full dictionary"
+        }
+      ]
+    },
+    {
+      "scope": "power",
+      "section": "NAVA AI modes",
+      "commands": [
+        {
+          "command": "nava turn on",
+          "description": "Activate the assistant and microphone"
+        },
+        {
+          "command": "nava turn off",
+          "description": "Return to wake-listener standby"
+        },
+        {
+          "command": "show chat",
+          "description": "Show the typed-command panel"
+        },
+        {
+          "command": "hide chat",
+          "description": "Hide the typed-command panel"
+        },
+        {
+          "command": "microphone off",
+          "description": "Release the microphone; F9 turns it back on"
+        }
+      ]
+    }
+  ],
+  "command_count": 176
+}

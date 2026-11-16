@@ -20,3 +20,43 @@ nav{color:#555361}nav a:hover,.footer-row a:hover{color:#57349e}.nav-download{ba
 .faq-section{background:#f5f3f7;border-color:#e7e3ec}.faq-list details{border-color:#e2dee8}.faq-list summary span{color:#6843b5}.faq-list details p{color:#666371}
 .contact-card{background:#eee9f6;border:1px solid #ded5ec}.contact-card .eyebrow{color:#6843b5}.contact-card h2 span{color:#6843b5}.contact-card p{color:#5d5a68}.light{background:#6843b5;color:#fff}
 footer{border-color:#e7e3ec}.footer-row{color:#777482}.footer-row .brand{color:#20202a}
+
+/* Dark, quieter footer with clear document links. */
+.site-footer{border-top:1px solid #292735;background:#111019;color:#aaa7b8;padding:38px 0 30px}
+.site-footer .footer-row{display:grid;grid-template-columns:1.2fr auto 1.45fr;align-items:start;gap:38px;color:#aaa7b8;font-size:11px}
+.site-footer .footer-brand{display:flex;flex-direction:column;gap:10px}
+.site-footer .footer-brand .brand{color:#fff}
+.site-footer .footer-brand .brand-light{color:#aaa7b8}
+.site-footer .footer-links,.site-footer .footer-docs{display:flex;flex-direction:column;gap:9px}
+.site-footer a{color:#c8c2d7;transition:color .2s ease}
+.site-footer a:hover{color:#fff}
+.site-footer .footer-docs a{display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid #ffffff14;padding-bottom:7px;min-width:265px}
+.site-footer .footer-docs span{color:#a88bea;font-size:9px;letter-spacing:.04em;text-transform:uppercase}
+.site-footer small{grid-column:1/-1;border-top:1px solid #ffffff14;padding-top:16px;color:#747082;font-size:9px}
+@media(max-width:640px){.site-footer{padding:30px 0 24px}.site-footer .footer-row{display:flex;flex-direction:column;gap:22px}.site-footer .footer-links{flex-direction:row;flex-wrap:wrap;gap:14px}.site-footer .footer-docs{width:100%}.site-footer .footer-docs a{min-width:0;width:100%}.site-footer small{width:100%;padding-top:14px}}
+
+/* NAVA product system: restrained, technical, and intentionally non-decorative. */
+:root{--bg:#f7f8fa;--panel:#ffffff;--panel2:#f1f3f6;--text:#151922;--muted:#5d6675;--violet:#2563eb;--violet2:#1d4ed8;--line:#dfe3e8;--mint:#00a86b}
+body{font-family:Inter,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
+h1,h2,h3,.brand,.button,.faq-list summary,.steps h3{font-family:Inter,"Segoe UI",Arial,sans-serif}
+.topbar{height:72px;background:#ffffffed;border-bottom:1px solid #dfe3e8;backdrop-filter:blur(14px)}
+.brand{letter-spacing:-.025em;font-size:17px}.brand-logo{width:34px;height:34px}.brand-light{color:#7b8491}
+nav{gap:24px;color:#4c5665;font-size:12px}nav a:hover,.footer-row a:hover{color:#111827}.nav-download{background:#111827;border-radius:5px;padding:10px 14px}
+.hero{min-height:610px;padding-top:68px;padding-bottom:70px}.hero h1{font-size:clamp(44px,5vw,66px);letter-spacing:-.065em}.hero h1 span,h2 span{color:#2563eb}.hero-lede{font-size:16px;color:#536070;line-height:1.75}.eyebrow{color:#2563eb;letter-spacing:.14em}.pulse{background:#00a86b;box-shadow:0 0 10px #00a86b55}.hero-glow{background:radial-gradient(circle,#2563eb12,transparent 67%)}.orbit{border-color:#2563eb18}.orbit-b{border-color:#00a86b14}
+.button{border-radius:5px}.primary{background:#111827;box-shadow:0 8px 20px #1118271a}.quiet{border-color:#cbd2db;color:#303a49}.voice-card,.float-tag{background:#fff;border-color:#dfe3e8;color:#273142;box-shadow:0 12px 30px #26324712}.voice-dot{background:#00a86b;box-shadow:0 0 10px #00a86b66}.sound-bars i{background:#2563eb}
+.trust-strip{background:#eef1f4;border-color:#dfe3e8}.strip-inner b{color:#4b5563}.strip-inner span{color:#667085}
+.section{padding-top:100px;padding-bottom:100px}.section-heading h2,.how-layout h2,.models h2,.about-layout h2,.faq-layout h2,.contact-card h2,.download-inner h2{letter-spacing:-.055em}.section-heading p,.how-layout>div>p,.model-copy p,.about-text p,.contact-card p,.download-inner p{color:#5d6675}
+.feature-grid{gap:16px}.feature-card{background:#fff;border:1px solid #dfe3e8;border-radius:7px;box-shadow:0 4px 14px #1f293708}.feature-card:hover{border-color:#93b4f8;transform:translateY(-2px)}.feature-icon{background:#eef4ff;color:#2563eb;border-radius:6px}.feature-card p{color:#5f6875}.feature-card>span{color:#2563eb;background:#eef4ff;border-radius:4px}
+.how-section{background:#eef1f4;border-color:#dfe3e8}.steps{border-color:#c8d1dc}.steps article>b{color:#2563eb}.steps p{color:#5f6875}
+.model-list{background:#fff;border-color:#dfe3e8;border-radius:7px}.model-list>div{border-color:#e9edf1}.model-icon{background:#eef4ff;color:#2563eb;border-radius:6px}.model-list small{color:#697586}.model-list em{color:#008a5a}
+.download-band{background:#e9eef5;border-color:#dce3ec}.download-box{background:#fff;border-color:#dfe3e8;border-radius:7px}.file-icon{background:#eef4ff;color:#2563eb;border-radius:6px}.release-link{color:#2563eb}
+.faq-section{background:#eef1f4;border-color:#dfe3e8}.faq-list details{border-color:#d7dde5}.faq-list summary span{color:#2563eb}.faq-list details p{color:#5f6875}
+.contact-card{background:#111827;border:0;border-radius:8px}.contact-card .eyebrow{color:#8db7ff}.contact-card h2{color:#fff}.contact-card h2 span{color:#8db7ff}.contact-card p{color:#b7c0cc}.light{background:#fff;color:#111827}
+.site-footer{background:#0d1117;border-color:#202833}.site-footer a{color:#c5ceda}.site-footer .footer-docs span{color:#7fb1ff}
+
+/* Final palette: charcoal, paper, and one violet accent from the approved logo. */
+:root{--violet:#7652c8;--violet2:#5e3fa8;--mint:#7652c8}
+.eyebrow,.hero h1 span,h2 span,.release-link,.about-facts b,.faq-list summary span{color:#7652c8}
+.pulse,.voice-dot{background:#7652c8;box-shadow:0 0 10px #7652c855}.sound-bars i{background:#7652c8}
+.feature-icon,.file-icon,.model-icon{background:#f2eff9;color:#7652c8}.feature-card>span{color:#7652c8;background:#f2eff9}
+.contact-card .eyebrow,.contact-card h2 span{color:#bda7f4}.model-list em{color:#6b7280}.site-footer .footer-docs span{color:#bda7f4}

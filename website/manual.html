@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="NAVA AI User Manual and Command Dictionary">
+  <title>User Manual — NAVA AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="docs.css">
+</head>
+<body class="docs-page">
+  <header class="topbar"><a class="brand" href="index.html#home" aria-label="NAVA AI home"><img class="brand-logo" src="assets/nava-logo-transparent.png" alt=""><span>NAVA<span class="brand-light"> AI</span></span></a><nav><a href="index.html#features">Features</a><a href="index.html#how">How it works</a><a href="privacy.html">Privacy</a><a class="nav-download" href="https://github.com/ZahraRehmat/NavaAI/releases/download/v1.0.0-preview.1/NAVA-AI-Setup-1.0.0-win-x64.exe">Download for Windows ↓</a></nav></header>
+  <main class="docs-shell">
+    <aside class="docs-sidebar"><div class="eyebrow">COMMANDS</div><a href="#install">Install</a><a href="#wake">Start and wake</a><a href="#grid">Smart grid</a><a href="#dictation">Dictation</a><a href="#apps">Apps and browsers</a><a href="#office">Office</a><a href="#full-dictionary">Full catalog</a><a class="docs-download" href="assets/docs/nava-ai-user-manual-and-command-dictionary.pdf" target="_blank" rel="noopener">Download PDF ↗</a></aside>
+    <article class="docs-main">
+      <div class="docs-kicker">Getting started / 03</div><h1>Use NAVA <span>your way.</span></h1><p class="docs-lede">A practical command guide for installation, wake phrases, smart-grid control, dictation, apps, browsers, and Office.</p><div class="docs-meta"><span class="docs-chip">Offline speech tools</span><span class="docs-chip">Windows 10 / 11</span><span class="docs-chip">Voice-first control</span></div>
+      <section class="docs-card" id="install"><h2>Install</h2><ol><li>Download the 64-bit Windows installer from the project release page.</li><li>Run setup and choose desktop or sign-in startup shortcuts if needed.</li><li>The private runtime and offline speech assets are included; Python does not need to be installed separately.</li></ol><div class="docs-note purple">NAVA AI is a rule-based computer assistant with offline speech tools, not a general-purpose chat model.</div></section>
+      <section class="docs-card" id="wake"><h2>Start and wake</h2><table class="docs-table"><thead><tr><th>Command</th><th>What it does</th><th>Example</th></tr></thead><tbody><tr><td>Nava listen</td><td>Start continuous command listening.</td><td>Nava listen</td></tr><tr><td>Nava turn on / turn off</td><td>Enable or stop active assistance.</td><td>Nava turn off</td></tr><tr><td>Show dictionary</td><td>Show contextual commands for the current screen.</td><td>Show dictionary</td></tr><tr><td>Open full dictionary</td><td>Open the searchable command manual.</td><td>Open full dictionary</td></tr></tbody></table></section>
+      <section class="docs-card" id="grid"><h2>Smart grid</h2><p>Say <b>open grid</b> or <b>grid on</b> to show adaptive labels for visible controls.</p><ul><li><b>Click B</b> or <b>double click C</b> activates a labelled target.</li><li><b>Move to G</b> moves the pointer without clicking.</li><li><b>Scroll up</b> and <b>scroll down</b> scroll the active target or app.</li><li><b>Grid off</b> hides the labels.</li></ul></section>
+      <section class="docs-card" id="dictation"><h2>Dictation and text editing</h2><ul><li><b>Dictation on / dictation stop</b> starts or ends offline dictation.</li><li><b>Backspace / erase</b> removes the last typed word or character according to the active mode.</li><li><b>Select from Islamabad to Karachi</b> selects text between spoken endpoints.</li><li><b>Copy</b>, <b>paste</b>, and <b>punctuate it</b> edit the active selection or focused field.</li></ul></section>
+      <section class="docs-card" id="apps"><h2>Apps, files, browsers</h2><p>Open or switch to apps, files, and folders using familiar names. Browser commands support tabs and media actions such as pause, resume, forward, rewind, next video, and skip ad where the target exposes those controls.</p></section>
+      <section class="docs-card" id="office"><h2>Word, Excel, and PowerPoint</h2><p>Use worksheet ranges, named dropdowns, formatting, and table actions where the desktop Office app exposes the relevant controls.</p><div class="docs-note">If a command depends on a visible control, keep that app in view. When several targets match, NAVA shows a labelled choice instead of guessing.</div></section>
+      <section class="docs-card" id="full-dictionary"><h2>Full command dictionary</h2><p>This catalog is generated from the command dictionary shipped on NAVA AI's <code>main</code> branch. It includes every grouped command and nested app/mode section.</p><div class="catalog-toolbar"><input id="command-search" type="search" placeholder="Search commands, apps, or descriptions"><select id="command-scope"><option value="all">All scopes</option></select><span id="command-count" class="catalog-count">Loading commands...</span></div><div id="full-command-catalog" aria-live="polite"></div></section>
+    </article>
+  </main>
+  <footer class="docs-footer">NAVA AI · <a href="index.html">Home</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></footer>
+  <script src="catalog.js"></script>
+</body>
+</html>
