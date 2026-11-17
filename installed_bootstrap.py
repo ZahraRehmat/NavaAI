@@ -39,7 +39,12 @@ def self_test():
     report['nava_vocabulary']=model.vosk_model_find_word('nava')>=0;del model
     from faster_whisper import WhisperModel
     whisper=WhisperModel(str(ROOT/'models/whisper-base.en'),device='cpu',compute_type='int8',cpu_threads=2)
-    report['dictation_model']='loaded';del whisper
+    # Exercise generation, where missing decoder configuration actually fails.
+    import numpy as np
+    audio=np.random.default_rng(5).normal(0,.04,32000).astype('float32')
+    segments,_=whisper.transcribe(audio,language='en',vad_filter=False,word_timestamps=True)
+    list(segments)
+    report['dictation_model']='loaded and decoded';del whisper
     from dictation_punctuation import Punctuator
     punctuation=Punctuator();report['punctuation']=punctuation.restore('hello world this is a test')
     from rapidocr_onnxruntime import RapidOCR

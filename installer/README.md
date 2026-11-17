@@ -6,14 +6,14 @@
 
 ## Download
 
-### [Download NAVA AI Setup for Windows x64](https://github.com/ZahraRehmat/NavaAI/releases/download/v1.0.0-preview.1/NAVA-AI-Setup-1.0.0-win-x64.exe)
+### [Download NAVA AI Setup for Windows x64](https://github.com/ZahraRehmat/NavaAI/releases/download/v1.0.1/NAVA-AI-Setup-1.0.1-win-x64.exe)
 
-[Release page](https://github.com/ZahraRehmat/NavaAI/releases/tag/v1.0.0-preview.1) · [Checksum](SHA256SUMS.txt) · [Validation results](BUILD_VALIDATION.json) · [Today's complete progress](../TODAYS_PROGRESS_2026-11-15.md)
+[Release page](https://github.com/ZahraRehmat/NavaAI/releases/tag/v1.0.1) · [Checksum](SHA256SUMS-1.0.1.txt) · [Validation results](BUILD_VALIDATION-1.0.1.json) · [Today's complete progress](../TODAYS_PROGRESS_2026-11-15.md)
 
 | Item | Value |
 | --- | --- |
-| File | `NAVA-AI-Setup-1.0.0-win-x64.exe` |
-| Size | 869,637,148 bytes · approximately 830 MiB |
+| File | `NAVA-AI-Setup-1.0.1-win-x64.exe` |
+| Size | 870,606,803 bytes · approximately 830 MiB |
 | Status | **Unsigned development preview** |
 | Target | Windows 10 2004+ / Windows 11, **x64** |
 | Tested here | **Windows 11 build 26200** |
@@ -77,13 +77,13 @@ These checks do not certify every app, accent or Windows build. Broader legacy t
 ## Verify the download
 
 ```powershell
-Get-FileHash .\NAVA-AI-Setup-1.0.0-win-x64.exe -Algorithm SHA256
+Get-FileHash .\NAVA-AI-Setup-1.0.1-win-x64.exe -Algorithm SHA256
 ```
 
 Expected SHA-256:
 
 ```text
-39bddc10fd70e3abc732813b5befa6540193c2a1ce5979a1239bd96d978c594e
+6c3fe3d73bda55b242bd175e4166115358533c02c066298a22b92053808fd078
 ```
 
 [Payload manifest](PAYLOAD_MANIFEST.json) · [Package versions/license metadata](THIRD_PARTY_PACKAGES.json) · [Build instructions](../INSTALLER.md) · [Packaging source](../packaging/)

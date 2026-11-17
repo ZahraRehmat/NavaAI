@@ -90,7 +90,7 @@ for path in (base,base/'DLLs',base/'Lib/site-packages/pywin32_system32'):
  extras=[p.name for p in (destination/'models').iterdir() if p.is_dir() and p.name not in MODELS]
  if extras:raise ValueError('Unexpected model directories in payload; refusing to ship: '+str(extras))
  for p in (ROOT/'README.md',ROOT/'COMMAND_DICTIONARY.md',ROOT/'NAVA_RENAME.md'):shutil.copy2(p,destination/p.name)
- (destination/'bundle.json').write_text(json.dumps({'product':'NAVA AI','version':'1.0.0','python':'3.12.10','architecture':'x64','models_included':list(MODELS),'excluded':['Qwen','OpenVINO','whisper-tiny.en','personal app catalog','browser profiles','recordings','logs']},indent=2),encoding='utf-8')
+ (destination/'bundle.json').write_text(json.dumps({'product':'NAVA AI','version':'1.0.1','python':'3.12.10','architecture':'x64','models_included':list(MODELS),'excluded':['Qwen','OpenVINO','whisper-tiny.en','personal app catalog','browser profiles','recordings','logs']},indent=2),encoding='utf-8')
  (destination/'THIRD_PARTY_PACKAGES.json').write_text(json.dumps(packages,indent=2),encoding='utf-8');license_dir=destination/'licenses';license_dir.mkdir(exist_ok=True);shutil.copy2(base/'LICENSE.txt',license_dir/'PYTHON-TCL-TK-LICENSE.txt')
  if not skip_browser:
   print('Installing matching Chromium into the payload...',flush=True);env=os.environ.copy();env['PLAYWRIGHT_BROWSERS_PATH']=str(destination/'browsers')

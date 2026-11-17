@@ -80,7 +80,7 @@ The optional UIAccess drawing helper source, build names, manifest, drawing-pipe
 
 ## Changed source file inventory
 
-A pre-rename source backup is retained on the development computer.
+The original source backup is kept locally at `C:\Users\mahno\.codex\tmp\nava-branding-before-20261115-002434.zip`.
 
 <details>
 <summary>Source and test files touched by the rename</summary>

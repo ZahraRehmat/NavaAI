@@ -4,8 +4,8 @@ import re
 
 def parse_word(text):
     patterns=(
-        ('move_end',r'move\s+(?:the\s+)?(?:text\s+cursor|cursor|caret)\s+(?:to\s+(?:the\s+)?end\s+of\s+(?:the\s+)?word|after\s+(?:the\s+)?word)\s+(.+)'),
-        ('move',r'move\s+(?:the\s+)?(?:text\s+cursor|cursor|caret)\s+(?:to\s+(?:the\s+)?(?:start|beginning)\s+of\s+(?:the\s+)?word|before\s+(?:the\s+)?word)\s+(.+)'),
+        ('move_end',r'move\s+(?:the\s+)?(?:text\s+cursor|cursor|caret)\s+(?:to\s+(?:the\s+)?end\s+of\s+(?:the\s+)?word\s+|after\s+(?:(?:the\s+)?word\s+)?)(.+)'),
+        ('move',r'move\s+(?:the\s+)?(?:text\s+cursor|cursor|caret)\s+(?:to\s+(?:the\s+)?(?:start|beginning)\s+of\s+(?:the\s+)?word\s+|before\s+(?:(?:the\s+)?word\s+)?)(.+)'),
         ('move',r'move\s+(?:the\s+)?(?:text\s+cursor|cursor|caret)\s+to\s+(?:the\s+)?(?:word\s+)?(.+)'),
         ('erase',r'(?:erase|delete|remove)\s+(?:the\s+)?word\s+(.+)'),
         ('select',r'select\s+(?:the\s+)?word\s+(.+)'))
@@ -23,7 +23,8 @@ def parse_word(text):
 
 def word_intent(text):
     text=re.sub(r'^(?:(?:hey|okay|ok)\s+)?(?:nava)\b[,:]?\s*','',text.strip(),flags=re.I)
-    for action,pattern in (('move_end',r'move\s+(?:the\s+)?(?:text\s+cursor|cursor|caret)\s+(?:to\s+(?:the\s+)?end\s+of\s+(?:the\s+)?word|after\s+(?:the\s+)?word)\b'),
+    for action,pattern in (('move_end',r'move\s+(?:the\s+)?(?:text\s+cursor|cursor|caret)\s+(?:to\s+(?:the\s+)?end\s+of\s+(?:the\s+)?word|after)\b'),
+                           ('move',r'move\s+(?:the\s+)?(?:text\s+cursor|cursor|caret)\s+before\b'),
                            ('move',r'move\s+(?:the\s+)?(?:text\s+cursor|cursor|caret)\s+(?:to|tool|too)\b'),
                            ('select',r'select\s+(?:the\s+)?word\b'),
                            ('erase',r'(?:erase|delete|remove)\s+(?:the\s+)?word\b')):

@@ -8,8 +8,8 @@ using System.Reflection;
 [assembly: AssemblyDescription("Hands-free Windows control")]
 [assembly: AssemblyCompany("NAVA AI")]
 [assembly: AssemblyProduct("NAVA AI")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]
 class Launcher {
     static string Quote(string value) {
         var s = new StringBuilder("\""); int slashes=0;

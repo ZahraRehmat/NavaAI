@@ -52,6 +52,12 @@ def vocabulary(context,model):
     words.update(word for word in ('dropdown','drop','arrow','expand','menu') if model.vosk_model_find_word(word)>=0)
     words.update(word for word in ('next','previous','last','first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth') if model.vosk_model_find_word(word)>=0)
     words.update(word for word in ('edit','selected','selection','copied','into') if model.vosk_model_find_word(word)>=0)
+    # Named-word editing must be recognizable before its recovery pass can
+    # run. Include both position words and the observed editor vocabulary.
+    words.update(word for word in ('after','before','start','beginning','of','caret','erase','remove') if model.vosk_model_find_word(word)>=0)
+    if not (context or {}).get('grid_active'):
+        editor_words=re.findall(r"[a-z]+(?:'[a-z]+)?",(context or {}).get('word_hints','').casefold())[:500]
+        words.update(word for word in editor_words if model.vosk_model_find_word(word)>=0)
     if (context or {}).get('selection'):
         hinted=re.findall(r'[a-z]+',(context or {}).get('selection_hints','').casefold())[:100]
         words.update(word for word in hinted if model.vosk_model_find_word(word)>=0)
@@ -64,6 +70,10 @@ def vocabulary(context,model):
     from selection_commands import ON,OFF
     for action in sorted(ON|OFF):phrases.extend((action,'nava '+action))
     phrases.extend(compact_phrases())
+    if not (context or {}).get('grid_active') and (context or {}).get('word_hints'):
+        from word_context import phrases as editor_phrases
+        for action in ('move','move_end','select','erase'):
+            phrases.extend(editor_phrases(context,action,model))
     if (context or {}).get('selection'):
         for word in hinted:
             if word in words:phrases.extend(('select from '+word,'from '+word,'to '+word))

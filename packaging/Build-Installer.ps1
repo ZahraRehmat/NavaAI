@@ -12,4 +12,4 @@ if (-not $Compiler) {
 if (-not $Compiler) { throw 'Install the signed Inno Setup 6.7.4 compiler, or pass -Compiler with its ISCC.exe path. End users do not need this tool.' }
 & $Compiler /Q (Join-Path $PSScriptRoot 'NavaAI.iss')
 if ($LASTEXITCODE -ne 0) { throw 'Installer compilation failed.' }
-Write-Output ('Installer: ' + (Join-Path $installerProject 'dist\NAVA-AI-Setup-1.0.0-win-x64.exe'))
+Write-Output ('Installer: ' + (Join-Path $installerProject 'dist\NAVA-AI-Setup-1.0.1-win-x64.exe'))

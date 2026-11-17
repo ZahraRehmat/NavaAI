@@ -28,7 +28,7 @@ def expected_action(packet,context):
 def phrases(context,action,model):
     words=list(dict.fromkeys(re.findall(r"[a-z]+(?:'[a-z]+)?",context.get('word_hints','').casefold())))[:200]
     words=[w for w in words if model.vosk_model_find_word(w)>=0]
-    prefixes={'move_end':('move cursor to end of word ','move cursor to the end of word ','move cursor after word '),'move':('move cursor to ','move cursor to word '),
+    prefixes={'move_end':('move cursor to end of word ','move cursor to the end of word ','move cursor after word ','move cursor after '),'move':('move cursor to ','move cursor to word ','move cursor before word ','move cursor before '),
               'select':('select word ','select '),'erase':('erase word ','delete word ','remove word ')}
     return [wake+prefix+word for word in words for prefix in prefixes.get(action,()) for wake in ('','nava ')]
 

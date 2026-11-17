@@ -1,5 +1,7 @@
 # NAVA AI — standalone Windows installer
 
+Current release: **1.0.1**. See [release notes](installer/RELEASE-1.0.1.md) and [current verification](installer/BUILD_VALIDATION-1.0.1.json). Historical acceptance results below describe 1.0.0; use the current release notes for the rebuilt installer.
+
 The approved flat violet N artwork is used for the application EXE, installer, Start menu and desktop shortcuts. The setup payload contains the existing direct-control application plus a private, isolated Python runtime. Users launch **NAVA AI.exe**; no Python, pip, CMD launcher or model downloads are required on the receiving PC.
 
 ## What installation prepares
@@ -47,7 +49,7 @@ The isolated runtime uses `python312._pth` and private package/DLL paths. Existi
 
 Artifacts:
 
-- `dist/NAVA-AI-Setup-1.0.0-win-x64.exe` — single offline setup EXE.
+- `dist/NAVA-AI-Setup-1.0.1-win-x64.exe` — single offline setup EXE.
 - `build/NAVA AI/NAVA AI.exe` — standalone launcher within its complete application folder; do not distribute this small EXE by itself.
 - `build/NAVA AI/PAYLOAD_MANIFEST.json` — byte hashes and dependency inventory.
 - `build/NAVA AI/THIRD_PARTY_PACKAGES.json` — packaged dependency versions and license metadata. Distribution license files remain alongside their packages/models.

@@ -4,7 +4,9 @@
 
 > **Speak. Select. Type. Navigate.** A local accessibility assistant combining direct commands, an adaptive smart grid and offline dictation.
 
-**Current snapshot · 15 November 2026**
+**Current release · 1.0.1 · 17 November 2026**
+
+[Latest release notes and verification](installer/RELEASE-1.0.1.md): corrected installer configuration inclusion and named-word cursor commands.
 
 **Windows desktop · CPU-based speech · No Qwen runtime or Qwen weights**
 
@@ -12,11 +14,11 @@ The product and windows are branded **NAVA AI**. The spoken and typed wake name 
 
 ## Download the Windows app
 
-### [NAVA AI Windows x64 installer — approximately 830 MiB](https://github.com/ZahraRehmat/NavaAI/releases/download/v1.0.0-preview.1/NAVA-AI-Setup-1.0.0-win-x64.exe)
+### [NAVA AI Windows x64 installer — approximately 830 MiB](https://github.com/ZahraRehmat/NavaAI/releases/download/v1.0.1/NAVA-AI-Setup-1.0.1-win-x64.exe)
 
 **Unsigned development preview.** Fresh install, upgrade, uninstall and the packaged EXE were tested on Windows 11. **Windows 10 acceptance testing remains pending**, especially managed-browser support.
 
-[Installer guide](installer/README.md) · [Release assets](https://github.com/ZahraRehmat/NavaAI/releases/tag/v1.0.0-preview.1) · [Checksums](installer/SHA256SUMS.txt) · [Complete progress — 15 November](TODAYS_PROGRESS_2026-11-15.md)
+[Installer guide](installer/README.md) · [Release assets](https://github.com/ZahraRehmat/NavaAI/releases/tag/v1.0.1) · [Checksums](installer/SHA256SUMS-1.0.1.txt) · [Release verification](installer/BUILD_VALIDATION-1.0.1.json)
 
 The installer bundles its own runtime and required libraries, prepares local app discovery and sign-in readiness. Users run **NAVA AI.exe**, with no Python/pip/CMD setup. Say **Nava listen** once after sign-in. Qwen, OpenVINO and orphan model directories are excluded; assets used by existing speech/OCR/punctuation features remain.
 

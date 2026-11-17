@@ -3404,8 +3404,8 @@
     },
     {
       "path": "bundle.json",
-      "bytes": 375,
-      "sha256": "de810fdbb6a74b201c4aef9fca63a62d2231f8f723248afa7fe02d922374004d"
+      "bytes": 377,
+      "sha256": "e4b061fe9f58d5d4dee195015e4fb9981917aae1b6752495c863581baade4a41"
     },
     {
       "path": "catalog.py",
@@ -3430,7 +3430,7 @@
     {
       "path": "command_help_config.json",
       "bytes": 65,
-      "sha256": "c572df0e3972aea63e3a3a4f41b8654d3f564f001adaf8b70eb1a2fb56dba15f"
+      "sha256": "35c46eca16b38f5a091ba470b69e7fdeda39dead6b8e441b91fadab2f51e1864"
     },
     {
       "path": "command_help_ui.py",
@@ -3609,13 +3609,8 @@
     },
     {
       "path": "installed_bootstrap.py",
-      "bytes": 3912,
-      "sha256": "3e2c61ab8c0bed38f2084c099016990a845d41903081cf2188cb03aef73f8f72"
-    },
-    {
-      "path": "INSTALLER.md",
-      "bytes": 5476,
-      "sha256": "894944a91f77ba2622f62bc0cc96e8c758c1215931d94f3e3a7eb6b5e401e51d"
+      "bytes": 4216,
+      "sha256": "65f3bb351525a27895a80cc13a9b7d8386dcd28349adf59a169a8ce5cdece8b8"
     },
     {
       "path": "label_aliases.json",
@@ -3770,7 +3765,7 @@
     {
       "path": "NAVA AI.exe",
       "bytes": 82944,
-      "sha256": "85ba5bef78e0126850250e106d52a2542d0336d1f168b2576a7a54a25d561310"
+      "sha256": "9a7ce9272c79480fc4d05e0771d54685203a107ac53ace98cb7566ed1951c06f"
     },
     {
       "path": "nava.py",
@@ -3819,8 +3814,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 12912,
-      "sha256": "4f634ee2f9aaae086c16817e75d6c7131390a847d3b148ca0ba8edbba7c35c5d"
+      "bytes": 14295,
+      "sha256": "0894e3d5e07b59446ef722232f4328f1adfc13c7e46b05fa2f4eb8f64cc1a39e"
     },
     {
       "path": "rendered_text.py",
@@ -6361,31 +6356,6 @@
       "path": "runtime/Lib/site-packages/comtypes/errorinfo.py",
       "bytes": 5924,
       "sha256": "36fe3d34fe09c5981acbf45e91e6c2faa1c55191820fa48a537ae6e872d6bca4"
-    },
-    {
-      "path": "runtime/Lib/site-packages/comtypes/gen/_00020430_0000_0000_C000_000000000046_0_2_0.py",
-      "bytes": 20276,
-      "sha256": "e9b00454ed7d4feaff666c29ad2339fc4edf18b562a552c3297aa9dd7d1caeb4"
-    },
-    {
-      "path": "runtime/Lib/site-packages/comtypes/gen/_944DE083_8FB8_45CF_BCB7_C477ACB2F897_0_1_0.py",
-      "bytes": 315893,
-      "sha256": "d932978e7a8dad4cc0f4fd60eb91051b3a4e8f355624c0466b78149c33c4f0cc"
-    },
-    {
-      "path": "runtime/Lib/site-packages/comtypes/gen/__init__.py",
-      "bytes": 56,
-      "sha256": "0d474e302634b834072be47bae442dd92b5919dba7870f13e8c8f91272dd8f68"
-    },
-    {
-      "path": "runtime/Lib/site-packages/comtypes/gen/stdole.py",
-      "bytes": 1987,
-      "sha256": "72d3980b51057c36113e0cf5bbc9c123c08ddbe90ab48d4a375b67e57891a70b"
-    },
-    {
-      "path": "runtime/Lib/site-packages/comtypes/gen/UIAutomationClient.py",
-      "bytes": 46260,
-      "sha256": "ea48f98f83e5104cb5241b9e42675ede7e28637a31cecf19204ce31d24c867d4"
     },
     {
       "path": "runtime/Lib/site-packages/comtypes/git.py",
@@ -30714,8 +30684,8 @@
     },
     {
       "path": "speech.py",
-      "bytes": 12704,
-      "sha256": "72d30fa85770c58952b9f3cc99607fc9012ee5e87a781647f29e018b91f5aaca"
+      "bytes": 12705,
+      "sha256": "f3ad55e5644928a9196ec50148d0ca8c0be85860c3f71f8d5823f91082f31f38"
     },
     {
       "path": "speech_context.py",
@@ -30799,8 +30769,8 @@
     },
     {
       "path": "vosk_speech.py",
-      "bytes": 15995,
-      "sha256": "31ddeaf77ccd9f9da1f54155fe7e98df4e7926023340e5f40414395dfaaafa67"
+      "bytes": 16814,
+      "sha256": "2d10f9cc7c3768d3e4b142f6889415da1b6b39d46585e168d343c179fa66a18f"
     },
     {
       "path": "website_aliases.json",
@@ -30824,13 +30794,13 @@
     },
     {
       "path": "word_commands.py",
-      "bytes": 4505,
-      "sha256": "e10dae0eddd8aa6c8830147a1c9aaf7776ba6b63c1cf7d6e4beaea6e3d6307de"
+      "bytes": 4604,
+      "sha256": "7a0a750d17ffc03fa6901924076dd9f31da955796c8a27e94fd04f231ccfefaf"
     },
     {
       "path": "word_context.py",
-      "bytes": 3096,
-      "sha256": "b706eb3c59aecae2d4ed8bfd26c10422b01a8bb757de31bcd8ddfbf635a15f97"
+      "bytes": 3166,
+      "sha256": "79027fc97fa38d6d9f06cfb163a24f1bf708dc4057eead4137e0ffe8698cfb12"
     }
   ],
   "build_downloads": {

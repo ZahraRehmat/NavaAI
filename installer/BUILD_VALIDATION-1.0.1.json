@@ -1,0 +1,13 @@
+{
+  "version": "1.0.1",
+  "source_regression_tests_passed": 78,
+  "fresh_install_exit_code": 0,
+  "installed_payload_files_checked": 6099,
+  "missing_or_changed_payload_files": 0,
+  "installed_self_test_passed": true,
+  "dependency_imports_passed": 19,
+  "dictation": "Actual Whisper generation and word timestamps passed; packaged runtime transcribed the test sentence correctly.",
+  "other_checks": ["Tk", "Vosk vocabulary", "punctuation", "OCR", "offline browser"],
+  "sha256": "6C3FE3D73BDA55B242BD175E4166115358533C02C066298A22B92053808FD078",
+  "limits": ["Unsigned installer", "Windows 10 not tested on a separate Windows 10 PC", "Live microphone recognition accuracy is not established by these package checks"]
+}

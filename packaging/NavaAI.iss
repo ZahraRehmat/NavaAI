@@ -7,7 +7,7 @@
 [Setup]
 AppId={{80B0A294-FA71-4BD5-9436-D778423B5301}
 AppName=NAVA AI
-AppVersion=1.0.0
+AppVersion=1.0.1
 AppPublisher=NAVA AI
 DefaultDirName={localappdata}\Programs\NAVA AI
 DefaultGroupName=NAVA AI
@@ -16,7 +16,7 @@ ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
 MinVersion=10.0.19041
 OutputDir={#OutputDir}
-OutputBaseFilename=NAVA-AI-Setup-1.0.0-win-x64
+OutputBaseFilename=NAVA-AI-Setup-1.0.1-win-x64
 SetupIconFile=..\assets\nava.ico
 UninstallDisplayIcon={app}\NAVA AI.exe
 WizardStyle=modern dark
@@ -36,7 +36,14 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "autostart"; Description: "Start NAVA AI automatically after Windows sign-in (Say Nava listen)"; Flags: checkedonce
 Name: "desktopicon"; Description: "Create a desktop shortcut"; Flags: checkedonce
 [Files]
-Source: "{#PayloadDir}\*"; DestDir: "{app}"; Excludes: "voice_config.json,command_help_config.json,smart_grid_config.json,aliases.json,label_aliases.json,website_aliases.json,config.json,apps.json,logs\*,browser_profiles\*,downloads\*,__pycache__\*"; Flags: ignoreversion recursesubdirs createallsubdirs
+; Settings exclusions apply only to the root, never nested runtime configs.
+Source: "{#PayloadDir}\*"; DestDir: "{app}"; Excludes: "voice_config.json,command_help_config.json,smart_grid_config.json,aliases.json,label_aliases.json,website_aliases.json,config.json,apps.json"; Flags: ignoreversion
+Source: "{#PayloadDir}\models\*"; DestDir: "{app}\models"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#PayloadDir}\runtime\*"; DestDir: "{app}\runtime"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#PayloadDir}\assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#PayloadDir}\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#PayloadDir}\browsers\*"; DestDir: "{app}\browsers"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#PayloadDir}\licenses\*"; DestDir: "{app}\licenses"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#PayloadDir}\voice_config.json"; DestDir: "{app}"; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "{#PayloadDir}\command_help_config.json"; DestDir: "{app}"; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "{#PayloadDir}\smart_grid_config.json"; DestDir: "{app}"; Flags: onlyifdoesntexist uninsneveruninstall

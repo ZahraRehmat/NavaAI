@@ -188,7 +188,7 @@ class VoiceEngine:
                         utterance=segmenter.add(chunk)
                         if not was_active and segmenter.parts:utterance_context=self.context_fn()
                         if utterance_context:
-                            segmenter.silence_frames=max(12,round(self.config.get('dictation_silence_ms',750) / 30)) if utterance_context.get('dictation') else max(12,round(self.config.get('silence_ms',900)/30))
+                            segmenter.silence_frames=max(12,round(self.config.get('dictation_silence_ms',1200) / 30)) if utterance_context.get('dictation') else max(12,round(self.config.get('silence_ms',900)/30))
                         if utterance is not None:
                             if rate!=16000:
                                 utterance=np.interp(np.arange(round(len(utterance)*16000/rate))*rate/16000,np.arange(len(utterance)),utterance).astype(np.float32)
